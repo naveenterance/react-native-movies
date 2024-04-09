@@ -10,8 +10,9 @@ import {
   Pressable,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
 
-const Home = () => {
+const HomeScreen = () => {
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
@@ -110,6 +111,13 @@ const Home = () => {
           <FontAwesome name="search" size={36} color="gray" />
         </Pressable>
       </View>
+      <Slider
+        style={{ width: 200, height: 40 }}
+        minimumValue={0}
+        maximumValue={1}
+        minimumTrackTintColor="#FFFFFF"
+        maximumTrackTintColor="#000000"
+      />
       <FlatList
         className="mb-36"
         data={movies}
@@ -120,4 +128,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeScreen;
