@@ -9,10 +9,10 @@ import {
   Image,
   Pressable,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
@@ -70,7 +70,7 @@ const HomeScreen = () => {
             <View className="w-full bg-gray-200 rounded-full h-2">
               <View
                 style={{ width: item.rating.Value }}
-                className="bg-red-400 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                className="bg-orange-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
               >
                 <Text></Text>
               </View>
@@ -86,7 +86,7 @@ const HomeScreen = () => {
             <View className="w-full bg-gray-200 rounded-full h-2">
               <View
                 style={{ width: item.rating.Value }}
-                className="bg-green-400 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                className="bg-gray-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
               >
                 <Text></Text>
               </View>
@@ -99,25 +99,25 @@ const HomeScreen = () => {
 
   return (
     <View>
-      <View className="p-4 bg-pink-200  flex-row  w-full">
+      <View className="p-4 bg-orange-600  flex-row  w-full">
+        <Pressable
+          className="mt-12"
+          onPress={() => navigation.navigate("Profile")}
+        >
+          <MaterialCommunityIcons name="menu" size={36} color="black" />
+        </Pressable>
         <TextInput
-          className="bg-gray-200 w-3/4 mx-4 mt-8 px-4  py-2 rounded-full "
+          className="bg-gray-200 w-3/4 mx-4 mt-12 px-4  py-2 rounded-full "
           placeholder="Search for movies..."
           value={searchQuery}
           onChangeText={(text) => setSearchQuery(text)}
           onSubmitEditing={searchMovies}
         />
-        <Pressable onPress={searchMovies} className="mt-8">
-          <FontAwesome name="search" size={36} color="gray" />
+        <Pressable onPress={searchMovies} className="mt-12">
+          <FontAwesome name="search" size={36} color="black" />
         </Pressable>
       </View>
-      <Slider
-        style={{ width: 200, height: 40 }}
-        minimumValue={0}
-        maximumValue={1}
-        minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#000000"
-      />
+
       <FlatList
         className="mb-36"
         data={movies}

@@ -45,22 +45,33 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
-      <TextInput placeholder="Username" onChangeText={setName} />
-      <TextInput
-        placeholder="Password"
-        secureTextEntry={true}
-        onChangeText={setPassword}
-      />
-      <Pressable onPress={handleLogin}>
-        {!loading ? (
-          <Text>
-            Login <AntDesign name="login" size={36} color="black" />
-          </Text>
-        ) : (
-          <ActivityIndicator size="medium" color="gray" />
-        )}
-      </Pressable>
+    <View className="bg-gray-300 h-screen w-screen">
+      <View className="mx-12 my-36  w-full">
+        <TextInput
+          className="border-4 border-gray-600  p-4 rounded-xl w-3/4 focus:border-orange-600 mb-4"
+          placeholder="Username"
+          onChangeText={setName}
+        />
+        <TextInput
+          className="border-4 border-gray-600 p-4 rounded-xl w-3/4 focus:border-orange-600 mb-4"
+          placeholder="Password"
+          secureTextEntry={true}
+          onChangeText={setPassword}
+        />
+        <View className="mx-12">
+          <Pressable className="w-1/2 " onPress={handleLogin}>
+            {!loading ? (
+              <Text className="bg-orange-600 text-xl  text-gray-300 px-8 py-2 rounded-xl font-bold ">
+                Login
+              </Text>
+            ) : (
+              <View>
+                <ActivityIndicator size="medium" color="orange" />
+              </View>
+            )}
+          </Pressable>
+        </View>
+      </View>
     </View>
   );
 };

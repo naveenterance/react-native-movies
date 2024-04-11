@@ -3,6 +3,7 @@ import { Button, Text, View, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import "core-js/stable/atob";
 
 const Profile = ({ navigation }) => {
   const [user, setUser] = useState(null);
