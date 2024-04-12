@@ -13,10 +13,22 @@ import * as Notifications from "expo-notifications";
 const SignUpScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = async () => {
     setLoading(true);
+    if (!name || !password) {
+      alert("Please enter both username and password");
+      setLoading(false);
+      return;
+    }
+    if (password != confirmPassword) {
+      alert("passwords don't match");
+      setLoading(false);
+      return;
+    }
     try {
       const response = await fetch(
         `https://chat-node-naveenterances-projects.vercel.app/users/${name}`,
@@ -32,6 +44,7 @@ const SignUpScreen = ({ navigation }) => {
         const data = await response.json();
         if (data.exists) {
           alert("Username not available");
+          setLoading(false);
           return;
         }
       }
@@ -83,6 +96,13 @@ const SignUpScreen = ({ navigation }) => {
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+        <TextInput
+          className="border-4 border-gray-600  p-4 rounded-xl w-3/4 focus:border-orange-600 mb-4"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
           secureTextEntry={true}
         />
         <View className="mx-12">

@@ -16,6 +16,11 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    if (!name || !password) {
+      alert("Please enter both username and password");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch(

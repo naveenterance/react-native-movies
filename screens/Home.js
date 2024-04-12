@@ -12,7 +12,25 @@ import {
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 
+import { useQuery, gql } from "@apollo/client";
+
+const GET_ALL_USERS = gql`
+  query {
+    allUsers {
+      id
+      username
+      movieId
+      rating
+    }
+  }
+`;
+
 const HomeScreen = ({ navigation }) => {
+  const { loading, error, data } = useQuery(GET_ALL_USERS);
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
+
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
@@ -20,6 +38,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     searchMovies();
   }, []);
+
   const searchMovies = async () => {
     try {
       const response = await fetch(
@@ -124,6 +143,24 @@ const HomeScreen = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.imdbID}
       />
+
+      {data.allUsers && (
+        <>
+          <Text>User List</Text>
+          <FlatList
+            data={data.allUsers}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View>
+                <Text>ID: {item.id}</Text>
+                <Text>Username: {item.username}</Text>
+                <Text>Movie ID: {item.movieId}</Text>
+                <Text>Rating: {item.rating}</Text>
+              </View>
+            )}
+          />
+        </>
+      )}
     </View>
   );
 };
