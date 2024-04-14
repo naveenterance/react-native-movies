@@ -11,8 +11,13 @@ import {
 } from "react-native";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { jwtDecode } from "jwt-decode";
+import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import "core-js/stable/atob";
 
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useMutation } from "@apollo/client";
+import AddUserForm from "../components/Add";
 
 const GET_ALL_USERS = gql`
   query {
@@ -25,20 +30,49 @@ const GET_ALL_USERS = gql`
   }
 `;
 
+const ADD_USER = gql`
+  mutation CreateUser($username: String!, $movieId: String!, $rating: String!) {
+    create(username: $username, movieId: $movieId, rating: $rating) {
+      id
+      username
+      movieId
+      rating
+    }
+  }
+`;
+
 const HomeScreen = ({ navigation }) => {
   const { loading, error, data } = useQuery(GET_ALL_USERS);
-
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  const [addUser] = useMutation(ADD_USER);
 
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
+  const [user, setUser] = useState(null);
+  const [username, setUsername] = useState("");
+  const [movieId, setMovieId] = useState("");
+  const [rating, setRating] = useState("");
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = await AsyncStorage.getItem("jwtToken");
+        if (token) {
+          const decoded = jwtDecode(token);
+          setUser(decoded);
+          setUsername(decoded.name);
+        }
+      } catch (error) {
+        console.error("Error retrieving user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
 
   useEffect(() => {
     searchMovies();
   }, []);
-
   const searchMovies = async () => {
     try {
       const response = await fetch(
@@ -66,6 +100,25 @@ const HomeScreen = ({ navigation }) => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleSubmit = async (id) => {
+    setMovieId(id);
+    try {
+      await addUser({
+        variables: {
+          username,
+          movieId,
+          rating,
+        },
+      });
+
+      setUsername("");
+      setMovieId("");
+      setRating("");
+    } catch (error) {
+      console.error("Error adding user:", error);
     }
   };
 
@@ -98,20 +151,23 @@ const HomeScreen = ({ navigation }) => {
         ) : (
           <Text className="italic text-gray-800">No ratings</Text>
         )}
-        {item.rating && (
-          <View>
-            <Text className="italic text-gray-800">{`You: ${item.rating.Value}`}</Text>
 
+        <View>
+          <TextInput
+            className="border-4 border-gray-600  px-2 m-1 rounded-xl w-1/2  focus:border-600 mb-4"
+            placeholder="Enter your rating"
+            onChangeText={setRating}
+          />
+
+          <Button onPress={() => handleSubmit(item.imdbID)} title="Rate" />
+          {/* 
             <View className="w-full bg-gray-200 rounded-full h-2">
               <View
-                style={{ width: item.rating.Value }}
+                style={{ width: userRating }}
                 className="bg-gray-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-              >
-                <Text></Text>
-              </View>
-            </View>
-          </View>
-        )}
+              ></View>
+            </View> */}
+        </View>
       </View>
     </View>
   );
@@ -143,8 +199,9 @@ const HomeScreen = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.imdbID}
       />
-
-      {data.allUsers && (
+      {loading && <Text>Loading...</Text>}
+      {error && <Text>Error: {error.message}</Text>}
+      {data && data.allUsers && (
         <>
           <Text>User List</Text>
           <FlatList
