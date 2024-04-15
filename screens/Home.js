@@ -104,73 +104,82 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleSubmit = async (id) => {
-    setMovieId(id);
     try {
       await addUser({
         variables: {
           username,
-          movieId,
+          movieId: id,
           rating,
         },
       });
-
-      setUsername("");
-      setMovieId("");
-      setRating("");
     } catch (error) {
       console.error("Error adding user:", error);
     }
   };
 
-  const renderItem = ({ item }) => (
-    <View className="m-2 bg-gray-200 p-4 flex-row rounded-lg ">
-      <Image
-        style={{ height: 80, width: 80 }}
-        source={{
-          uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
-        }}
-      />
-      <View className="w-3/4 px-4 ">
-        <Text className="truncate text-gray-800">
-          {item.Title}{" "}
-          <Text className="italic text-gray-800">[{item.Year}]</Text>
-        </Text>
+  const renderItem = ({ item }) => {
+    const userRating = data.allUsers.find(
+      (userMovie) =>
+        userMovie.movieId === item.imdbID && userMovie.username === username
+    )?.rating;
 
-        {item.rating ? (
-          <View>
-            <Text className="italic text-gray-800">{`Critics: ${item.rating.Value}`}</Text>
-            <View className="w-full bg-gray-200 rounded-full h-2">
-              <View
-                style={{ width: item.rating.Value }}
-                className="bg-orange-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-              >
-                <Text></Text>
+    return (
+      <View className="m-2 bg-gray-200 p-4 flex-row rounded-lg ">
+        <Image
+          style={{ height: 80, width: 80 }}
+          source={{
+            uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
+          }}
+        />
+        <View className="w-3/4 px-4 ">
+          <Text className="truncate text-gray-800">
+            {item.Title}{" "}
+            <Text className="italic text-gray-800">[{item.Year}]</Text>
+          </Text>
+          {item.rating ? (
+            <View>
+              <Text className="italic text-gray-800">{`Critics: ${item.rating.Value}`}</Text>
+              <View className="w-full bg-gray-200 rounded-full h-2">
+                <View
+                  style={{ width: item.rating.Value }}
+                  className="bg-orange-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                >
+                  <Text></Text>
+                </View>
               </View>
             </View>
-          </View>
-        ) : (
-          <Text className="italic text-gray-800">No ratings</Text>
-        )}
+          ) : (
+            <Text className="italic text-gray-800">[No critics ratings]</Text>
+          )}
+          {userRating ? (
+            <View>
+              <Text className="italic text-gray-800">{`Your rating: ${
+                parseFloat(userRating) + "%"
+              }`}</Text>
+              <View className="w-full bg-gray-200 rounded-full h-2">
+                <View
+                  style={{ width: parseFloat(userRating) + "%" }}
+                  className="bg-gray-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                >
+                  <Text></Text>
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View>
+              <TextInput
+                className="border-4 border-gray-600  px-2 m-1 rounded-xl w-1/2  focus:border-600 mb-4"
+                placeholder="Enter your rating"
+                onChangeText={setRating}
+              />
 
-        <View>
-          <TextInput
-            className="border-4 border-gray-600  px-2 m-1 rounded-xl w-1/2  focus:border-600 mb-4"
-            placeholder="Enter your rating"
-            onChangeText={setRating}
-          />
-
-          <Button onPress={() => handleSubmit(item.imdbID)} title="Rate" />
-          {/* 
-            <View className="w-full bg-gray-200 rounded-full h-2">
-              <View
-                style={{ width: userRating }}
-                className="bg-gray-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-              ></View>
-            </View> */}
+              <Button onPress={() => handleSubmit(item.imdbID)} title="Rate" />
+            </View>
+          )}
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View>
@@ -204,7 +213,7 @@ const HomeScreen = ({ navigation }) => {
       {data && data.allUsers && (
         <>
           <Text>User List</Text>
-          <FlatList
+          {/* <FlatList
             data={data.allUsers}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
@@ -215,7 +224,7 @@ const HomeScreen = ({ navigation }) => {
                 <Text>Rating: {item.rating}</Text>
               </View>
             )}
-          />
+          /> */}
         </>
       )}
     </View>
