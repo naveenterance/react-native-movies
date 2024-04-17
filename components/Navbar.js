@@ -12,9 +12,7 @@ import {
   Feather,
   FontAwesome,
 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 const Navbar = () => {
-  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -39,8 +37,7 @@ const Navbar = () => {
         <Pressable>
           <Feather name="bookmark" size={30} color="black" />
         </Pressable>
-
-        <Pressable onPress={() => navigation.navigate("Profile")}>
+        <Pressable>
           <FontAwesome name="user-circle-o" size={30} color="black" />
         </Pressable>
       </View>

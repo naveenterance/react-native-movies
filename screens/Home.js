@@ -1,4 +1,4 @@
-import Navbar from "../components/Navebar";
+import Navbar from "../components/Navbar";
 import React, { useState } from "react";
 import {
   Button,
@@ -10,14 +10,14 @@ import {
 } from "react-native";
 import Search from "../components/Search";
 import Movie_info from "../components/Movie_info";
-import Actor_info from "../components/Actor_info";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
+  const movieid = "tt2582782";
   return (
     <View style={{ width: "100%", height: "100%" }}>
       <View style={{ height: "90%" }}>
-        <Actor_info />
+        <Search />
       </View>
       <Navbar />
     </View>

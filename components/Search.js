@@ -13,7 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 import { useQuery, gql, useMutation } from "@apollo/client";
-
+import Movie_info from "./Movie_info";
+import { useNavigation } from "@react-navigation/native";
 const GET_ALL_USERS = gql`
   query {
     allUsers {
@@ -51,7 +52,7 @@ const ADD_USER = gql`
 const Search = () => {
   const { loading, error, data } = useQuery(GET_ALL_USERS);
   const [addUser] = useMutation(ADD_USER);
-  console.log(data);
+  const navigation = useNavigation();
 
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
@@ -136,162 +137,181 @@ const Search = () => {
           )?.rating
         : null;
 
-    console.log(userRating);
-
     return (
-      <View
-        style={{
-          margin: 8,
-          backgroundColor: "#E5E7EB",
-          padding: 8,
-          borderRadius: 8,
-        }}
-      >
-        <Image
-          style={{ height: 80, width: 80 }}
-          source={{
-            uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
+      <Pressable onPress={() => setMovieId(item.imdbID)}>
+        <View
+          style={{
+            margin: 8,
+            backgroundColor: "#E5E7EB",
+            padding: 8,
+            borderRadius: 8,
           }}
-        />
-        <View style={{ flex: 1, marginLeft: 8 }}>
-          <Text numberOfLines={1} style={{ color: "#4B5563" }}>
-            {item.Title}{" "}
-            <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
-              [{item.Year}]
+        >
+          <Image
+            style={{ height: 80, width: 80 }}
+            source={{
+              uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
+            }}
+          />
+          <View style={{ flex: 1, marginLeft: 8 }}>
+            <Text numberOfLines={1} style={{ color: "#4B5563" }}>
+              {item.Title}{" "}
+              <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
+                [{item.Year}]
+              </Text>
             </Text>
-          </Text>
-          {item.rating ? (
-            <View>
-              <Text
-                style={{ fontStyle: "italic", color: "#4B5563" }}
-              >{`Critics: ${item.rating.Value}`}</Text>
-              <View
-                style={{
-                  width: "100%",
-                  backgroundColor: "#E5E7EB",
-                  borderRadius: 999,
-                  height: 4,
-                }}
-              >
+            {item.rating ? (
+              <View>
+                <Text
+                  style={{ fontStyle: "italic", color: "#4B5563" }}
+                >{`Critics: ${item.rating.Value}`}</Text>
                 <View
                   style={{
-                    width: item.rating.Value,
-                    backgroundColor: "#ED8936",
-                    alignItems: "center",
-                    padding: 2,
+                    width: "100%",
+                    backgroundColor: "#E5E7EB",
                     borderRadius: 999,
-                    fontSize: 10,
-                    fontWeight: "500",
-                    color: "#4299E1",
-                    textAlign: "center",
-                    lineHeight: 10,
+                    height: 4,
                   }}
                 >
-                  <Text></Text>
+                  <View
+                    style={{
+                      width: item.rating.Value,
+                      backgroundColor: "#ED8936",
+                      alignItems: "center",
+                      padding: 2,
+                      borderRadius: 999,
+                      fontSize: 10,
+                      fontWeight: "500",
+                      color: "#4299E1",
+                      textAlign: "center",
+                      lineHeight: 10,
+                    }}
+                  >
+                    <Text></Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ) : (
-            <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
-              [No critics ratings]
-            </Text>
-          )}
-          {userRating ? (
-            <View>
-              <Text
-                style={{ fontStyle: "italic", color: "#4B5563" }}
-              >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
-              <View
-                style={{
-                  width: "100%",
-                  backgroundColor: "#E5E7EB",
-                  borderRadius: 999,
-                  height: 4,
-                }}
-              >
+            ) : (
+              <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
+                [No critics ratings]
+              </Text>
+            )}
+            {userRating ? (
+              <View>
+                <Text
+                  style={{ fontStyle: "italic", color: "#4B5563" }}
+                >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
                 <View
                   style={{
-                    width: parseFloat(userRating) + "%",
-                    backgroundColor: "#4A5568",
-                    alignItems: "center",
-                    padding: 2,
+                    width: "100%",
+                    backgroundColor: "#E5E7EB",
                     borderRadius: 999,
-                    fontSize: 12,
-                    fontWeight: "500",
-                    color: "#4299E1",
-                    textAlign: "center",
-                    lineHeight: 12,
+                    height: 4,
                   }}
                 >
-                  <Text></Text>
+                  <View
+                    style={{
+                      width: parseFloat(userRating) + "%",
+                      backgroundColor: "#4A5568",
+                      alignItems: "center",
+                      padding: 2,
+                      borderRadius: 999,
+                      fontSize: 12,
+                      fontWeight: "500",
+                      color: "#4299E1",
+                      textAlign: "center",
+                      lineHeight: 12,
+                    }}
+                  >
+                    <Text></Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ) : (
-            <View>
-              <TextInput
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#4B5563",
-                  padding: 2,
-                  marginVertical: 4,
-                  borderRadius: 8,
-                }}
-                placeholder="Enter your rating"
-                onChangeText={setRating}
-              />
-              <TextInput
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#4B5563",
-                  padding: 2,
-                  marginVertical: 4,
-                  borderRadius: 8,
-                }}
-                placeholder="Enter your review"
-                onChangeText={setReview}
-              />
-              <Button onPress={() => handleSubmit(item.imdbID)} title="Rate" />
-            </View>
-          )}
+            ) : (
+              <View>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#4B5563",
+                    padding: 2,
+                    marginVertical: 4,
+                    borderRadius: 8,
+                  }}
+                  placeholder="Enter your rating"
+                  onChangeText={setRating}
+                />
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#4B5563",
+                    padding: 2,
+                    marginVertical: 4,
+                    borderRadius: 8,
+                  }}
+                  placeholder="Enter your review"
+                  onChangeText={setReview}
+                />
+                <Button
+                  onPress={() => handleSubmit(item.imdbID)}
+                  title="Rate"
+                />
+              </View>
+            )}
+          </View>
         </View>
-      </View>
+      </Pressable>
     );
   };
 
   return (
-    <View style={{ marginTop: "10%" }}>
-      <TextInput
-        style={{
-          backgroundColor: "#E5E7EB",
-          width: "75%",
-          marginHorizontal: "12%",
-          marginTop: 12,
-          padding: 8,
-          borderRadius: 999,
-        }}
-        placeholder="Search for movies..."
-        value={searchQuery}
-        onChangeText={(text) => setSearchQuery(text)}
-        onSubmitEditing={searchMovies}
-      />
-      <Pressable
-        onPress={searchMovies}
-        style={{ marginTop: 12, alignSelf: "center" }}
-      >
-        <FontAwesome name="search" size={36} color="black" />
-      </Pressable>
+    <>
+      {!movieId ? (
+        <View style={{ marginTop: "10%" }}>
+          <TextInput
+            style={{
+              backgroundColor: "#E5E7EB",
+              width: "75%",
+              marginHorizontal: "12%",
+              marginTop: 12,
+              padding: 8,
+              borderRadius: 999,
+            }}
+            placeholder="Search for movies..."
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
+            onSubmitEditing={searchMovies}
+          />
+          <Pressable
+            onPress={searchMovies}
+            style={{ marginTop: 12, alignSelf: "center" }}
+          >
+            <FontAwesome name="search" size={36} color="black" />
+          </Pressable>
 
-      <FlatList
-        data={movies}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.imdbID}
-        style={{ marginBottom: 36 }}
-      />
+          <FlatList
+            data={movies}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.imdbID}
+            style={{ marginBottom: 36 }}
+          />
 
-      {loading && <Text>Loading...</Text>}
-      {error && <Text>Error: {error.message}</Text>}
-    </View>
+          {loading && <Text>Loading...</Text>}
+          {error && <Text>Error: {error.message}</Text>}
+        </View>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <View>
+            <Movie_info id={movieId} />
+          </View>
+        </View>
+      )}
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
-const Movie_info = () => {
+const Movie_info = ({ id }) => {
   const [movieData, setMovieData] = useState(null);
   const API_KEY = "e24ea998";
 
@@ -9,7 +10,7 @@ const Movie_info = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://www.omdbapi.com/?apikey=e24ea998&i=tt0079501&plot=full"
+          `http://www.omdbapi.com/?apikey=${API_KEY}&i=${id}&plot=full`
         );
         const data = await response.json();
         setMovieData(data);
@@ -22,27 +23,29 @@ const Movie_info = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View style={{ flex: 1 }}>
       {movieData ? (
-        <>
-          <Image
-            source={{ uri: movieData.Poster }}
-            style={{ width: 200, height: 300 }}
-          />
-          <Text>Title: {movieData.Title}</Text>
-          <Text>Year: {movieData.Year}</Text>
-          <Text>Rated: {movieData.Rated}</Text>
-          <Text>Released: {movieData.Released}</Text>
-          <Text>Runtime: {movieData.Runtime}</Text>
-          <Text>Genre: {movieData.Genre}</Text>
-          <Text>Director: {movieData.Director}</Text>
-          <Text>Writer: {movieData.Writer}</Text>
-          <Text>Actors: {movieData.Actors}</Text>
-          <Text>Plot: {movieData.Plot}</Text>
-          <Text>Language: {movieData.Language}</Text>
-          <Text>Country: {movieData.Country}</Text>
-          <Text>Awards: {movieData.Awards}</Text>
-        </>
+        <ScrollView>
+          <View>
+            <Image
+              source={{ uri: movieData.Poster }}
+              style={{ width: "100%", height: 600 }}
+            />
+            <Text>Title: {movieData.Title}</Text>
+            <Text>Year: {movieData.Year}</Text>
+            <Text>Rated: {movieData.Rated}</Text>
+            <Text>Released: {movieData.Released}</Text>
+            <Text>Runtime: {movieData.Runtime}</Text>
+            <Text>Genre: {movieData.Genre}</Text>
+            <Text>Director: {movieData.Director}</Text>
+            <Text>Writer: {movieData.Writer}</Text>
+            <Text>Actors: {movieData.Actors}</Text>
+            <Text style={{ width: 400 }}>Plot: {movieData.Plot}</Text>
+            <Text>Language: {movieData.Language}</Text>
+            <Text>Country: {movieData.Country}</Text>
+            <Text style={{ width: 400 }}>Awards: {movieData.Awards}</Text>
+          </View>
+        </ScrollView>
       ) : (
         <Text>Loading...</Text>
       )}
