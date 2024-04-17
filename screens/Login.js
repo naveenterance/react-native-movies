@@ -50,23 +50,59 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View className="bg-gray-300 h-screen w-screen">
-      <View className="mx-12 my-36  w-full">
+    <View
+      style={{
+        backgroundColor: "#D1D5DB",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <View
+        style={{
+          marginHorizontal: 48,
+          marginTop: 144,
+          width: "100%",
+        }}
+      >
         <TextInput
-          className="border-4 border-gray-600  p-4 rounded-xl w-3/4 focus:border-orange-600 mb-4"
+          style={{
+            borderBottomWidth: 4,
+            borderBottomColor: "#718096",
+            padding: 16,
+            borderRadius: 16,
+            width: "75%",
+            marginBottom: 16,
+          }}
           placeholder="Username"
           onChangeText={setName}
         />
         <TextInput
-          className="border-4 border-gray-600 p-4 rounded-xl w-3/4 focus:border-orange-600 mb-4"
+          style={{
+            borderBottomWidth: 4,
+            borderBottomColor: "#718096",
+            padding: 16,
+            borderRadius: 16,
+            width: "75%",
+            marginBottom: 16,
+          }}
           placeholder="Password"
           secureTextEntry={true}
           onChangeText={setPassword}
         />
-        <View className="mx-12">
-          <Pressable className="w-1/2 " onPress={handleLogin}>
+        <View style={{ marginHorizontal: 48 }}>
+          <Pressable style={{ width: "50%" }} onPress={handleLogin}>
             {!loading ? (
-              <Text className="bg-orange-600 text-xl  text-gray-300 px-8 py-2 rounded-xl font-bold ">
+              <Text
+                style={{
+                  backgroundColor: "#ea580c",
+                  fontSize: 24,
+                  color: "#E5E7EB",
+                  paddingHorizontal: 32,
+                  paddingVertical: 8,
+                  borderRadius: 16,
+                  fontWeight: "bold",
+                }}
+              >
                 Login
               </Text>
             ) : (

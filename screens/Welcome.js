@@ -22,23 +22,52 @@ const Welcome = ({ navigation }) => {
     <View>
       <Image
         source={require("../assets/logo.jpeg")}
-        className="w-full h-1/3"
+        style={{ width: "100%", height: "33.333%" }}
       ></Image>
-      <View className="flex-row h-screen ">
+      <View
+        style={{
+          flexDirection: "row",
+          height: "100%",
+        }}
+      >
         <Pressable
-          className="w-1/2 bg-orange-600 "
+          style={{
+            width: "50%",
+            backgroundColor: "#ED8936",
+            flex: 1,
+            alignItems: "center",
+          }}
           onPress={() => navigation.navigate("Login")}
         >
-          <Text className="m-24 text-2xl font-bold text-gray-600">
+          <Text
+            style={{
+              marginTop: "100%",
+              fontSize: 36,
+              fontWeight: "bold",
+              color: "#718096",
+            }}
+          >
             Login
             {/* <AntDesign name="login" size={24} color="gray" /> */}
           </Text>
         </Pressable>
         <Pressable
-          className="w-1/2 bg-gray-600  hover:bg-blue-300"
+          style={{
+            width: "50%",
+            backgroundColor: "#718096",
+            flex: 1,
+            alignItems: "center",
+          }}
           onPress={() => navigation.navigate("SignUp")}
         >
-          <Text className="m-24 text-2xl font-bold text-orange-600">
+          <Text
+            style={{
+              marginTop: "100%",
+              fontSize: 36,
+              fontWeight: "bold",
+              color: "#ED8936",
+            }}
+          >
             Sign Up
             {/* <AntDesign name="adduser" size={24} color="orange" /> */}
           </Text>
