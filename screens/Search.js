@@ -19,6 +19,7 @@ import { Platform, BackHandler } from "react-native";
 import { useDoubleBackPressExit } from "../components/Back";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
+
 import Toast from "react-native-simple-toast";
 
 const Search = () => {
@@ -52,13 +53,8 @@ const Search = () => {
           BackHandler.exitApp();
         }
       } else {
-        if (
-          typeof setMovieId === "function" &&
-          typeof setSearchQuery === "function"
-        ) {
-          setMovieId("");
-          setSearchQuery("");
-        }
+        setMovieId("");
+        setSearchQuery("");
         refetch();
         backPressCount += 1;
         setTimeout(() => {
