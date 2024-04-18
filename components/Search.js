@@ -15,42 +15,13 @@ import "core-js/stable/atob";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import Movie_info from "./Movie_info";
 import { useNavigation } from "@react-navigation/native";
-const GET_ALL_USERS = gql`
-  query {
-    allUsers {
-      id
-      username
-      movieId
-      rating
-      review
-    }
-  }
-`;
-
-const ADD_USER = gql`
-  mutation CreateUser(
-    $username: String!
-    $movieId: String!
-    $rating: String!
-    $review: String!
-  ) {
-    create(
-      username: $username
-      movieId: $movieId
-      rating: $rating
-      review: $review
-    ) {
-      id
-      username
-      movieId
-      rating
-      review
-    }
-  }
-`;
+import { Platform, BackHandler } from "react-native";
+import { useDoubleBackPressExit } from "./Back";
+import { GET_ALL_USERS } from "../utils/graphql";
+import { ADD_USER } from "../utils/graphql";
 
 const Search = () => {
-  const { loading, error, data } = useQuery(GET_ALL_USERS);
+  const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
   const [addUser] = useMutation(ADD_USER);
   const navigation = useNavigation();
 
@@ -62,6 +33,22 @@ const Search = () => {
   const [movieId, setMovieId] = useState("");
   const [rating, setRating] = useState("");
   const [review, setReview] = useState("");
+  useEffect(() => {
+    const handleBackPress = () => {
+      setMovieId("");
+      setSearchQuery("");
+
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -95,11 +82,18 @@ const Search = () => {
               `http://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}&plot=full`
             );
             const ratingData = await ratingResponse.json();
+
+            const ratingRottenTomatoes = ratingData.Ratings.find(
+              (rating) => rating.Source === "Rotten Tomatoes"
+            );
+            const ratingIMDB = ratingData.Ratings.find(
+              (rating) => rating.Source === "Internet Movie Database"
+            );
+
             return {
               ...movie,
-              rating: ratingData.Ratings.find(
-                (rating) => rating.Source === "Rotten Tomatoes"
-              ),
+              ratingR: ratingRottenTomatoes,
+              ratingM: ratingIMDB,
             };
           })
         );
@@ -109,21 +103,6 @@ const Search = () => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleSubmit = async (id) => {
-    try {
-      await addUser({
-        variables: {
-          username,
-          movieId: id,
-          rating,
-          review,
-        },
-      });
-    } catch (error) {
-      console.error("Error adding user:", error);
     }
   };
 
@@ -160,11 +139,11 @@ const Search = () => {
                 [{item.Year}]
               </Text>
             </Text>
-            {item.rating ? (
+            {item.ratingR ? (
               <View>
                 <Text
                   style={{ fontStyle: "italic", color: "#4B5563" }}
-                >{`Critics: ${item.rating.Value}`}</Text>
+                >{`Rotten Tomatoes: ${item.ratingR.Value}`}</Text>
                 <View
                   style={{
                     width: "100%",
@@ -175,7 +154,37 @@ const Search = () => {
                 >
                   <View
                     style={{
-                      width: item.rating.Value,
+                      width: item.ratingR.Value,
+                      backgroundColor: "#ED8936",
+                      alignItems: "center",
+                      padding: 2,
+                      borderRadius: 999,
+                      fontSize: 10,
+                      fontWeight: "500",
+                      color: "#4299E1",
+                      textAlign: "center",
+                      lineHeight: 10,
+                    }}
+                  >
+                    <Text></Text>
+                  </View>
+                </View>
+                <Text
+                  style={{ fontStyle: "italic", color: "#4B5563" }}
+                >{`IMDB: ${item.ratingM.Value}`}</Text>
+                <View
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#E5E7EB",
+                    borderRadius: 999,
+                    height: 4,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: `${
+                        parseFloat(item.ratingM.Value.split("/")[0]) * 10
+                      }%`,
                       backgroundColor: "#ED8936",
                       alignItems: "center",
                       padding: 2,
@@ -228,34 +237,7 @@ const Search = () => {
                 </View>
               </View>
             ) : (
-              <View>
-                <TextInput
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "#4B5563",
-                    padding: 2,
-                    marginVertical: 4,
-                    borderRadius: 8,
-                  }}
-                  placeholder="Enter your rating"
-                  onChangeText={setRating}
-                />
-                <TextInput
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "#4B5563",
-                    padding: 2,
-                    marginVertical: 4,
-                    borderRadius: 8,
-                  }}
-                  placeholder="Enter your review"
-                  onChangeText={setReview}
-                />
-                <Button
-                  onPress={() => handleSubmit(item.imdbID)}
-                  title="Rate"
-                />
-              </View>
+              <Text>Not rated yet</Text>
             )}
           </View>
         </View>

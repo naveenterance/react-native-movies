@@ -12,7 +12,9 @@ import {
   Feather,
   FontAwesome,
 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 const Navbar = () => {
+  const navigation = useNavigation();
   return (
     <View
       style={{

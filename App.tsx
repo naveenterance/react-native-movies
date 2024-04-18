@@ -8,7 +8,7 @@ import HomeScreen from "./screens/Home";
 import SignUpScreen from "./screens/Signup";
 import Welcome from "./screens/Welcome";
 
-import Profile from "./screens/Profile";
+// import Profile from "./components/Profile";
 
 import * as Notifications from "expo-notifications";
 
@@ -77,13 +77,13 @@ const App = () => {
             }}
           />
 
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Profile"
             component={Profile}
             options={{
               headerTitle: "Profile",
             }}
-          />
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>
