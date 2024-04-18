@@ -13,12 +13,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 import { useQuery, gql, useMutation } from "@apollo/client";
-import Movie_info from "./Movie_info";
+import Movie_info from "../components/Movie_info";
 import { useNavigation } from "@react-navigation/native";
 import { Platform, BackHandler } from "react-native";
-import { useDoubleBackPressExit } from "./Back";
+import { useDoubleBackPressExit } from "../components/Back";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
+import Toast from "react-native-simple-toast";
 
 const Search = () => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -34,11 +35,37 @@ const Search = () => {
   const [rating, setRating] = useState("");
   const [review, setReview] = useState("");
   useEffect(() => {
-    const handleBackPress = () => {
-      setMovieId("");
-      setSearchQuery("");
+    let backPressCount = 0;
+    let toastVisible = false;
 
-      return true;
+    const handleBackPress = () => {
+      if (backPressCount === 1) {
+        if (!toastVisible) {
+          Toast.show("Press again to exit.", Toast.LONG);
+          toastVisible = true;
+          setTimeout(() => {
+            toastVisible = false;
+          }, 2000); // Reset toastVisible after 2 seconds
+          return true;
+        } else {
+          // If back button pressed again within the toast duration, exit app
+          BackHandler.exitApp();
+        }
+      } else {
+        if (
+          typeof setMovieId === "function" &&
+          typeof setSearchQuery === "function"
+        ) {
+          setMovieId("");
+          setSearchQuery("");
+        }
+        refetch();
+        backPressCount += 1;
+        setTimeout(() => {
+          backPressCount = 0;
+        }, 2000);
+        return true;
+      }
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -67,6 +94,7 @@ const Search = () => {
 
   useEffect(() => {
     searchMovies();
+    refetch();
   }, []);
 
   const searchMovies = async () => {

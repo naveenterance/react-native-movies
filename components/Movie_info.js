@@ -23,13 +23,11 @@ import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
+import { useAuth } from "../utils/Auth";
 
 const Movie_info = ({ id }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [user, setUser] = useState(null);
-  const [username, setUsername] = useState("");
-  const [movieId, setMovieId] = useState("");
+  const { username } = useAuth();
+
   const [rating, setRating] = useState("");
   const [review, setReview] = useState("");
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);

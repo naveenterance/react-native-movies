@@ -4,14 +4,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import "core-js/stable/atob";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 
-const Profile = () => {
-  const navigation = useNavigation();
+const Profile = ({ navigation }) => {
+  // const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const handleLogout = async () => {
     await AsyncStorage.removeItem("jwtToken");
     navigation.navigate("Login");
+    setUser("");
   };
   useEffect(() => {
     const fetchUserDetails = async () => {

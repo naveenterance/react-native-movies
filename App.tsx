@@ -7,8 +7,9 @@ import LoginScreen from "./screens/Login";
 import HomeScreen from "./screens/Home";
 import SignUpScreen from "./screens/Signup";
 import Welcome from "./screens/Welcome";
-
-// import Profile from "./components/Profile";
+import Profile from "./screens/Profile";
+import Search from "./screens/Search";
+import { AuthProvider } from "./utils/Auth";
 
 import * as Notifications from "expo-notifications";
 
@@ -36,57 +37,67 @@ const App = () => {
   };
 
   return (
-    <ApolloProvider client={client}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Welcome"
-          screenOptions={screenOptions}
-        >
-          <Stack.Screen
-            name="Welcome"
-            component={Welcome}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUpScreen}
-            options={{
-              headerTitle: "Sign Up",
-              headerStyle: {
-                backgroundColor: "#ea580c",
-              },
-            }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{
-              headerTitle: "Login",
-              headerStyle: {
-                backgroundColor: "#ea580c",
-              },
-            }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
+    <AuthProvider>
+      <ApolloProvider client={client}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Welcome"
+            screenOptions={screenOptions}
+          >
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUpScreen}
+              options={{
+                headerTitle: "Sign Up",
+                headerStyle: {
+                  backgroundColor: "#ea580c",
+                },
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{
+                headerTitle: "Login",
+                headerStyle: {
+                  backgroundColor: "#ea580c",
+                },
+              }}
+            />
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
 
-          {/* <Stack.Screen
-            name="Profile"
-            component={Profile}
-            options={{
-              headerTitle: "Profile",
-            }}
-          /> */}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ApolloProvider>
+            <Stack.Screen
+              name="Profile"
+              component={Profile}
+              options={{
+                headerTitle: "Profile",
+              }}
+            />
+
+            <Stack.Screen
+              name="Search"
+              component={Search}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ApolloProvider>
+    </AuthProvider>
   );
 };
 

@@ -1,9 +1,14 @@
+// Auth.js
+import React, { createContext, useState, useEffect, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 
-const Auth = () => {
+const AuthContext = createContext();
+
+const AuthProvider = ({ children }) => {
   const [username, setUsername] = useState("");
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -19,6 +24,12 @@ const Auth = () => {
 
     fetchUserDetails();
   }, []);
+
+  return (
+    <AuthContext.Provider value={{ username }}>{children}</AuthContext.Provider>
+  );
 };
 
-export default Auth;
+const useAuth = () => useContext(AuthContext);
+
+export { AuthProvider, useAuth };
