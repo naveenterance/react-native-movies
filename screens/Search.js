@@ -46,10 +46,9 @@ const Search = () => {
           toastVisible = true;
           setTimeout(() => {
             toastVisible = false;
-          }, 2000); // Reset toastVisible after 2 seconds
+          }, 2000);
           return true;
         } else {
-          // If back button pressed again within the toast duration, exit app
           BackHandler.exitApp();
         }
       } else {

@@ -1,14 +1,47 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, Pressable, Animated, Text, Button } from "react-native";
-import Search from "./Search";
-import Profile from "./Profile";
-
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
-import { NavigationContainer, useIsFocused } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Text, View, Button, StyleSheet, Pressable } from "react-native";
+import Modal from "react-native-modal";
+import { useDoubleBackPressExit } from "../components/Back";
 
 const HomeScreen = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  useDoubleBackPressExit();
+
   return (
     <View style={{ flex: 1, marginTop: "20%" }}>
+      <View style={styles.centeredView}>
+        <Modal
+          isVisible={modalVisible}
+          animationIn="slideInLeft"
+          animationOut="slideOutLeft"
+          backdropColor="black"
+          onBackdropPress={() => setModalVisible(false)}
+          style={styles.modal}
+        >
+          <View style={styles.modalContent}>
+            <Text>Hello World</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.textStyle}>Close Modal</Text>
+            </Pressable>
+          </View>
+        </Modal>
+        <Text>Takumi</Text>
+        <Button
+          title="Profile"
+          onPress={() => navigation.navigate("Profile")}
+        />
+        <Button title="Search" onPress={() => navigation.navigate("Search")} />
+
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.textStyle}>Show Modal</Text>
+        </Pressable>
+      </View>
       <View
         style={{
           height: 50,
@@ -27,5 +60,42 @@ const HomeScreen = ({ navigation }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modal: {
+    margin: 0,
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 22,
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "60%",
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginVertical: 10,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
 
 export default HomeScreen;
