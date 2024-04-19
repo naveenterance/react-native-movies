@@ -21,12 +21,18 @@ import { useQuery, gql, useMutation } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
+import useDoubleBackPressExit from "../components/Back";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
+import { useID } from "../utils/CurrentId";
 
-const Movie_info = ({ id }) => {
+const Movie_info = ({ navigation }) => {
   const { username } = useAuth();
+  const { id, setId } = useID();
+  if (!id) {
+    return;
+  }
 
   const [rating, setRating] = useState("");
   const [review, setReview] = useState("");

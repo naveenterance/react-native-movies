@@ -4,10 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import "core-js/stable/atob";
-// import { useNavigation } from "@react-navigation/native";
 
 const Profile = ({ navigation }) => {
-  // const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const handleLogout = async () => {
     await AsyncStorage.removeItem("jwtToken");

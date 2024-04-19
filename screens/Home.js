@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, Button, StyleSheet, Pressable } from "react-native";
 import Modal from "react-native-modal";
-import { useDoubleBackPressExit } from "../components/Back";
+import { Platform, BackHandler } from "react-native";
 
 const HomeScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  useDoubleBackPressExit();
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        e.preventDefault();
+        BackHandler.exitApp();
+      }),
+    [navigation]
+  );
 
   return (
     <View style={{ flex: 1, marginTop: "20%" }}>
@@ -28,12 +35,6 @@ const HomeScreen = ({ navigation }) => {
             </Pressable>
           </View>
         </Modal>
-        <Text>Takumi</Text>
-        <Button
-          title="Profile"
-          onPress={() => navigation.navigate("Profile")}
-        />
-        <Button title="Search" onPress={() => navigation.navigate("Search")} />
 
         <Pressable
           style={[styles.button, styles.buttonOpen]}

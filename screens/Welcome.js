@@ -4,12 +4,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
 import "core-js/stable/atob";
 import { styled } from "nativewind";
+import { useAuth } from "../utils/Auth";
 
 const Welcome = ({ navigation }) => {
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const token = await AsyncStorage.getItem("jwtToken");
-      if (token) {
+      const { username } = useAuth();
+
+      if (username) {
         navigation.navigate("Home");
       }
     };
@@ -18,7 +20,6 @@ const Welcome = ({ navigation }) => {
   }, []);
 
   return (
-    // <ImageBackground source={require("../assets/flower.jpeg")}>
     <View>
       <Image
         source={require("../assets/logo.jpeg")}

@@ -13,19 +13,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 import { useQuery, gql, useMutation } from "@apollo/client";
-import Movie_info from "../components/Movie_info";
-import { useNavigation } from "@react-navigation/native";
+import Movie_info from "./Movie_info";
+
 import { Platform, BackHandler } from "react-native";
 import { useDoubleBackPressExit } from "../components/Back";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
+import { useID } from "../utils/CurrentId";
 
 import Toast from "react-native-simple-toast";
 
-const Search = () => {
+const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
   const [addUser] = useMutation(ADD_USER);
-  const navigation = useNavigation();
+  const { id, setId } = useID();
 
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,41 +36,6 @@ const Search = () => {
   const [movieId, setMovieId] = useState("");
   const [rating, setRating] = useState("");
   const [review, setReview] = useState("");
-  useEffect(() => {
-    let backPressCount = 0;
-    let toastVisible = false;
-
-    const handleBackPress = () => {
-      if (backPressCount === 1) {
-        if (!toastVisible) {
-          Toast.show("Press again to exit.", Toast.LONG);
-          toastVisible = true;
-          setTimeout(() => {
-            toastVisible = false;
-          }, 2000);
-          return true;
-        } else {
-          BackHandler.exitApp();
-        }
-      } else {
-        setMovieId("");
-        setSearchQuery("");
-        refetch();
-        backPressCount += 1;
-        setTimeout(() => {
-          backPressCount = 0;
-        }, 2000);
-        return true;
-      }
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handleBackPress
-    );
-
-    return () => backHandler.remove();
-  }, []);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -92,6 +58,10 @@ const Search = () => {
     refetch();
   }, []);
 
+  const handlepress = (m_id) => {
+    setId(m_id);
+    navigation.navigate("Movie_info");
+  };
   const searchMovies = async () => {
     try {
       const response = await fetch(
@@ -140,7 +110,7 @@ const Search = () => {
         : null;
 
     return (
-      <Pressable onPress={() => setMovieId(item.imdbID)}>
+      <Pressable onPress={() => handlepress(item.imdbID)}>
         <View
           style={{
             margin: 8,
@@ -270,52 +240,38 @@ const Search = () => {
 
   return (
     <>
-      {!movieId ? (
-        <View style={{ marginTop: "10%" }}>
-          <TextInput
-            style={{
-              backgroundColor: "#E5E7EB",
-              width: "75%",
-              marginHorizontal: "12%",
-              marginTop: 12,
-              padding: 8,
-              borderRadius: 999,
-            }}
-            placeholder="Search for movies..."
-            value={searchQuery}
-            onChangeText={(text) => setSearchQuery(text)}
-            onSubmitEditing={searchMovies}
-          />
-          <Pressable
-            onPress={searchMovies}
-            style={{ marginTop: 12, alignSelf: "center" }}
-          >
-            <FontAwesome name="search" size={36} color="black" />
-          </Pressable>
-
-          <FlatList
-            data={movies}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.imdbID}
-            style={{ marginBottom: 36 }}
-          />
-
-          {loading && <Text>Loading...</Text>}
-          {error && <Text>Error: {error.message}</Text>}
-        </View>
-      ) : (
-        <View
+      <View style={{ marginTop: "10%" }}>
+        <TextInput
           style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
+            backgroundColor: "#E5E7EB",
+            width: "75%",
+            marginHorizontal: "12%",
+            marginTop: 12,
+            padding: 8,
+            borderRadius: 999,
           }}
+          placeholder="Search for movies..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+          onSubmitEditing={searchMovies}
+        />
+        <Pressable
+          onPress={searchMovies}
+          style={{ marginTop: 12, alignSelf: "center" }}
         >
-          <View>
-            <Movie_info id={movieId} />
-          </View>
-        </View>
-      )}
+          <FontAwesome name="search" size={36} color="black" />
+        </Pressable>
+
+        <FlatList
+          data={movies}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.imdbID}
+          style={{ marginBottom: 36 }}
+        />
+
+        {loading && <Text>Loading...</Text>}
+        {error && <Text>Error: {error.message}</Text>}
+      </View>
     </>
   );
 };
