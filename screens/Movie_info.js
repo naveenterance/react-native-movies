@@ -26,8 +26,12 @@ import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
+import Modal_custom from "../components/Drawer";
+
+import { useModal } from "../utils/Modal";
 
 const Movie_info = ({ navigation }) => {
+  const { modalVisible, setModalVisible } = useModal();
   const { username } = useAuth();
   const { id, setId } = useID();
   if (!id) {
@@ -140,6 +144,12 @@ const Movie_info = ({ navigation }) => {
       {movieData ? (
         <ScrollView>
           <View>
+            <Modal_custom
+              visible={modalVisible}
+              onRequestClose={() => setModalVisible(false)}
+            />
+
+            <Button title="modal " onPress={() => setModalVisible(true)} />
             <Image
               source={{ uri: movieData.Poster }}
               style={{ width: "100%", height: 600 }}

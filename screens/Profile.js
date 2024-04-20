@@ -4,31 +4,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import "core-js/stable/atob";
+import Modal_custom from "../components/Drawer";
+import { useAuth } from "../utils/Auth";
+import { useModal } from "../utils/Modal";
 
 const Profile = ({ navigation }) => {
-  const [user, setUser] = useState(null);
+  const { modalVisible, setModalVisible } = useModal();
+  const { username, updateUser } = useAuth();
+
   const handleLogout = async () => {
     await AsyncStorage.removeItem("jwtToken");
     navigation.replace("Login");
-    setUser("");
+    updateUser();
   };
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        const token = await AsyncStorage.getItem("jwtToken");
-        if (token) {
-          const decoded = jwtDecode(token);
-          setUser(decoded);
-        }
-      } catch (error) {
-        console.error("Error retrieving user details:", error);
-      }
-    };
 
-    fetchUserDetails();
-  }, []);
-
-  if (!user) {
+  if (!username) {
     return null;
   }
 
@@ -41,9 +31,15 @@ const Profile = ({ navigation }) => {
         marginTop: "10%",
       }}
     >
+      <Modal_custom
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      />
+
+      <Button title="modal " onPress={() => setModalVisible(true)} />
       <MaterialIcons name="account-circle" size={64} color="black" />
 
-      <Text style={{ fontSize: 50 }}>{user.name}</Text>
+      <Text style={{ fontSize: 50 }}>{username}</Text>
 
       <Pressable
         style={({ pressed }) => [

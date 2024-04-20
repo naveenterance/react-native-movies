@@ -8,12 +8,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { useAuth } from "../utils/Auth";
 const LoginScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const { updateUser } = useAuth();
   const handleLogin = async () => {
     if (!name || !password) {
       alert("Please enter both username and password");
@@ -44,6 +44,7 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       alert("Invalid credentials");
     } finally {
+      updateUser();
       setLoading(false);
     }
   };

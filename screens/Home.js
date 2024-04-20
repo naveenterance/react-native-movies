@@ -52,12 +52,8 @@ const HomeScreen = ({ navigation }) => {
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         />
-        <Pressable
-          style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.textStyle}>Show Modal</Text>
-        </Pressable>
+
+        <Button title="modal " onPress={() => setModalVisible(true)} />
         <View
           style={{
             height: 50,

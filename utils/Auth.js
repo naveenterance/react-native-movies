@@ -25,8 +25,22 @@ const AuthProvider = ({ children }) => {
     fetchUserDetails();
   }, []);
 
+  const updateUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem("jwtToken");
+      if (token) {
+        const decoded = jwtDecode(token);
+        setUsername(decoded.name);
+      }
+    } catch (error) {
+      console.error("Error updating user details:", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ username }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ username, updateUser }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

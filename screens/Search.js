@@ -10,56 +10,31 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { jwtDecode } from "jwt-decode";
-import "core-js/stable/atob";
-import { useQuery, gql, useMutation } from "@apollo/client";
-import Movie_info from "./Movie_info";
-
-import { Platform, BackHandler } from "react-native";
-
-import { GET_ALL_USERS } from "../utils/graphql";
-import { ADD_USER } from "../utils/graphql";
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_ALL_USERS, ADD_USER } from "../utils/graphql";
 import { useID } from "../utils/CurrentId";
-
-import Toast from "react-native-simple-toast";
+import { useAuth } from "../utils/Auth";
+import Modal_custom from "../components/Drawer";
+import { useModal } from "../utils/Modal";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
   const [addUser] = useMutation(ADD_USER);
   const { id, setId } = useID();
-
+  const { modalVisible, setModalVisible } = useModal();
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
-  const [user, setUser] = useState(null);
-  const [username, setUsername] = useState("");
-  const [movieId, setMovieId] = useState("");
-  const [rating, setRating] = useState("");
-  const [review, setReview] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
-
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        const token = await AsyncStorage.getItem("jwtToken");
-        if (token) {
-          const decoded = jwtDecode(token);
-          setUsername(decoded.name);
-          setUser(decoded.name);
-        }
-      } catch (error) {
-        console.error("Error retrieving user details:", error);
-      }
-    };
-
-    fetchUserDetails();
-  }, []);
+  const { username } = useAuth();
 
   useEffect(() => {
     const loadRecentSearches = async () => {
       try {
-        const searches = await AsyncStorage.getItem(`recentSearches_${user}`);
+        const searches = await AsyncStorage.getItem(
+          `recentSearches_${username}`
+        );
         if (searches) {
           setRecentSearches(JSON.parse(searches));
         }
@@ -69,7 +44,7 @@ const Search = ({ navigation }) => {
     };
 
     loadRecentSearches();
-  }, [user]);
+  }, [username]);
 
   const saveRecentSearches = async (query) => {
     try {
@@ -78,12 +53,21 @@ const Search = ({ navigation }) => {
       );
       const updatedSearches = [query, ...searches];
       await AsyncStorage.setItem(
-        `recentSearches_${user}`, // Save recent searches with user ID
+        `recentSearches_${username}`,
         JSON.stringify(updatedSearches)
       );
       setRecentSearches(updatedSearches);
     } catch (error) {
       console.error("Error saving recent searches:", error);
+    }
+  };
+
+  const clearRecentSearches = async () => {
+    try {
+      await AsyncStorage.removeItem(`recentSearches_${username}`);
+      setRecentSearches([]);
+    } catch (error) {
+      console.error("Error clearing recent searches:", error);
     }
   };
 
@@ -121,11 +105,11 @@ const Search = ({ navigation }) => {
           })
         );
         setMovies(moviesWithRatings);
-        saveRecentSearches(searchQuery); // Save recent search
-        setSearchPerformed(true); // Set search performed to true
+        saveRecentSearches(searchQuery);
+        setSearchPerformed(true);
       } else {
         setMovies([]);
-        setSearchPerformed(true); // Set search performed to true even if no results found
+        setSearchPerformed(true);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -274,6 +258,12 @@ const Search = ({ navigation }) => {
   return (
     <>
       <View style={{ marginTop: "10%" }}>
+        <Modal_custom
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        />
+        <Button title="modal " onPress={() => setModalVisible(true)} />
+
         <TextInput
           style={{
             backgroundColor: "#E5E7EB",
@@ -317,6 +307,7 @@ const Search = ({ navigation }) => {
           <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}>
             [Recent Searches]
           </Text>
+          <Button title="Clear Recent Searches" onPress={clearRecentSearches} />
           <FlatList
             data={recentSearches}
             renderItem={({ item }) => (
