@@ -9,7 +9,7 @@ const Profile = ({ navigation }) => {
   const [user, setUser] = useState(null);
   const handleLogout = async () => {
     await AsyncStorage.removeItem("jwtToken");
-    navigation.navigate("Login");
+    navigation.replace("Login");
     setUser("");
   };
   useEffect(() => {

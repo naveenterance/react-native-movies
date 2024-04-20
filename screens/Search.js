@@ -16,7 +16,7 @@ import { useQuery, gql, useMutation } from "@apollo/client";
 import Movie_info from "./Movie_info";
 
 import { Platform, BackHandler } from "react-native";
-import { useDoubleBackPressExit } from "../components/Back";
+
 import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
 import { useID } from "../utils/CurrentId";
@@ -36,6 +36,8 @@ const Search = ({ navigation }) => {
   const [movieId, setMovieId] = useState("");
   const [rating, setRating] = useState("");
   const [review, setReview] = useState("");
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -44,6 +46,7 @@ const Search = ({ navigation }) => {
         if (token) {
           const decoded = jwtDecode(token);
           setUsername(decoded.name);
+          setUser(decoded.name);
         }
       } catch (error) {
         console.error("Error retrieving user details:", error);
@@ -54,14 +57,41 @@ const Search = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    searchMovies();
-    refetch();
-  }, []);
+    const loadRecentSearches = async () => {
+      try {
+        const searches = await AsyncStorage.getItem(`recentSearches_${user}`);
+        if (searches) {
+          setRecentSearches(JSON.parse(searches));
+        }
+      } catch (error) {
+        console.error("Error loading recent searches:", error);
+      }
+    };
+
+    loadRecentSearches();
+  }, [user]);
+
+  const saveRecentSearches = async (query) => {
+    try {
+      const searches = recentSearches.filter(
+        (search, index) => index < 5 && search !== query
+      );
+      const updatedSearches = [query, ...searches];
+      await AsyncStorage.setItem(
+        `recentSearches_${user}`, // Save recent searches with user ID
+        JSON.stringify(updatedSearches)
+      );
+      setRecentSearches(updatedSearches);
+    } catch (error) {
+      console.error("Error saving recent searches:", error);
+    }
+  };
 
   const handlepress = (m_id) => {
     setId(m_id);
     navigation.navigate("Movie_info");
   };
+
   const searchMovies = async () => {
     try {
       const response = await fetch(
@@ -91,8 +121,11 @@ const Search = ({ navigation }) => {
           })
         );
         setMovies(moviesWithRatings);
+        saveRecentSearches(searchQuery); // Save recent search
+        setSearchPerformed(true); // Set search performed to true
       } else {
         setMovies([]);
+        setSearchPerformed(true); // Set search performed to true even if no results found
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -262,15 +295,38 @@ const Search = ({ navigation }) => {
           <FontAwesome name="search" size={36} color="black" />
         </Pressable>
 
-        <FlatList
-          data={movies}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.imdbID}
-          style={{ marginBottom: 36 }}
-        />
+        {searchPerformed && movies.length === 0 && (
+          <Text style={{ alignSelf: "center", marginTop: 20 }}>
+            No results found
+          </Text>
+        )}
+
+        {movies.length > 0 && (
+          <FlatList
+            data={movies}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.imdbID}
+            style={{ marginBottom: 36 }}
+          />
+        )}
 
         {loading && <Text>Loading...</Text>}
         {error && <Text>Error: {error.message}</Text>}
+
+        <View style={{ marginHorizontal: "12%" }}>
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}>
+            [Recent Searches]
+          </Text>
+          <FlatList
+            data={recentSearches}
+            renderItem={({ item }) => (
+              <Pressable onPress={() => setSearchQuery(item)}>
+                <Text style={{ fontSize: 16 }}>{item}</Text>
+              </Pressable>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
       </View>
     </>
   );

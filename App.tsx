@@ -75,18 +75,17 @@ const App = () => {
                 }}
               />
               <Stack.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-
-              <Stack.Screen
                 name="Profile"
                 component={Profile}
                 options={{
                   headerTitle: "Profile",
+                }}
+              />
+              <Stack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                  headerShown: false,
                 }}
               />
 

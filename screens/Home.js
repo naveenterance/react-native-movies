@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, Button, StyleSheet, Pressable, Alert } from "react-native";
 import Modal from "react-native-modal";
 import { BackHandler } from "react-native";
+import { useRoute } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
