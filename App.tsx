@@ -12,6 +12,7 @@ import Search from "./screens/Search";
 import Movie_info from "./screens/Movie_info";
 import { AuthProvider } from "./utils/Auth";
 import { IDProvider } from "./utils/CurrentId";
+import { ModalProvider } from "./utils/Modal";
 
 import * as Notifications from "expo-notifications";
 
@@ -41,71 +42,73 @@ const App = () => {
   return (
     <AuthProvider>
       <IDProvider>
-        <ApolloProvider client={client}>
-          <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName="Welcome"
-              screenOptions={screenOptions}
-            >
-              <Stack.Screen
-                name="Welcome"
-                component={Welcome}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="SignUp"
-                component={SignUpScreen}
-                options={{
-                  headerTitle: "Sign Up",
-                  headerStyle: {
-                    backgroundColor: "#ea580c",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{
-                  headerTitle: "Login",
-                  headerStyle: {
-                    backgroundColor: "#ea580c",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="Profile"
-                component={Profile}
-                options={{
-                  headerTitle: "Profile",
-                }}
-              />
-              <Stack.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
+        <ModalProvider>
+          <ApolloProvider client={client}>
+            <NavigationContainer>
+              <Stack.Navigator
+                initialRouteName="Welcome"
+                screenOptions={screenOptions}
+              >
+                <Stack.Screen
+                  name="Welcome"
+                  component={Welcome}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="SignUp"
+                  component={SignUpScreen}
+                  options={{
+                    headerTitle: "Sign Up",
+                    headerStyle: {
+                      backgroundColor: "#ea580c",
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="Login"
+                  component={LoginScreen}
+                  options={{
+                    headerTitle: "Login",
+                    headerStyle: {
+                      backgroundColor: "#ea580c",
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="Profile"
+                  component={Profile}
+                  options={{
+                    headerTitle: "Profile",
+                  }}
+                />
+                <Stack.Screen
+                  name="Home"
+                  component={HomeScreen}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
 
-              <Stack.Screen
-                name="Search"
-                component={Search}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="Movie_info"
-                component={Movie_info}
-                options={{
-                  headerShown: false,
-                }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </ApolloProvider>
+                <Stack.Screen
+                  name="Search"
+                  component={Search}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="Movie_info"
+                  component={Movie_info}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </ApolloProvider>
+        </ModalProvider>
       </IDProvider>
     </AuthProvider>
   );
