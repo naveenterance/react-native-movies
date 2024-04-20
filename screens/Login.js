@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AntDesign } from "@expo/vector-icons";
 
 const LoginScreen = ({ navigation }) => {
   const [name, setName] = useState("");

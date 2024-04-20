@@ -1,18 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Button, StyleSheet, Pressable } from "react-native";
+import { Text, View, Button, StyleSheet, Pressable, Alert } from "react-native";
 import Modal from "react-native-modal";
-import { Platform, BackHandler } from "react-native";
+import { BackHandler } from "react-native";
 
 const HomeScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e) => {
-        e.preventDefault();
-        BackHandler.exitApp();
-      }),
-    [navigation]
-  );
+
+  useEffect(() => {
+    const backHandler = BackHandler;
+
+    const handleBeforeRemove = (e) => {
+      e.preventDefault();
+
+      Alert.alert(
+        "Exit App",
+        "Are you sure you want to exit?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => {},
+            style: "cancel",
+          },
+          {
+            text: "Exit",
+            onPress: () => {
+              backHandler.exitApp();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    };
+
+    const removeListener = navigation.addListener(
+      "beforeRemove",
+      handleBeforeRemove
+    );
+
+    return () => {
+      removeListener();
+    };
+  }, [navigation]);
 
   return (
     <View style={{ flex: 1, marginTop: "20%" }}>
@@ -24,6 +52,7 @@ const HomeScreen = ({ navigation }) => {
           backdropColor="black"
           onBackdropPress={() => setModalVisible(false)}
           style={styles.modal}
+          onBackButtonPress={() => setModalVisible(false)}
         >
           <View style={styles.modalContent}>
             <Text>Hello World</Text>
