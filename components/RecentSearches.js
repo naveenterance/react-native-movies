@@ -11,7 +11,11 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../utils/Auth";
 
-const RecentSearches = ({ recentSearches, setRecentSearches }) => {
+const RecentSearches = ({
+  recentSearches,
+  setRecentSearches,
+  setSearchQuery,
+}) => {
   const { username } = useAuth();
   useEffect(() => {
     const loadRecentSearches = async () => {

@@ -64,17 +64,19 @@ const Search = ({ navigation }) => {
             const ratingResponse = await fetch(
               `http://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}&plot=full`
             );
-            const ratingData = await ratingResponse.json();
+            const details = await ratingResponse.json();
 
-            const ratingRottenTomatoes = ratingData.Ratings.find(
+            const ratingRottenTomatoes = details.Ratings.find(
               (rating) => rating.Source === "Rotten Tomatoes"
             );
-            const ratingIMDB = ratingData.Ratings.find(
+            const ratingIMDB = details.Ratings.find(
               (rating) => rating.Source === "Internet Movie Database"
             );
 
             return {
               ...movie,
+              Language: details.Language,
+              Genre: details.Genre,
               ratingR: ratingRottenTomatoes,
               ratingM: ratingIMDB,
             };
@@ -122,7 +124,7 @@ const Search = ({ navigation }) => {
             <Text numberOfLines={1} style={{ color: "#4B5563" }}>
               {item.Title}{" "}
               <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
-                [{item.Year}]
+                [{item.Year}] [{item.Genre}] [{item.Language}]
               </Text>
             </Text>
             {item.ratingR ? (
@@ -282,6 +284,7 @@ const Search = ({ navigation }) => {
         <RecentSearches
           recentSearches={recentSearches}
           setRecentSearches={setRecentSearches}
+          setSearchQuery={setSearchQuery}
         />
       </View>
     </>
