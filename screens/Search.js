@@ -16,6 +16,7 @@ import { useID } from "../utils/CurrentId";
 import { useAuth } from "../utils/Auth";
 import Modal_custom from "../components/Drawer";
 import { useModal } from "../utils/Modal";
+import RecentSearches from "../components/RecentSearches";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -27,24 +28,13 @@ const Search = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
+
   const { username } = useAuth();
 
-  useEffect(() => {
-    const loadRecentSearches = async () => {
-      try {
-        const searches = await AsyncStorage.getItem(
-          `recentSearches_${username}`
-        );
-        if (searches) {
-          setRecentSearches(JSON.parse(searches));
-        }
-      } catch (error) {
-        console.error("Error loading recent searches:", error);
-      }
-    };
-
-    loadRecentSearches();
-  }, [username]);
+  const handlepress = (m_id) => {
+    setId(m_id);
+    navigation.navigate("Movie_info");
+  };
 
   const saveRecentSearches = async (query) => {
     try {
@@ -60,20 +50,6 @@ const Search = ({ navigation }) => {
     } catch (error) {
       console.error("Error saving recent searches:", error);
     }
-  };
-
-  const clearRecentSearches = async () => {
-    try {
-      await AsyncStorage.removeItem(`recentSearches_${username}`);
-      setRecentSearches([]);
-    } catch (error) {
-      console.error("Error clearing recent searches:", error);
-    }
-  };
-
-  const handlepress = (m_id) => {
-    setId(m_id);
-    navigation.navigate("Movie_info");
   };
 
   const searchMovies = async () => {
@@ -303,21 +279,10 @@ const Search = ({ navigation }) => {
         {loading && <Text>Loading...</Text>}
         {error && <Text>Error: {error.message}</Text>}
 
-        <View style={{ marginHorizontal: "12%" }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}>
-            [Recent Searches]
-          </Text>
-          <Button title="Clear Recent Searches" onPress={clearRecentSearches} />
-          <FlatList
-            data={recentSearches}
-            renderItem={({ item }) => (
-              <Pressable onPress={() => setSearchQuery(item)}>
-                <Text style={{ fontSize: 16 }}>{item}</Text>
-              </Pressable>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
+        <RecentSearches
+          recentSearches={recentSearches}
+          setRecentSearches={setRecentSearches}
+        />
       </View>
     </>
   );

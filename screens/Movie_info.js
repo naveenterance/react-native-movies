@@ -8,6 +8,7 @@ import {
   Image,
   Pressable,
   StyleSheet,
+  Alert,
 } from "react-native";
 import {
   AntDesign,
@@ -24,6 +25,8 @@ import "core-js/stable/atob";
 
 import { GET_ALL_USERS } from "../utils/graphql";
 import { ADD_USER } from "../utils/graphql";
+import { DELETE_USER } from "../utils/graphql";
+import { UPDATE_USER } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
 import Modal_custom from "../components/Drawer";
@@ -34,6 +37,7 @@ const Movie_info = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
   const { username } = useAuth();
   const { id, setId } = useID();
+
   if (!id) {
     return;
   }
@@ -45,6 +49,8 @@ const Movie_info = ({ navigation }) => {
   const [movieData, setMovieData] = useState(null);
   const API_KEY = "e24ea998";
   const [refreshPage, setRefreshPage] = useState(false);
+  const [deleteUser] = useMutation(DELETE_USER);
+  const [updateUser] = useMutation(UPDATE_USER);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -114,6 +120,28 @@ const Movie_info = ({ navigation }) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteUser({ variables: { username, movieId: id } });
+      Alert.alert("Success", "User deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      Alert.alert("Error", "Failed to delete user. Please try again later.");
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await updateUser({
+        variables: { username, movieId: id, rating, review },
+      });
+      Alert.alert("Success", "User updated successfully!");
+    } catch (error) {
+      console.error("Error updating user:", error);
+      Alert.alert("Error", "Failed to update user. Please try again later.");
+    }
+  };
+
   const watch = "[to be watched]";
   const addToWatchlist = async (id) => {
     try {
@@ -158,6 +186,7 @@ const Movie_info = ({ navigation }) => {
             <Pressable onPress={() => addToWatchlist(id)}>
               <Feather name="bookmark" size={30} color="black" />
             </Pressable>
+            <Button title="delete bookmark" onPress={handleDelete} />
             <Text>Year: {movieData.Year}</Text>
             <Text>Rated: {movieData.Rated}</Text>
             <Text>Released: {movieData.Released}</Text>
@@ -172,7 +201,7 @@ const Movie_info = ({ navigation }) => {
             <Text style={{ width: 400 }}>Awards: {movieData.Awards}</Text>
             <Text>Reviews:</Text>
             {renderRatings()}
-            {userRating ? (
+            {userRating && (
               <View>
                 <Text
                   style={{ fontStyle: "italic", color: "#4B5563" }}
@@ -203,33 +232,37 @@ const Movie_info = ({ navigation }) => {
                   </View>
                 </View>
               </View>
-            ) : (
-              <View>
-                <TextInput
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "#4B5563",
-                    padding: 2,
-                    marginVertical: 4,
-                    borderRadius: 8,
-                  }}
-                  placeholder="Enter your rating"
-                  onChangeText={setRating}
-                />
-                <TextInput
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "#4B5563",
-                    padding: 2,
-                    marginVertical: 4,
-                    borderRadius: 8,
-                  }}
-                  placeholder="Enter your review"
-                  onChangeText={setReview}
-                />
-                <Button onPress={() => handleSubmit(id)} title="Rate" />
-              </View>
             )}
+
+            <View>
+              <TextInput
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#4B5563",
+                  padding: 2,
+                  marginVertical: 4,
+                  borderRadius: 8,
+                }}
+                placeholder="Enter your rating"
+                onChangeText={setRating}
+              />
+              <TextInput
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#4B5563",
+                  padding: 2,
+                  marginVertical: 4,
+                  borderRadius: 8,
+                }}
+                placeholder="Enter your review"
+                onChangeText={setReview}
+              />
+              {!userRating ? (
+                <Button onPress={() => handleSubmit(id)} title="Rate" />
+              ) : (
+                <Button title="Update" onPress={handleUpdate} />
+              )}
+            </View>
           </View>
         </ScrollView>
       ) : (

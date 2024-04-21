@@ -1,9 +1,11 @@
 import Modal from "react-native-modal";
 import { useModal } from "../utils/Modal";
-import { Text, View, Button, StyleSheet, Pressable, Alert } from "react-native";
+import { Text, View, Button, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Modal_custom = () => {
   const { modalVisible, setModalVisible } = useModal();
+  const navigation = useNavigation();
   return (
     <View style={{ flex: 1, marginTop: "20%" }}>
       <View style={styles.centeredView}>
@@ -24,6 +26,27 @@ const Modal_custom = () => {
             >
               <Text style={styles.textStyle}>Close Modal</Text>
             </Pressable>
+            <Button
+              title="profile"
+              onPress={() => {
+                navigation.navigate("Profile");
+                setModalVisible(false);
+              }}
+            />
+            <Button
+              title="search"
+              onPress={() => {
+                navigation.navigate("Search");
+                setModalVisible(false);
+              }}
+            />
+            <Button
+              title="home"
+              onPress={() => {
+                navigation.navigate("Home");
+                setModalVisible(false);
+              }}
+            />
           </View>
         </Modal>
       </View>
