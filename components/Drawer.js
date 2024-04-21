@@ -47,6 +47,13 @@ const Modal_custom = () => {
                 setModalVisible(false);
               }}
             />
+            <Button
+              title="Bookmarks"
+              onPress={() => {
+                navigation.navigate("Bookmarks");
+                setModalVisible(false);
+              }}
+            />
           </View>
         </Modal>
       </View>

@@ -9,6 +9,7 @@ import SignUpScreen from "./screens/Signup";
 import Welcome from "./screens/Welcome";
 import Profile from "./screens/Profile";
 import Search from "./screens/Search";
+import Bookmarks from "./screens/Bookmarks";
 import Movie_info from "./screens/Movie_info";
 import { AuthProvider } from "./utils/Auth";
 import { IDProvider } from "./utils/CurrentId";
@@ -101,6 +102,13 @@ const App = () => {
                 <Stack.Screen
                   name="Movie_info"
                   component={Movie_info}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="Bookmarks"
+                  component={Bookmarks}
                   options={{
                     headerShown: false,
                   }}
