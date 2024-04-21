@@ -18,7 +18,7 @@ export const ADD_USER = gql`
     $rating: String!
     $review: String!
   ) {
-    create(
+    createUser(
       username: $username
       movieId: $movieId
       rating: $rating
