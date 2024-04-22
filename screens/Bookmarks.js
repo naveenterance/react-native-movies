@@ -10,10 +10,12 @@ import {
 import { useQuery } from "@apollo/client";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
+import { useID } from "../utils/CurrentId";
 
 const Bookmarks = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
   const { username } = useAuth();
+  const { id, setId } = useID();
   const [movies, setMovies] = useState([]);
   const API_KEY = "e24ea998";
   useEffect(() => {
@@ -140,10 +142,10 @@ const Bookmarks = ({ navigation }) => {
     );
   };
 
-  const handlePress = (imdbID) => {
-    // Handle press event
+  const handlePress = (m_id) => {
+    setId(m_id);
+    navigation.navigate("Movie_info");
   };
-
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 

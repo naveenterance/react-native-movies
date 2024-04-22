@@ -17,7 +17,8 @@ import { useAuth } from "../utils/Auth";
 import Modal_custom from "../components/Drawer";
 import { useModal } from "../utils/Modal";
 import RecentSearches from "../components/RecentSearches";
-import MultiSelectComponent from "../components/Filters";
+import { GenreFilter } from "../components/Filters";
+import { LanguageFilter } from "../components/Filters";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -30,6 +31,7 @@ const Search = ({ navigation }) => {
   const [recentSearches, setRecentSearches] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [genre, setGenre] = useState([]);
+  const [language, setLanguage] = useState([]);
   const [filterStatus, setFilterStatus] = useState(false);
 
   const { username } = useAuth();
@@ -114,11 +116,21 @@ const Search = ({ navigation }) => {
     const shouldRenderItem = itemGenres.some((itemGenre) =>
       genre.includes(itemGenre)
     );
+    const itemLanguages = item.Language.split(", ").map((language) =>
+      language.trim()
+    );
+    const shouldRenderItem1 = itemLanguages.some((itemLanguage) =>
+      language.includes(itemLanguage)
+    );
 
-    if (shouldRenderItem && !filterStatus) {
+    if ((shouldRenderItem || shouldRenderItem1) && !filterStatus) {
       setFilterStatus(true);
     }
-    if (genre.length <= 0 || shouldRenderItem) {
+
+    if (
+      (genre.length <= 0 || shouldRenderItem) &&
+      (language.length <= 0 || shouldRenderItem1)
+    ) {
       return (
         <View>
           <Pressable onPress={() => handlepress(item.imdbID)}>
@@ -280,10 +292,12 @@ const Search = ({ navigation }) => {
         >
           <FontAwesome name="search" size={36} color="black" />
         </Pressable>
-        <MultiSelectComponent setGenre={setGenre} />
+        <GenreFilter setGenre={setGenre} />
+        <LanguageFilter setLanguage={setLanguage} />
 
         {searchPerformed &&
-          (movies.length === 0 || (!filterStatus && genre.length > 0)) && (
+          (movies.length === 0 ||
+            (!filterStatus && (language.length > 0 || genre.length > 0))) && (
             <Text style={{ alignSelf: "center", marginTop: 20 }}>
               No results found
             </Text>

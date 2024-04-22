@@ -3,8 +3,9 @@ import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { genres } from "../utils/Genres";
+import { languages } from "../utils/Languages";
 
-const MultiSelectComponent = ({ setGenre }) => {
+export const GenreFilter = ({ setGenre }) => {
   const data = genres.map((genre, index) => ({
     label: genre,
     value: index.toString(),
@@ -23,12 +24,10 @@ const MultiSelectComponent = ({ setGenre }) => {
   const handleSelectionChange = (selectedItems) => {
     setSelected(selectedItems);
 
-    // Create an array of selected genres based on the selected items
     const selectedGenres = selectedItems.map(
       (item) => data.find((genre) => genre.value === item).label
     );
 
-    // Pass the array of selected genres to the setGenre function
     setGenre(selectedGenres);
   };
 
@@ -47,7 +46,7 @@ const MultiSelectComponent = ({ setGenre }) => {
         valueField="value"
         placeholder="Select item"
         value={selected}
-        onChange={handleSelectionChange} // Pass the handleSelectionChange function
+        onChange={handleSelectionChange}
         renderLeftIcon={() => (
           <AntDesign
             style={styles.icon}
@@ -70,7 +69,133 @@ const MultiSelectComponent = ({ setGenre }) => {
   );
 };
 
-export default MultiSelectComponent;
+export const LanguageFilter = ({ setLanguage }) => {
+  const data = languages.map((language, index) => ({
+    label: language,
+    value: index.toString(),
+  }));
+  const [selected, setSelected] = useState([]);
+
+  const renderItem = (item) => {
+    return (
+      <View style={styles.item}>
+        <Text style={styles.selectedTextStyle}>{item.label}</Text>
+        <AntDesign style={styles.icon} color="white" name="Safety" size={20} />
+      </View>
+    );
+  };
+
+  const handleSelectionChange = (selectedItems) => {
+    setSelected(selectedItems);
+
+    const selectedLanguages = selectedItems.map(
+      (item) => data.find((language) => language.value === item).label
+    );
+
+    setLanguage(selectedLanguages);
+  };
+
+  return (
+    <View style={styles.container}>
+      <MultiSelect
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        itemContainerStyle={styles.itemContainerStyle}
+        data={data}
+        activeColor="#FF0000"
+        labelField="label"
+        valueField="value"
+        placeholder="Select item"
+        value={selected}
+        onChange={handleSelectionChange}
+        renderLeftIcon={() => (
+          <AntDesign
+            style={styles.icon}
+            color="white"
+            name="Safety"
+            size={20}
+          />
+        )}
+        renderItem={renderItem}
+        renderSelectedItem={(item, unSelect) => (
+          <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+            <View style={styles.selectedStyle}>
+              <Text style={styles.textSelectedStyle}>{item.label}</Text>
+              <AntDesign color="white" name="delete" size={17} />
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  );
+};
+
+export const YearFilter = ({ setLanguage }) => {
+  const data = languages.map((language, index) => ({
+    label: language,
+    value: index.toString(),
+  }));
+  const [selected, setSelected] = useState([]);
+
+  const renderItem = (item) => {
+    return (
+      <View style={styles.item}>
+        <Text style={styles.selectedTextStyle}>{item.label}</Text>
+        <AntDesign style={styles.icon} color="white" name="Safety" size={20} />
+      </View>
+    );
+  };
+
+  const handleSelectionChange = (selectedItems) => {
+    setSelected(selectedItems);
+
+    const selectedLanguages = selectedItems.map(
+      (item) => data.find((language) => language.value === item).label
+    );
+
+    setLanguage(selectedLanguages);
+  };
+
+  return (
+    <View style={styles.container}>
+      <MultiSelect
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        itemContainerStyle={styles.itemContainerStyle}
+        data={data}
+        activeColor="#FF0000"
+        labelField="label"
+        valueField="value"
+        placeholder="Select item"
+        value={selected}
+        onChange={handleSelectionChange}
+        renderLeftIcon={() => (
+          <AntDesign
+            style={styles.icon}
+            color="white"
+            name="Safety"
+            size={20}
+          />
+        )}
+        renderItem={renderItem}
+        renderSelectedItem={(item, unSelect) => (
+          <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+            <View style={styles.selectedStyle}>
+              <Text style={styles.textSelectedStyle}>{item.label}</Text>
+              <AntDesign color="white" name="delete" size={17} />
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: { padding: 16 },
