@@ -125,9 +125,13 @@ const Search = ({ navigation }) => {
       language.includes(itemLanguage)
     );
 
-    const itemYear = item.Year.toString().substring(0, 3);
-    const passedyearfilter = year.toString().substring(0, 3).includes(itemYear);
+    const passedyearfilter = year.some((year) => {
+      const yearPrefix = year.substring(0, 3);
 
+      const itemYearPrefix = item.Year.toString().substring(0, 3);
+
+      return yearPrefix === itemYearPrefix;
+    });
     if (
       (passedgenrefilter || passedlangfilter || passedyearfilter) &&
       !filterStatus
@@ -305,14 +309,15 @@ const Search = ({ navigation }) => {
         <LanguageFilter setLanguage={setLanguage} />
         <YearFilter setYear={setYear} />
 
-        {searchPerformed &&
-          (movies.length === 0 ||
-            (!filterStatus &&
-              (language.length > 0 || genre.length > 0 || year.length))) && (
+        {searchPerformed ? (
+          movies.length === 0 ||
+          (!filterStatus &&
+            (language.length > 0 || genre.length > 0 || year.length)) ? (
             <Text style={{ alignSelf: "center", marginTop: 20 }}>
               No results found
             </Text>
-          )}
+          ) : null
+        ) : null}
 
         {movies.length > 0 && (
           <FlatList
