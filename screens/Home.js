@@ -5,6 +5,8 @@ import { BackHandler } from "react-native";
 import Modal_custom from "../components/Drawer";
 
 import { useModal } from "../utils/Modal";
+import MultiSelectComponent from "../components/Filters";
+import CountryFlag from "react-native-country-flag";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -54,6 +56,8 @@ const HomeScreen = ({ navigation }) => {
         />
 
         <Button title="modal " onPress={() => setModalVisible(true)} />
+        <MultiSelectComponent />
+
         <View
           style={{
             height: 50,
@@ -62,6 +66,7 @@ const HomeScreen = ({ navigation }) => {
             justifyContent: "space-evenly",
           }}
         >
+          <CountryFlag isoCode="AX" size={25} />
           <Text>Takumi</Text>
           <Button
             title="Profile"

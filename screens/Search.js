@@ -17,6 +17,7 @@ import { useAuth } from "../utils/Auth";
 import Modal_custom from "../components/Drawer";
 import { useModal } from "../utils/Modal";
 import RecentSearches from "../components/RecentSearches";
+import MultiSelectComponent from "../components/Filters";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -28,6 +29,8 @@ const Search = ({ navigation }) => {
   const [movies, setMovies] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [genre, setGenre] = useState([]);
+  const [filterStatus, setFilterStatus] = useState(false);
 
   const { username } = useAuth();
 
@@ -94,6 +97,10 @@ const Search = ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    setFilterStatus(false);
+  }, [searchQuery, genre]);
+
   const renderItem = ({ item }) => {
     const userRating =
       data && data.allUsers
@@ -103,133 +110,144 @@ const Search = ({ navigation }) => {
               userMovie.username === username
           )?.rating
         : null;
+    const itemGenres = item.Genre.split(", ").map((genre) => genre.trim());
+    const shouldRenderItem = itemGenres.some((itemGenre) =>
+      genre.includes(itemGenre)
+    );
 
+    if (shouldRenderItem && !filterStatus) {
+      setFilterStatus(true);
+    }
     return (
-      <Pressable onPress={() => handlepress(item.imdbID)}>
-        <View
-          style={{
-            margin: 8,
-            backgroundColor: "#E5E7EB",
-            padding: 8,
-            borderRadius: 8,
-          }}
-        >
-          <Image
-            style={{ height: 80, width: 80 }}
-            source={{
-              uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
-            }}
-          />
-          <View style={{ flex: 1, marginLeft: 8 }}>
-            <Text numberOfLines={1} style={{ color: "#4B5563" }}>
-              {item.Title}{" "}
-              <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
-                [{item.Year}] [{item.Genre}] [{item.Language}]
-              </Text>
-            </Text>
-            {item.ratingR ? (
-              <View>
-                <Text
-                  style={{ fontStyle: "italic", color: "#4B5563" }}
-                >{`Rotten Tomatoes: ${item.ratingR.Value}`}</Text>
-                <View
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#E5E7EB",
-                    borderRadius: 999,
-                    height: 4,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: item.ratingR.Value,
-                      backgroundColor: "#ED8936",
-                      alignItems: "center",
-                      padding: 2,
-                      borderRadius: 999,
-                      fontSize: 10,
-                      fontWeight: "500",
-                      color: "#4299E1",
-                      textAlign: "center",
-                      lineHeight: 10,
-                    }}
-                  >
-                    <Text></Text>
+      <View>
+        {itemGenres.some((itemGenre) => genre.includes(itemGenre)) && (
+          <Pressable onPress={() => handlepress(item.imdbID)}>
+            <View
+              style={{
+                margin: 8,
+                backgroundColor: "#E5E7EB",
+                padding: 8,
+                borderRadius: 8,
+              }}
+            >
+              <Image
+                style={{ height: 80, width: 80 }}
+                source={{
+                  uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
+                }}
+              />
+              <View style={{ flex: 1, marginLeft: 8 }}>
+                <Text numberOfLines={1} style={{ color: "#4B5563" }}>
+                  {item.Title}{" "}
+                  <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
+                    [{item.Year}] [{item.Genre}] [{item.Language}]
+                  </Text>
+                </Text>
+                {item.ratingR ? (
+                  <View>
+                    <Text
+                      style={{ fontStyle: "italic", color: "#4B5563" }}
+                    >{`Rotten Tomatoes: ${item.ratingR.Value}`}</Text>
+                    <View
+                      style={{
+                        width: "100%",
+                        backgroundColor: "#E5E7EB",
+                        borderRadius: 999,
+                        height: 4,
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: item.ratingR.Value,
+                          backgroundColor: "#ED8936",
+                          alignItems: "center",
+                          padding: 2,
+                          borderRadius: 999,
+                          fontSize: 10,
+                          fontWeight: "500",
+                          color: "#4299E1",
+                          textAlign: "center",
+                          lineHeight: 10,
+                        }}
+                      >
+                        <Text></Text>
+                      </View>
+                    </View>
+                    <Text
+                      style={{ fontStyle: "italic", color: "#4B5563" }}
+                    >{`IMDB: ${item.ratingM.Value}`}</Text>
+                    <View
+                      style={{
+                        width: "100%",
+                        backgroundColor: "#E5E7EB",
+                        borderRadius: 999,
+                        height: 4,
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: `${
+                            parseFloat(item.ratingM.Value.split("/")[0]) * 10
+                          }%`,
+                          backgroundColor: "#ED8936",
+                          alignItems: "center",
+                          padding: 2,
+                          borderRadius: 999,
+                          fontSize: 10,
+                          fontWeight: "500",
+                          color: "#4299E1",
+                          textAlign: "center",
+                          lineHeight: 10,
+                        }}
+                      >
+                        <Text></Text>
+                      </View>
+                    </View>
                   </View>
-                </View>
-                <Text
-                  style={{ fontStyle: "italic", color: "#4B5563" }}
-                >{`IMDB: ${item.ratingM.Value}`}</Text>
-                <View
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#E5E7EB",
-                    borderRadius: 999,
-                    height: 4,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: `${
-                        parseFloat(item.ratingM.Value.split("/")[0]) * 10
-                      }%`,
-                      backgroundColor: "#ED8936",
-                      alignItems: "center",
-                      padding: 2,
-                      borderRadius: 999,
-                      fontSize: 10,
-                      fontWeight: "500",
-                      color: "#4299E1",
-                      textAlign: "center",
-                      lineHeight: 10,
-                    }}
-                  >
-                    <Text></Text>
+                ) : (
+                  <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
+                    [No critics ratings]
+                  </Text>
+                )}
+                {userRating ? (
+                  <View>
+                    <Text
+                      style={{ fontStyle: "italic", color: "#4B5563" }}
+                    >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
+                    <View
+                      style={{
+                        width: "100%",
+                        backgroundColor: "#E5E7EB",
+                        borderRadius: 999,
+                        height: 4,
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: parseFloat(userRating) + "%",
+                          backgroundColor: "#4A5568",
+                          alignItems: "center",
+                          padding: 2,
+                          borderRadius: 999,
+                          fontSize: 12,
+                          fontWeight: "500",
+                          color: "#4299E1",
+                          textAlign: "center",
+                          lineHeight: 12,
+                        }}
+                      >
+                        <Text></Text>
+                      </View>
+                    </View>
                   </View>
-                </View>
+                ) : (
+                  <Text>Not rated yet</Text>
+                )}
               </View>
-            ) : (
-              <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
-                [No critics ratings]
-              </Text>
-            )}
-            {userRating ? (
-              <View>
-                <Text
-                  style={{ fontStyle: "italic", color: "#4B5563" }}
-                >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
-                <View
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#E5E7EB",
-                    borderRadius: 999,
-                    height: 4,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: parseFloat(userRating) + "%",
-                      backgroundColor: "#4A5568",
-                      alignItems: "center",
-                      padding: 2,
-                      borderRadius: 999,
-                      fontSize: 12,
-                      fontWeight: "500",
-                      color: "#4299E1",
-                      textAlign: "center",
-                      lineHeight: 12,
-                    }}
-                  >
-                    <Text></Text>
-                  </View>
-                </View>
-              </View>
-            ) : (
-              <Text>Not rated yet</Text>
-            )}
-          </View>
-        </View>
-      </Pressable>
+            </View>
+          </Pressable>
+        )}
+      </View>
     );
   };
 
@@ -262,8 +280,9 @@ const Search = ({ navigation }) => {
         >
           <FontAwesome name="search" size={36} color="black" />
         </Pressable>
+        <MultiSelectComponent setGenre={setGenre} />
 
-        {searchPerformed && movies.length === 0 && (
+        {searchPerformed && (movies.length === 0 || !filterStatus) && (
           <Text style={{ alignSelf: "center", marginTop: 20 }}>
             No results found
           </Text>
