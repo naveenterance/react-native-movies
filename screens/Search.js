@@ -118,9 +118,9 @@ const Search = ({ navigation }) => {
     if (shouldRenderItem && !filterStatus) {
       setFilterStatus(true);
     }
-    return (
-      <View>
-        {itemGenres.some((itemGenre) => genre.includes(itemGenre)) && (
+    if (genre.length <= 0 || shouldRenderItem) {
+      return (
+        <View>
           <Pressable onPress={() => handlepress(item.imdbID)}>
             <View
               style={{
@@ -246,9 +246,9 @@ const Search = ({ navigation }) => {
               </View>
             </View>
           </Pressable>
-        )}
-      </View>
-    );
+        </View>
+      );
+    }
   };
 
   return (
@@ -282,11 +282,12 @@ const Search = ({ navigation }) => {
         </Pressable>
         <MultiSelectComponent setGenre={setGenre} />
 
-        {searchPerformed && (movies.length === 0 || !filterStatus) && (
-          <Text style={{ alignSelf: "center", marginTop: 20 }}>
-            No results found
-          </Text>
-        )}
+        {searchPerformed &&
+          (movies.length === 0 || (!filterStatus && genre.length > 0)) && (
+            <Text style={{ alignSelf: "center", marginTop: 20 }}>
+              No results found
+            </Text>
+          )}
 
         {movies.length > 0 && (
           <FlatList

@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, Button, StyleSheet, Pressable, Alert } from "react-native";
-
 import { BackHandler } from "react-native";
 import Modal_custom from "../components/Drawer";
-
 import { useModal } from "../utils/Modal";
-import MultiSelectComponent from "../components/Filters";
 import CountryFlag from "react-native-country-flag";
 
 const HomeScreen = ({ navigation }) => {
@@ -56,7 +53,6 @@ const HomeScreen = ({ navigation }) => {
         />
 
         <Button title="modal " onPress={() => setModalVisible(true)} />
-        <MultiSelectComponent />
 
         <View
           style={{
