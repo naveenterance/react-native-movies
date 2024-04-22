@@ -19,6 +19,7 @@ import { useModal } from "../utils/Modal";
 import RecentSearches from "../components/RecentSearches";
 import { GenreFilter } from "../components/Filters";
 import { LanguageFilter } from "../components/Filters";
+import { YearFilter } from "../components/Filters";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -32,6 +33,7 @@ const Search = ({ navigation }) => {
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [genre, setGenre] = useState([]);
   const [language, setLanguage] = useState([]);
+  const [year, setYear] = useState([]);
   const [filterStatus, setFilterStatus] = useState(false);
 
   const { username } = useAuth();
@@ -113,23 +115,30 @@ const Search = ({ navigation }) => {
           )?.rating
         : null;
     const itemGenres = item.Genre.split(", ").map((genre) => genre.trim());
-    const shouldRenderItem = itemGenres.some((itemGenre) =>
+    const passedgenrefilter = itemGenres.some((itemGenre) =>
       genre.includes(itemGenre)
     );
     const itemLanguages = item.Language.split(", ").map((language) =>
       language.trim()
     );
-    const shouldRenderItem1 = itemLanguages.some((itemLanguage) =>
+    const passedlangfilter = itemLanguages.some((itemLanguage) =>
       language.includes(itemLanguage)
     );
 
-    if ((shouldRenderItem || shouldRenderItem1) && !filterStatus) {
+    const itemYear = item.Year.toString().substring(0, 3);
+    const passedyearfilter = year.toString().substring(0, 3).includes(itemYear);
+
+    if (
+      (passedgenrefilter || passedlangfilter || passedyearfilter) &&
+      !filterStatus
+    ) {
       setFilterStatus(true);
     }
 
     if (
-      (genre.length <= 0 || shouldRenderItem) &&
-      (language.length <= 0 || shouldRenderItem1)
+      (genre.length <= 0 || passedgenrefilter) &&
+      (language.length <= 0 || passedlangfilter) &&
+      (year.length <= 0 || passedyearfilter)
     ) {
       return (
         <View>
@@ -294,10 +303,12 @@ const Search = ({ navigation }) => {
         </Pressable>
         <GenreFilter setGenre={setGenre} />
         <LanguageFilter setLanguage={setLanguage} />
+        <YearFilter setYear={setYear} />
 
         {searchPerformed &&
           (movies.length === 0 ||
-            (!filterStatus && (language.length > 0 || genre.length > 0))) && (
+            (!filterStatus &&
+              (language.length > 0 || genre.length > 0 || year.length))) && (
             <Text style={{ alignSelf: "center", marginTop: 20 }}>
               No results found
             </Text>

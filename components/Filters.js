@@ -4,6 +4,7 @@ import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { genres } from "../utils/Genres";
 import { languages } from "../utils/Languages";
+import { years } from "../utils/Years";
 
 export const GenreFilter = ({ setGenre }) => {
   const data = genres.map((genre, index) => ({
@@ -133,9 +134,9 @@ export const LanguageFilter = ({ setLanguage }) => {
   );
 };
 
-export const YearFilter = ({ setLanguage }) => {
-  const data = languages.map((language, index) => ({
-    label: language,
+export const YearFilter = ({ setYear }) => {
+  const data = years.map((year, index) => ({
+    label: year,
     value: index.toString(),
   }));
   const [selected, setSelected] = useState([]);
@@ -152,11 +153,11 @@ export const YearFilter = ({ setLanguage }) => {
   const handleSelectionChange = (selectedItems) => {
     setSelected(selectedItems);
 
-    const selectedLanguages = selectedItems.map(
-      (item) => data.find((language) => language.value === item).label
+    const selectedYears = selectedItems.map(
+      (item) => data.find((year) => year.value === item).label
     );
 
-    setLanguage(selectedLanguages);
+    setYear(selectedYears);
   };
 
   return (
