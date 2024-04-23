@@ -6,18 +6,29 @@ import {
   StyleSheet,
   Pressable,
   Image,
+  TextInput,
 } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
+import { GenreFilter } from "../components/Filters";
+import { LanguageFilter } from "../components/Filters";
+import { YearFilter } from "../components/Filters";
 
 const Bookmarks = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
   const { username } = useAuth();
   const { id, setId } = useID();
   const [movies, setMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [genre, setGenre] = useState([]);
+  const [language, setLanguage] = useState([]);
+  const [year, setYear] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+
   const API_KEY = "e24ea998";
+
   useEffect(() => {
     const fetchData = async () => {
       if (data && data.allUsers) {
@@ -57,6 +68,40 @@ const Bookmarks = ({ navigation }) => {
 
     fetchData();
   }, [data, username]);
+
+  const handlePress = (m_id) => {
+    setId(m_id);
+    navigation.navigate("Movie_info");
+  };
+
+  useEffect(() => {
+    let filteredMovies = movies;
+
+    if (genre.length > 0) {
+      filteredMovies = filteredMovies.filter((movie) =>
+        genre.some((word) => movie.Genre.includes(word))
+      );
+    }
+
+    if (language.length > 0) {
+      filteredMovies = filteredMovies.filter((movie) =>
+        language.some((word) => movie.Language.includes(word))
+      );
+    }
+
+    if (searchQuery) {
+      filteredMovies = filteredMovies.filter((movie) =>
+        movie.Title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    if (year.length > 0) {
+      filteredMovies = filteredMovies.filter((movie) =>
+        year.some((word) => movie.Year.substring(0, 3) == word.substring(0, 3))
+      );
+    }
+
+    setFiltered(filteredMovies);
+  }, [genre, language, year, searchQuery]);
 
   const renderItem = ({ item }) => {
     const userRating =
@@ -142,18 +187,22 @@ const Bookmarks = ({ navigation }) => {
     );
   };
 
-  const handlePress = (m_id) => {
-    setId(m_id);
-    navigation.navigate("Movie_info");
-  };
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search movies..."
+        onChangeText={(text) => setSearchQuery(text)}
+      />
+      <GenreFilter setGenre={setGenre} />
+      <LanguageFilter setLanguage={setLanguage} />
+      <YearFilter setYear={setYear} />
       <Text style={styles.title}>Bookmarked Movies</Text>
       <FlatList
-        data={movies}
+        data={filtered}
         renderItem={renderItem}
         keyExtractor={(item) => item.imdbID}
         style={{ marginBottom: 36 }}
@@ -196,6 +245,14 @@ const styles = StyleSheet.create({
     color: "#4299E1",
     textAlign: "center",
     lineHeight: 10,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
 });
 
