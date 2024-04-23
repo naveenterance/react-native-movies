@@ -166,6 +166,27 @@ const Movie_info = ({ navigation }) => {
             userMovie.movieId === id && userMovie.username === username
         )?.rating
       : null;
+  const userReview =
+    data && data.allUsers
+      ? data.allUsers.find(
+          (userMovie) =>
+            userMovie.movieId === id && userMovie.username === username
+        )?.review
+      : null;
+
+  const allRatingsAndReviews =
+    data && data.allUsers
+      ? data.allUsers
+          .filter(
+            (userMovie) =>
+              userMovie.movieId === id && userMovie.username !== username
+          )
+          .map((userMovie) => ({
+            username: userMovie.username,
+            rating: userMovie.rating,
+            review: userMovie.review,
+          }))
+      : [];
 
   return (
     <View style={{ flex: 1 }}>
@@ -200,7 +221,17 @@ const Movie_info = ({ navigation }) => {
             <Text>Country: {movieData.Country}</Text>
             <Text style={{ width: 400 }}>Awards: {movieData.Awards}</Text>
             <Text>Reviews:</Text>
+            <View>
+              {allRatingsAndReviews.map((item, index) => (
+                <View key={index} style={{ marginVertical: 5 }}>
+                  <Text>Username: {item.username}</Text>
+                  <Text>Rating: {item.rating}</Text>
+                  <Text>Review: {item.review}</Text>
+                </View>
+              ))}
+            </View>
             {renderRatings()}
+            {userReview && <Text>{userReview}</Text>}
             {userRating && (
               <View>
                 <Text

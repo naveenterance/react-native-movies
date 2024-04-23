@@ -4,9 +4,16 @@ import { BackHandler } from "react-native";
 import Modal_custom from "../components/Drawer";
 import { useModal } from "../utils/Modal";
 import CountryFlag from "react-native-country-flag";
+import { GET_ALL_USERS } from "../utils/graphql";
+import { useQuery } from "@apollo/client";
+import { useAuth } from "../utils/Auth";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
+  const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const { username } = useAuth();
 
   useEffect(() => {
     const backHandler = BackHandler;
@@ -43,6 +50,19 @@ const HomeScreen = ({ navigation }) => {
       removeListener();
     };
   }, [navigation]);
+  useEffect(() => {
+    if (data && data.allUsers) {
+      const userBookmarks = data.allUsers.filter(
+        (user) =>
+          user.username === username && user.rating === "[to be watched]"
+      );
+      const userReviews = data.allUsers.filter(
+        (user) => user.username === username && user.rating != "[to be watched]"
+      );
+      setBookmarks(userBookmarks);
+      setReviews(userReviews);
+    }
+  }, [data, username]);
 
   return (
     <View>
@@ -72,6 +92,9 @@ const HomeScreen = ({ navigation }) => {
             title="Search"
             onPress={() => navigation.navigate("Search")}
           />
+
+          <Text>{bookmarks.length}</Text>
+          <Text>{reviews.length}</Text>
         </View>
       </View>
     </View>

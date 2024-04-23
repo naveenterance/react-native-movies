@@ -202,7 +202,7 @@ const Bookmarks = ({ navigation }) => {
       <YearFilter setYear={setYear} />
       <Text style={styles.title}>Bookmarked Movies</Text>
       <FlatList
-        data={filtered}
+        data={filtered.length <= 0 ? movies : filtered}
         renderItem={renderItem}
         keyExtractor={(item) => item.imdbID}
         style={{ marginBottom: 36 }}
