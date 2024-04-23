@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Text, View, Button, StyleSheet, Pressable, Alert } from "react-native";
 import { BackHandler } from "react-native";
 import Modal_custom from "../components/Drawer";
@@ -19,48 +19,47 @@ const HomeScreen = ({ navigation }) => {
   const { username } = useAuth();
   const { current } = useTheme();
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (!username) {
         navigation.replace("Welcome");
+      } else {
+        const backHandler = BackHandler;
+
+        const handleBeforeRemove = (e) => {
+          e.preventDefault();
+
+          Alert.alert(
+            "Exit App",
+            "Are you sure you want to exit?",
+            [
+              {
+                text: "Cancel",
+                onPress: () => {},
+                style: "cancel",
+              },
+              {
+                text: "Exit",
+                onPress: () => {
+                  backHandler.exitApp();
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        };
+
+        const removeListener = navigation.addListener(
+          "beforeRemove",
+          handleBeforeRemove
+        );
+
+        return () => {
+          removeListener();
+        };
       }
     }, [username, navigation])
   );
 
-  // useEffect(() => {
-  //   const backHandler = BackHandler;
-
-  //   const handleBeforeRemove = (e) => {
-  //     e.preventDefault();
-
-  //     Alert.alert(
-  //       "Exit App",
-  //       "Are you sure you want to exit?",
-  //       [
-  //         {
-  //           text: "Cancel",
-  //           onPress: () => {},
-  //           style: "cancel",
-  //         },
-  //         {
-  //           text: "Exit",
-  //           onPress: () => {
-  //             backHandler.exitApp();
-  //           },
-  //         },
-  //       ],
-  //       { cancelable: false }
-  //     );
-  //   };
-
-  //   const removeListener = navigation.addListener(
-  //     "beforeRemove",
-  //     handleBeforeRemove
-  //   );
-
-  //   return () => {
-  //     removeListener();
-  //   };
-  // }, [navigation]);
   useEffect(() => {
     if (data && data.allUsers) {
       const userBookmarks = data.allUsers.filter(

@@ -45,13 +45,19 @@ const LoginScreen = ({ navigation }) => {
 
       const responseData = await response.json();
       await AsyncStorage.setItem("jwtToken", responseData.token);
+      setName("");
+      setPassword("");
 
-      navigation.navigate("Home");
+      const timer = setTimeout(() => {
+        navigation.navigate("Home");
+        setLoading(false);
+      }, 10);
+
+      return () => clearTimeout(timer);
     } catch (error) {
       alert("Invalid credentials");
     } finally {
       updateUser();
-      setLoading(false);
     }
   };
 
@@ -83,6 +89,7 @@ const LoginScreen = ({ navigation }) => {
           selectionColor={theme[current].orange}
           placeholder="Username"
           onChangeText={setName}
+          value={name}
         />
         <TextInput
           style={{
@@ -97,6 +104,7 @@ const LoginScreen = ({ navigation }) => {
           selectionColor={theme[current].orange}
           placeholder="Password"
           secureTextEntry={true}
+          value={password}
           onChangeText={setPassword}
         />
         <View style={{ marginHorizontal: 48 }}>

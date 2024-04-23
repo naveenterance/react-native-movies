@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button, Text, View, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
@@ -19,7 +19,7 @@ const Profile = ({ navigation }) => {
     updateUser();
   };
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (!username) {
         navigation.replace("Welcome");
       }
