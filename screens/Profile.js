@@ -7,21 +7,24 @@ import "core-js/stable/atob";
 import Modal_custom from "../components/Drawer";
 import { useAuth } from "../utils/Auth";
 import { useModal } from "../utils/Modal";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const Profile = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
-  const { username, updateUser } = useAuth();
+  const { username, updateUser, setUsername } = useAuth();
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("jwtToken");
-    navigation.replace("Login");
+    setUsername("");
     updateUser();
   };
-
-  if (!username) {
-    return null;
-  }
-
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!username) {
+        navigation.replace("Welcome");
+      }
+    }, [username, navigation])
+  );
   return (
     <View
       style={{

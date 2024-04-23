@@ -9,11 +9,17 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../utils/Auth";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
+import { AntDesign } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
+
 const LoginScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { updateUser } = useAuth();
+  const { current } = useTheme();
   const handleLogin = async () => {
     if (!name || !password) {
       alert("Please enter both username and password");
@@ -52,7 +58,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View
       style={{
-        backgroundColor: "#D1D5DB",
+        backgroundColor: theme[current].white,
         height: "100%",
         width: "100%",
       }}
@@ -67,47 +73,64 @@ const LoginScreen = ({ navigation }) => {
         <TextInput
           style={{
             borderBottomWidth: 4,
-            borderBottomColor: "#718096",
+            borderBottomColor: theme[current].textInput,
             padding: 16,
             borderRadius: 16,
             width: "75%",
             marginBottom: 16,
+            fontSize: 16,
           }}
+          selectionColor={theme[current].orange}
           placeholder="Username"
           onChangeText={setName}
         />
         <TextInput
           style={{
             borderBottomWidth: 4,
-            borderBottomColor: "#718096",
+            borderBottomColor: theme[current].textInput,
             padding: 16,
             borderRadius: 16,
             width: "75%",
             marginBottom: 16,
+            fontSize: 16,
           }}
+          selectionColor={theme[current].orange}
           placeholder="Password"
           secureTextEntry={true}
           onChangeText={setPassword}
         />
         <View style={{ marginHorizontal: 48 }}>
-          <Pressable style={{ width: "50%" }} onPress={handleLogin}>
+          <Pressable style={{ width: "70%" }} onPress={handleLogin}>
             {!loading ? (
               <Text
                 style={{
-                  backgroundColor: "#ea580c",
-                  fontSize: 24,
-                  color: "#E5E7EB",
-                  paddingHorizontal: 32,
-                  paddingVertical: 8,
-                  borderRadius: 16,
+                  fontSize: 36,
+                  color: theme[current].orange,
+                  paddingHorizontal: "10%",
+                  paddingVertical: "20%",
+
                   fontWeight: "bold",
                 }}
               >
                 Login
+                <AntDesign
+                  name="login"
+                  size={36}
+                  color={theme[current].orange}
+                />
               </Text>
             ) : (
-              <View>
-                <ActivityIndicator size="medium" color="orange" />
+              <View style={{ marginHorizontal: 48 }}>
+                {/* <ActivityIndicator
+                  size="medium"
+                  color={theme[current].orange}
+                /> */}
+                <LottieView
+                  style={{ width: 110, height: 110, padding: 16 }}
+                  source={require("../assets/loader4.json")}
+                  autoPlay
+                  loop
+                />
               </View>
             )}
           </Pressable>

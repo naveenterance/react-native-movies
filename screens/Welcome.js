@@ -1,77 +1,86 @@
 import React, { useEffect } from "react";
-import { View, Text, Pressable, ImageBackground, Image } from "react-native";
+import { View, Text, Pressable, Image, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
-import "core-js/stable/atob";
-import { styled } from "nativewind";
 import { useAuth } from "../utils/Auth";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
+import usePressAnimation from "../hooks/animation";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const Welcome = ({ navigation }) => {
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const { username } = useAuth();
+  const { current } = useTheme();
+  const [onPressLoginHandler, scaleValueLogin] = usePressAnimation(() => {
+    navigation.replace("Login");
+  });
+  const [onPressSignUpHandler, scaleValueSignup] = usePressAnimation(() => {
+    navigation.replace("SignUp");
+  });
+  const { username } = useAuth();
 
+  useFocusEffect(
+    React.useCallback(() => {
       if (username) {
-        navigation.navigate("Home");
+        navigation.replace("Home");
       }
-    };
-
-    fetchUserDetails();
-  }, []);
-
+    }, [username, navigation])
+  );
   return (
     <View>
       <Image
         source={require("../assets/logo.jpeg")}
         style={{ width: "100%", height: "33.333%" }}
-      ></Image>
-      <View
-        style={{
-          flexDirection: "row",
-          height: "100%",
-        }}
-      >
+      />
+      <View style={{ flexDirection: "row", height: "100%" }}>
         <Pressable
-          style={{
-            width: "50%",
-            backgroundColor: "#ED8936",
-            flex: 1,
-            alignItems: "center",
-          }}
-          onPress={() => navigation.navigate("Login")}
+          onPress={onPressLoginHandler}
+          style={{ width: "50%", alignItems: "center" }}
         >
-          <Text
+          <Animated.View
             style={{
-              marginTop: "100%",
-              fontSize: 36,
-              fontWeight: "bold",
-              color: "#718096",
+              backgroundColor: theme[current].orange,
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+              transform: [{ scale: scaleValueLogin }],
             }}
           >
-            Login
-            {/* <AntDesign name="login" size={24} color="gray" /> */}
-          </Text>
+            <Text
+              style={{
+                marginTop: "100%",
+                fontSize: 36,
+                fontWeight: "bold",
+                color: theme[current].gray,
+              }}
+            >
+              Login
+            </Text>
+          </Animated.View>
         </Pressable>
         <Pressable
-          style={{
-            width: "50%",
-            backgroundColor: "#718096",
-            flex: 1,
-            alignItems: "center",
-          }}
-          onPress={() => navigation.navigate("SignUp")}
+          onPress={onPressSignUpHandler}
+          style={{ width: "50%", alignItems: "center" }}
         >
-          <Text
+          <Animated.View
             style={{
-              marginTop: "100%",
-              fontSize: 36,
-              fontWeight: "bold",
-              color: "#ED8936",
+              backgroundColor: theme[current].gray,
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+              transform: [{ scale: scaleValueSignup }],
             }}
           >
-            Sign Up
-            {/* <AntDesign name="adduser" size={24} color="orange" /> */}
-          </Text>
+            <Text
+              style={{
+                marginTop: "100%",
+                fontSize: 36,
+                fontWeight: "bold",
+                color: theme[current].orange,
+              }}
+            >
+              Signup
+            </Text>
+          </Animated.View>
         </Pressable>
       </View>
     </View>

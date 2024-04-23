@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { useAuth } from "../utils/Auth";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -16,43 +17,50 @@ const HomeScreen = ({ navigation }) => {
   const [bookmarks, setBookmarks] = useState([]);
   const [reviews, setReviews] = useState([]);
   const { username } = useAuth();
-  const { current, setTheme } = useTheme();
+  const { current } = useTheme();
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!username) {
+        navigation.replace("Welcome");
+      }
+    }, [username, navigation])
+  );
 
-  useEffect(() => {
-    const backHandler = BackHandler;
+  // useEffect(() => {
+  //   const backHandler = BackHandler;
 
-    const handleBeforeRemove = (e) => {
-      e.preventDefault();
+  //   const handleBeforeRemove = (e) => {
+  //     e.preventDefault();
 
-      Alert.alert(
-        "Exit App",
-        "Are you sure you want to exit?",
-        [
-          {
-            text: "Cancel",
-            onPress: () => {},
-            style: "cancel",
-          },
-          {
-            text: "Exit",
-            onPress: () => {
-              backHandler.exitApp();
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-    };
+  //     Alert.alert(
+  //       "Exit App",
+  //       "Are you sure you want to exit?",
+  //       [
+  //         {
+  //           text: "Cancel",
+  //           onPress: () => {},
+  //           style: "cancel",
+  //         },
+  //         {
+  //           text: "Exit",
+  //           onPress: () => {
+  //             backHandler.exitApp();
+  //           },
+  //         },
+  //       ],
+  //       { cancelable: false }
+  //     );
+  //   };
 
-    const removeListener = navigation.addListener(
-      "beforeRemove",
-      handleBeforeRemove
-    );
+  //   const removeListener = navigation.addListener(
+  //     "beforeRemove",
+  //     handleBeforeRemove
+  //   );
 
-    return () => {
-      removeListener();
-    };
-  }, [navigation]);
+  //   return () => {
+  //     removeListener();
+  //   };
+  // }, [navigation]);
   useEffect(() => {
     if (data && data.allUsers) {
       const userBookmarks = data.allUsers.filter(
