@@ -2,10 +2,18 @@ import Modal from "react-native-modal";
 import { useModal } from "../utils/Modal";
 import { Text, View, Button, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
 
 const Modal_custom = () => {
   const { modalVisible, setModalVisible } = useModal();
+  const { current, setTheme } = useTheme();
+
   const navigation = useNavigation();
+  const toggleTheme = () => {
+    const newTheme = current === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  };
   return (
     <View style={{ flex: 1, marginTop: "20%" }}>
       <View style={styles.centeredView}>
@@ -54,6 +62,16 @@ const Modal_custom = () => {
                 setModalVisible(false);
               }}
             />
+            <Pressable
+              onPress={toggleTheme}
+              style={{
+                marginTop: 20,
+                padding: 10,
+                backgroundColor: theme[current].text,
+              }}
+            >
+              <Text style={{ color: "#ffffff" }}>Toggle Theme</Text>
+            </Pressable>
           </View>
         </Modal>
       </View>

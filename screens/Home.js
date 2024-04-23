@@ -7,6 +7,8 @@ import CountryFlag from "react-native-country-flag";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../utils/Auth";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -14,6 +16,7 @@ const HomeScreen = ({ navigation }) => {
   const [bookmarks, setBookmarks] = useState([]);
   const [reviews, setReviews] = useState([]);
   const { username } = useAuth();
+  const { current, setTheme } = useTheme();
 
   useEffect(() => {
     const backHandler = BackHandler;
@@ -83,7 +86,7 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <CountryFlag isoCode="AX" size={25} />
-          <Text>Takumi</Text>
+          <Text style={{ color: theme[current].text }}>Takumi</Text>
           <Button
             title="Profile"
             onPress={() => navigation.navigate("Profile")}
