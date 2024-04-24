@@ -8,6 +8,7 @@ export const theme = {
     white: "#D1D5DB",
     red: "#ff3b30",
     green: "#008000",
+    charcoal: "#1B1212",
   },
   dark: {
     orange: "#E55604",
@@ -18,5 +19,6 @@ export const theme = {
     white: "#D1D5DB",
     red: "#ff3b30",
     green: "#008000",
+    charcoal: "#1B1212",
   },
 };
