@@ -61,6 +61,13 @@ const Modal_custom = () => {
             </Pressable>
 
             <Pressable
+              style={({ pressed }) => [
+                {
+                  borderLeftWidth: pressed ? 4 : 0,
+                  padding: "5%",
+                  borderColor: theme[current].orange,
+                },
+              ]}
               onPress={() => {
                 navigation.navigate("Home");
                 setModalVisible(false);
@@ -96,6 +103,13 @@ const Modal_custom = () => {
               </View>
             </Pressable>
             <Pressable
+              style={({ pressed }) => [
+                {
+                  borderLeftWidth: pressed ? 4 : 0,
+                  padding: "5%",
+                  borderColor: theme[current].orange,
+                },
+              ]}
               onPress={() => {
                 navigation.navigate("Search");
                 setModalVisible(false);
@@ -127,6 +141,13 @@ const Modal_custom = () => {
             </Pressable>
 
             <Pressable
+              style={({ pressed }) => [
+                {
+                  borderLeftWidth: pressed ? 4 : 0,
+                  padding: "5%",
+                  borderColor: theme[current].orange,
+                },
+              ]}
               onPress={() => {
                 navigation.navigate("Bookmarks");
                 setModalVisible(false);
@@ -150,6 +171,13 @@ const Modal_custom = () => {
               </View>
             </Pressable>
             <Pressable
+              style={({ pressed }) => [
+                {
+                  borderLeftWidth: pressed ? 4 : 0,
+                  padding: "5%",
+                  borderColor: theme[current].orange,
+                },
+              ]}
               onPress={() => {
                 navigation.navigate("Profile");
                 setModalVisible(false);

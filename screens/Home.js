@@ -19,6 +19,8 @@ import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import List from "../components/Home_section";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -93,9 +95,18 @@ const HomeScreen = ({ navigation }) => {
   }, [data, username]);
 
   return (
-    <View>
+    <View style={{ backgroundColor: theme[current].white }}>
       <View style={{ marginTop: "10%", marginLeft: "2%" }}>
-        <Pressable onPress={() => setModalVisible(true)}>
+        <Pressable
+          style={({ pressed }) => [
+            {
+              borderLeftWidth: pressed ? 4 : 0,
+              padding: "2%",
+              borderColor: theme[current].orange,
+            },
+          ]}
+          onPress={() => setModalVisible(true)}
+        >
           <Feather name="menu" size={36} color="black" />
         </Pressable>
       </View>
@@ -107,134 +118,59 @@ const HomeScreen = ({ navigation }) => {
       <ScrollView>
         <View
           style={{
-            marginTop: "10%",
             padding: "3%",
             marginBottom: "20%",
           }}
         >
-          <Text style={{ fontSize: 22, fontWeight: "900", marginRight: "10%" }}>
-            Bookmarks
-          </Text>
-          {bookmarks.length > 0 && (
-            <View style={{ flexDirection: "row" }}>
-              {bookmarks.slice(0, 2).map((bookmark, index) => (
-                <Image
-                  key={index}
-                  style={{
-                    height: 200,
-                    width: "30%",
-                    margin: "1%",
-                  }}
-                  source={{
-                    uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${bookmark["movieId"]}`,
-                  }}
-                />
-              ))}
-            </View>
-          )}
           <Text
             style={{
               fontSize: 22,
               fontWeight: "900",
               marginRight: "10%",
-              marginTop: "10%",
+              borderLeftWidth: 6,
+              borderColor: theme[current].orange,
+              paddingLeft: "2%",
+              marginVertical: "5%",
+              opacity: 0.75,
             }}
           >
-            Reviews
+            Bookmarks[{bookmarks.length}]
           </Text>
-          {reviews.length > 0 && (
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              {reviews.slice(0, 2).map((reviews, index) => (
-                <Image
-                  key={index}
-                  style={{
-                    height: 200,
-                    width: "30%",
-                    margin: "1%",
-                  }}
-                  source={{
-                    uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${reviews["movieId"]}`,
-                  }}
-                />
-              ))}
-            </View>
-          )}
+          <List tab={bookmarks} />
           <Text
             style={{
               fontSize: 22,
               fontWeight: "900",
               marginRight: "10%",
-              marginTop: "10%",
+              borderLeftWidth: 6,
+              borderColor: theme[current].orange,
+              paddingLeft: "2%",
+              marginVertical: "5%",
+              opacity: 0.75,
             }}
           >
-            Watched
+            Reviews[{reviews.length}]
           </Text>
-          {watched.length > 0 && (
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              {watched.slice(0, 3).map((watched, index) => (
-                <Image
-                  key={index}
-                  style={{
-                    height: 200,
-                    width: "30%",
-                    margin: "1%",
-                  }}
-                  source={{
-                    uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${watched["movieId"]}`,
-                  }}
-                />
-              ))}
-            </View>
-          )}
+          <List tab={reviews} />
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: "900",
+              marginRight: "10%",
+              borderLeftWidth: 6,
+              borderColor: theme[current].orange,
+              paddingLeft: "2%",
+              marginVertical: "5%",
+              opacity: 0.75,
+            }}
+          >
+            Watched[{watched.length}]
+          </Text>
+          <List tab={watched} />
         </View>
       </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modal: {
-    margin: 0,
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "60%",
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    marginVertical: 10,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-});
 
 export default HomeScreen;
