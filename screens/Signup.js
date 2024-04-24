@@ -7,15 +7,22 @@ import {
   ActivityIndicator,
   ImageBackground,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import Modal from "react-native-modal";
+
 import * as Notifications from "expo-notifications";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
+import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
 
 const SignUpScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const { current } = useTheme();
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -25,7 +32,12 @@ const SignUpScreen = ({ navigation }) => {
       return;
     }
     if (password != confirmPassword) {
-      alert("passwords don't match");
+      alert("Passwords don't match");
+      setLoading(false);
+      return;
+    }
+    if (password.length < 3) {
+      alert("Passwords too weak");
       setLoading(false);
       return;
     }
@@ -74,7 +86,15 @@ const SignUpScreen = ({ navigation }) => {
         },
         trigger: { seconds: 2 },
       });
-      navigation.navigate("Login");
+
+      setModalVisible(true);
+      const timer = setTimeout(() => {
+        navigation.replace("Login");
+        setModalVisible(false);
+        setLoading(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
     } catch (error) {
       console.error("Error signing up:", error);
     } finally {
@@ -85,62 +105,162 @@ const SignUpScreen = ({ navigation }) => {
   return (
     <View
       style={{
-        backgroundColor: "#D1D5DB",
+        backgroundColor: theme[current].white,
         height: "100%",
         width: "100%",
       }}
     >
+      <Modal
+        isVisible={modalVisible}
+        style={{
+          flex: 1,
+          maxHeight: "30%",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: theme[current].white,
+          marginVertical: "50%",
+          borderRadius: 20,
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 40,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 22,
+              margin: 10,
+              color: theme[current].green,
+              fontWeight: "bold",
+            }}
+          >
+            !! Success !!
+          </Text>
+          <Text style={{ fontSize: 16, margin: 20 }}>
+            You have successfully created an account,now login to that account{" "}
+          </Text>
+          <Pressable onPress={() => navigation.replace("Login")}>
+            <LottieView
+              style={{ width: 60, height: 60, padding: 30 }}
+              source={require("../assets/tick.json")}
+              autoPlay
+              loop={false}
+              speed={6}
+            />
+          </Pressable>
+        </View>
+      </Modal>
+
       <View
         style={{
           marginHorizontal: 48,
-          marginTop: 144,
+          marginTop: "30%",
           width: "100%",
         }}
       >
         <TextInput
           style={{
             borderBottomWidth: 4,
-            borderBottomColor: "#718096",
+            borderBottomColor: theme[current].textInput,
             padding: 16,
             borderRadius: 16,
             width: "75%",
             marginBottom: 16,
           }}
+          selectionColor={theme[current].orange}
           placeholder="Username"
           onChangeText={setName}
         />
         <TextInput
           style={{
             borderBottomWidth: 4,
-            borderBottomColor: "#718096",
+            borderBottomColor: theme[current].textInput,
             padding: 16,
             borderRadius: 16,
             width: "75%",
             marginBottom: 16,
           }}
+          selectionColor={theme[current].orange}
           placeholder="Password"
           secureTextEntry={true}
           onChangeText={setPassword}
         />
+        {password && (
+          <View>
+            <Text style={{ margin: 12, fontSize: 20 }}>
+              [
+              {(password.length < 3 && "Weak") ||
+                (password.length < 6 && "Moderate") ||
+                (password.length >= 6 && "Strong")}
+              ]
+            </Text>
+
+            <View
+              style={{
+                width: `${(password.length < 7 ? password.length : 7) * 10}%`,
+                backgroundColor: `${
+                  (password.length < 3 && theme[current].red) ||
+                  (password.length < 6 && theme[current].orange) ||
+                  (password.length >= 6 && theme[current].green)
+                }`,
+                height: 10,
+                alignItems: "center",
+                padding: 2,
+                borderRadius: 999,
+                fontSize: 10,
+                fontWeight: "500",
+                color: "#4299E1",
+                textAlign: "center",
+                lineHeight: 10,
+              }}
+            ></View>
+          </View>
+        )}
+        <TextInput
+          style={{
+            borderBottomWidth: 4,
+            borderBottomColor: theme[current].textInput,
+            padding: 16,
+            borderRadius: 16,
+            width: "75%",
+            marginBottom: 16,
+          }}
+          selectionColor={theme[current].orange}
+          placeholder="Confirm Password"
+          secureTextEntry={true}
+          onChangeText={setConfirmPassword}
+        />
         <View style={{ marginHorizontal: 48 }}>
-          <Pressable style={{ width: "50%" }} onPress={handleSignUp}>
+          <Pressable style={{ width: "70%" }} onPress={handleSignUp}>
             {!loading ? (
               <Text
                 style={{
-                  backgroundColor: "#ea580c",
-                  fontSize: 24,
-                  color: "#E5E7EB",
-                  paddingHorizontal: 32,
-                  paddingVertical: 8,
-                  borderRadius: 16,
+                  fontSize: 36,
+                  color: theme[current].orange,
+                  paddingHorizontal: "10%",
+                  paddingVertical: "20%",
                   fontWeight: "bold",
                 }}
               >
-                Sign Up
+                SignUp
+                <AntDesign
+                  name="adduser"
+                  size={36}
+                  color={theme[current].orange}
+                />
               </Text>
             ) : (
-              <View>
-                <ActivityIndicator size="medium" color="orange" />
+              <View style={{ marginHorizontal: 48 }}>
+                <LottieView
+                  style={{ width: 110, height: 110, padding: 16 }}
+                  source={require("../assets/loader4.json")}
+                  autoPlay
+                  loop
+                />
               </View>
             )}
           </Pressable>

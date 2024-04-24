@@ -6,6 +6,8 @@ export const theme = {
     textInput: "#718096",
     text: "#ff5733",
     white: "#D1D5DB",
+    red: "#ff3b30",
+    green: "#008000",
   },
   dark: {
     orange: "#E55604",
@@ -14,5 +16,7 @@ export const theme = {
     textInput: "#718096",
     text: "#33ff3c",
     white: "#D1D5DB",
+    red: "#ff3b30",
+    green: "#008000",
   },
 };

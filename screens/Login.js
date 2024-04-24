@@ -12,14 +12,17 @@ import { useAuth } from "../utils/Auth";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 
 const LoginScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { updateUser } = useAuth();
+  const { username, updateUser } = useAuth();
+  const [passwordVisibility, setPasswordVisibility] = useState(false);
   const { current } = useTheme();
+
   const handleLogin = async () => {
     if (!name || !password) {
       alert("Please enter both username and password");
@@ -55,6 +58,7 @@ const LoginScreen = ({ navigation }) => {
 
       return () => clearTimeout(timer);
     } catch (error) {
+      setLoading(false);
       alert("Invalid credentials");
     } finally {
       updateUser();
@@ -91,22 +95,34 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={setName}
           value={name}
         />
-        <TextInput
-          style={{
-            borderBottomWidth: 4,
-            borderBottomColor: theme[current].textInput,
-            padding: 16,
-            borderRadius: 16,
-            width: "75%",
-            marginBottom: 16,
-            fontSize: 16,
-          }}
-          selectionColor={theme[current].orange}
-          placeholder="Password"
-          secureTextEntry={true}
-          value={password}
-          onChangeText={setPassword}
-        />
+        <View style={{ flexDirection: "row" }}>
+          <TextInput
+            style={{
+              borderBottomWidth: 4,
+              borderBottomColor: theme[current].textInput,
+              padding: 16,
+              borderRadius: 16,
+              width: "75%",
+              marginBottom: 16,
+              fontSize: 16,
+            }}
+            selectionColor={theme[current].orange}
+            placeholder="Password"
+            label="password"
+            secureTextEntry={passwordVisibility ? false : true}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <Pressable onPress={() => setPasswordVisibility(!passwordVisibility)}>
+            <View style={{ marginVertical: 26 }}>
+              {passwordVisibility ? (
+                <Feather name="eye" size={28} color={theme[current].blue} />
+              ) : (
+                <Feather name="eye-off" size={28} color={theme[current].blue} />
+              )}
+            </View>
+          </Pressable>
+        </View>
         <View style={{ marginHorizontal: 48 }}>
           <Pressable style={{ width: "70%" }} onPress={handleLogin}>
             {!loading ? (

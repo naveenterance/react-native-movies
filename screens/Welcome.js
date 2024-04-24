@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { View, Text, Pressable, Image, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
@@ -11,15 +11,15 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 const Welcome = ({ navigation }) => {
   const { current } = useTheme();
   const [onPressLoginHandler, scaleValueLogin] = usePressAnimation(() => {
-    navigation.replace("Login");
+    navigation.navigate("Login");
   });
   const [onPressSignUpHandler, scaleValueSignup] = usePressAnimation(() => {
-    navigation.replace("SignUp");
+    navigation.navigate("SignUp");
   });
   const { username } = useAuth();
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (username) {
         navigation.replace("Home");
       }
@@ -78,7 +78,7 @@ const Welcome = ({ navigation }) => {
                 color: theme[current].orange,
               }}
             >
-              Signup
+              SignUp
             </Text>
           </Animated.View>
         </Pressable>
