@@ -83,7 +83,7 @@ const App = () => {
                     name="Profile"
                     component={Profile}
                     options={{
-                      headerTitle: "Profile",
+                      headerShown: false,
                     }}
                   />
                   <Stack.Screen

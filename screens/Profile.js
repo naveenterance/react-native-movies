@@ -8,6 +8,7 @@ import Modal_custom from "../components/Drawer";
 import { useAuth } from "../utils/Auth";
 import { useModal } from "../utils/Modal";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Drawer_button from "../components/Drawer_button";
 
 const Profile = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -26,35 +27,32 @@ const Profile = ({ navigation }) => {
     }, [username, navigation])
   );
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginTop: "10%",
-      }}
-    >
-      <Modal_custom
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      />
-
-      <Button title="modal " onPress={() => setModalVisible(true)} />
-      <MaterialIcons name="account-circle" size={64} color="black" />
-
-      <Text style={{ fontSize: 50 }}>{username}</Text>
-
-      <Pressable
-        style={({ pressed }) => [
-          { opacity: pressed ? 0.5 : 1.0 },
-          { marginTop: "10%" },
-        ]}
-        onPress={handleLogout}
+    <View>
+      <Drawer_button />
+      <View
+        style={{
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: "10%",
+        }}
       >
-        <Text style={{ color: "red", fontSize: 30 }}>
-          Logout <AntDesign name="logout" size={24} color="red" />
-        </Text>
-      </Pressable>
+        <MaterialIcons name="account-circle" size={64} color="black" />
+
+        <Text style={{ fontSize: 50 }}>{username}</Text>
+
+        <Pressable
+          style={({ pressed }) => [
+            { opacity: pressed ? 0.5 : 1.0 },
+            { marginTop: "10%" },
+          ]}
+          onPress={handleLogout}
+        >
+          <Text style={{ color: "red", fontSize: 30 }}>
+            Logout <AntDesign name="logout" size={24} color="red" />
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };

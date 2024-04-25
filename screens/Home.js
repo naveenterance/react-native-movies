@@ -21,6 +21,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import List from "../components/Home_section";
+import Drawer_button from "../components/Drawer_button";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -30,6 +31,7 @@ const HomeScreen = ({ navigation }) => {
   const [watched, setWatched] = useState([]);
   const { username } = useAuth();
   const { current } = useTheme();
+
   const API_KEY = "e24ea998";
   useFocusEffect(
     useCallback(() => {
@@ -96,25 +98,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={{ backgroundColor: theme[current].white }}>
-      <View style={{ marginTop: "10%", marginLeft: "2%" }}>
-        <Pressable
-          style={({ pressed }) => [
-            {
-              borderLeftWidth: pressed ? 4 : 0,
-              padding: "2%",
-              borderColor: theme[current].orange,
-            },
-          ]}
-          onPress={() => setModalVisible(true)}
-        >
-          <Feather name="menu" size={36} color="black" />
-        </Pressable>
-      </View>
-
-      <Modal_custom
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      />
+      <Drawer_button />
       <ScrollView>
         <View
           style={{

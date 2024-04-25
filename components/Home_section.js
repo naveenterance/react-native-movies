@@ -8,19 +8,29 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { useNavigation } from "@react-navigation/native";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-const API_KEY = "e24ea998";
+import { useID } from "../utils/CurrentId";
+
 const List = ({ tab }) => {
   const { current } = useTheme();
   const navigation = useNavigation();
+  const { id, setId } = useID();
+  const API_KEY = "e24ea998";
+
+  const handlepress = (m_id) => {
+    setId(m_id);
+    navigation.navigate("Movie_info");
+  };
+
   return (
     <ScrollView horizontal={true}>
       <View style={{ flexDirection: "row", height: "100%" }}>
         {tab.map((item, index) => (
           <Pressable
+            key={index}
+            onPress={() => handlepress(item["movieId"])}
             style={({ pressed }) => [
               {
                 borderWidth: pressed ? 4 : 0,
@@ -30,7 +40,6 @@ const List = ({ tab }) => {
             ]}
           >
             <Image
-              key={index}
               style={{
                 height: 200,
                 width: 200,

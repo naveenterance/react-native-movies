@@ -5,8 +5,13 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { genres } from "../utils/Genres";
 import { languages } from "../utils/Languages";
 import { years } from "../utils/Years";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
+import { FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const GenreFilter = ({ setGenre }) => {
+  const { current } = useTheme();
   const data = genres.map((genre, index) => ({
     label: genre,
     value: index.toString(),
@@ -17,7 +22,6 @@ export const GenreFilter = ({ setGenre }) => {
     return (
       <View style={styles.item}>
         <Text style={styles.selectedTextStyle}>{item.label}</Text>
-        <AntDesign style={styles.icon} color="white" name="Safety" size={20} />
       </View>
     );
   };
@@ -35,33 +39,44 @@ export const GenreFilter = ({ setGenre }) => {
   return (
     <View style={styles.container}>
       <MultiSelect
-        style={styles.dropdown}
+        style={
+          (styles.dropdown,
+          {
+            backgroundColor: theme[current].white,
+            padding: 16,
+          })
+        }
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        itemContainerStyle={styles.itemContainerStyle}
+        itemContainerStyle={{
+          backgroundColor: theme[current].white,
+        }}
         data={data}
-        activeColor="#FF0000"
+        activeColor={theme[current].orange}
         labelField="label"
         valueField="value"
-        placeholder="Select item"
+        placeholder="Genre"
         value={selected}
         onChange={handleSelectionChange}
         renderLeftIcon={() => (
-          <AntDesign
-            style={styles.icon}
-            color="white"
-            name="Safety"
-            size={20}
-          />
+          <MaterialCommunityIcons name="filmstrip" size={24} color="black" />
         )}
         renderItem={renderItem}
         renderSelectedItem={(item, unSelect) => (
           <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-            <View style={styles.selectedStyle}>
+            <View
+              style={[
+                styles.selectedStyle,
+                {
+                  backgroundColor: theme[current].white,
+                  borderColor: theme[current].orange,
+                },
+              ]}
+            >
               <Text style={styles.textSelectedStyle}>{item.label}</Text>
-              <AntDesign color="white" name="delete" size={17} />
+              <AntDesign color="black" name="delete" size={17} />
             </View>
           </TouchableOpacity>
         )}
@@ -71,6 +86,7 @@ export const GenreFilter = ({ setGenre }) => {
 };
 
 export const LanguageFilter = ({ setLanguage }) => {
+  const { current } = useTheme();
   const data = languages.map((language, index) => ({
     label: language,
     value: index.toString(),
@@ -81,7 +97,6 @@ export const LanguageFilter = ({ setLanguage }) => {
     return (
       <View style={styles.item}>
         <Text style={styles.selectedTextStyle}>{item.label}</Text>
-        <AntDesign style={styles.icon} color="white" name="Safety" size={20} />
       </View>
     );
   };
@@ -99,33 +114,44 @@ export const LanguageFilter = ({ setLanguage }) => {
   return (
     <View style={styles.container}>
       <MultiSelect
-        style={styles.dropdown}
+        style={
+          (styles.dropdown,
+          {
+            backgroundColor: theme[current].white,
+            padding: 16,
+          })
+        }
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        itemContainerStyle={styles.itemContainerStyle}
+        itemContainerStyle={{
+          backgroundColor: theme[current].white,
+        }}
         data={data}
-        activeColor="#FF0000"
+        activeColor={theme[current].orange}
         labelField="label"
         valueField="value"
-        placeholder="Select item"
+        placeholder="Language"
         value={selected}
         onChange={handleSelectionChange}
         renderLeftIcon={() => (
-          <AntDesign
-            style={styles.icon}
-            color="white"
-            name="Safety"
-            size={20}
-          />
+          <FontAwesome name="language" size={24} color="black" />
         )}
         renderItem={renderItem}
         renderSelectedItem={(item, unSelect) => (
           <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-            <View style={styles.selectedStyle}>
+            <View
+              style={[
+                styles.selectedStyle,
+                {
+                  backgroundColor: theme[current].white,
+                  borderColor: theme[current].orange,
+                },
+              ]}
+            >
               <Text style={styles.textSelectedStyle}>{item.label}</Text>
-              <AntDesign color="white" name="delete" size={17} />
+              <AntDesign color="black" name="delete" size={17} />
             </View>
           </TouchableOpacity>
         )}
@@ -135,6 +161,7 @@ export const LanguageFilter = ({ setLanguage }) => {
 };
 
 export const YearFilter = ({ setYear }) => {
+  const { current } = useTheme();
   const data = years.map((year, index) => ({
     label: year,
     value: index.toString(),
@@ -145,7 +172,6 @@ export const YearFilter = ({ setYear }) => {
     return (
       <View style={styles.item}>
         <Text style={styles.selectedTextStyle}>{item.label}</Text>
-        <AntDesign style={styles.icon} color="white" name="Safety" size={20} />
       </View>
     );
   };
@@ -163,33 +189,44 @@ export const YearFilter = ({ setYear }) => {
   return (
     <View style={styles.container}>
       <MultiSelect
-        style={styles.dropdown}
+        style={
+          (styles.dropdown,
+          {
+            backgroundColor: theme[current].white,
+            padding: 16,
+          })
+        }
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        itemContainerStyle={styles.itemContainerStyle}
+        itemContainerStyle={{
+          backgroundColor: theme[current].white,
+        }}
         data={data}
-        activeColor="#FF0000"
+        activeColor={theme[current].orange}
         labelField="label"
         valueField="value"
-        placeholder="Select item"
+        placeholder="Year"
         value={selected}
         onChange={handleSelectionChange}
         renderLeftIcon={() => (
-          <AntDesign
-            style={styles.icon}
-            color="white"
-            name="Safety"
-            size={20}
-          />
+          <AntDesign name="calendar" size={24} color="black" />
         )}
         renderItem={renderItem}
         renderSelectedItem={(item, unSelect) => (
           <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-            <View style={styles.selectedStyle}>
+            <View
+              style={[
+                styles.selectedStyle,
+                {
+                  backgroundColor: theme[current].white,
+                  borderColor: theme[current].orange,
+                },
+              ]}
+            >
               <Text style={styles.textSelectedStyle}>{item.label}</Text>
-              <AntDesign color="white" name="delete" size={17} />
+              <AntDesign color="black" name="delete" size={17} />
             </View>
           </TouchableOpacity>
         )}
@@ -202,26 +239,20 @@ const styles = StyleSheet.create({
   container: { padding: 16 },
   dropdown: {
     height: 50,
-    backgroundColor: "#333",
-    borderRadius: 12,
-    padding: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
 
-    elevation: 2,
+    borderRadius: 4,
+    padding: 12,
+    borderColor: "red",
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 24,
     color: "gray",
+    fontWeight: 400,
+    marginLeft: 12,
   },
   selectedTextStyle: {
-    fontSize: 14,
-    color: "white",
+    fontSize: 18,
+    color: "black",
   },
   iconStyle: {
     width: 20,
@@ -230,7 +261,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
-    color: "white",
+    color: "black",
   },
   icon: {
     marginRight: 5,
@@ -246,11 +277,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 14,
-    backgroundColor: "#222",
-    shadowColor: "#000",
+
+    shadowColor: "red",
+
     marginTop: 8,
     marginRight: 12,
     borderWidth: 4,
+
     paddingHorizontal: 12,
     paddingVertical: 8,
     shadowOffset: {
@@ -265,9 +298,6 @@ const styles = StyleSheet.create({
   textSelectedStyle: {
     marginRight: 5,
     fontSize: 16,
-    color: "white",
-  },
-  itemContainerStyle: {
-    backgroundColor: "black",
+    color: "black",
   },
 });

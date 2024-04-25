@@ -20,6 +20,9 @@ import RecentSearches from "../components/RecentSearches";
 import { GenreFilter } from "../components/Filters";
 import { LanguageFilter } from "../components/Filters";
 import { YearFilter } from "../components/Filters";
+import Drawer_button from "../components/Drawer_button";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -35,6 +38,7 @@ const Search = ({ navigation }) => {
   const [language, setLanguage] = useState([]);
   const [year, setYear] = useState([]);
   const [filterStatus, setFilterStatus] = useState(false);
+  const { current } = useTheme();
 
   const { username } = useAuth();
 
@@ -150,17 +154,19 @@ const Search = ({ navigation }) => {
             <View
               style={{
                 margin: 8,
-                backgroundColor: "#E5E7EB",
+                backgroundColor: theme[current].white,
                 padding: 8,
                 borderRadius: 8,
               }}
             >
-              <Image
-                style={{ height: 80, width: 80 }}
-                source={{
-                  uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
-                }}
-              />
+              <View>
+                <Image
+                  style={{ height: 80, width: 80 }}
+                  source={{
+                    uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
+                  }}
+                />
+              </View>
               <View style={{ flex: 1, marginLeft: 8 }}>
                 <Text numberOfLines={1} style={{ color: "#4B5563" }}>
                   {item.Title}{" "}
@@ -184,7 +190,7 @@ const Search = ({ navigation }) => {
                       <View
                         style={{
                           width: item.ratingR.Value,
-                          backgroundColor: "#ED8936",
+                          backgroundColor: theme[current].orange,
                           alignItems: "center",
                           padding: 2,
                           borderRadius: 999,
@@ -214,7 +220,7 @@ const Search = ({ navigation }) => {
                           width: `${
                             parseFloat(item.ratingM.Value.split("/")[0]) * 10
                           }%`,
-                          backgroundColor: "#ED8936",
+                          backgroundColor: theme[current].green,
                           alignItems: "center",
                           padding: 2,
                           borderRadius: 999,
@@ -250,7 +256,7 @@ const Search = ({ navigation }) => {
                       <View
                         style={{
                           width: parseFloat(userRating) + "%",
-                          backgroundColor: "#4A5568",
+                          backgroundColor: theme[current].blue,
                           alignItems: "center",
                           padding: 2,
                           borderRadius: 999,
@@ -278,64 +284,71 @@ const Search = ({ navigation }) => {
 
   return (
     <>
-      <View style={{ marginTop: "10%" }}>
-        <Modal_custom
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        />
-        <Button title="modal " onPress={() => setModalVisible(true)} />
+      <View style={{ backgroundColor: theme[current].white, height: "1000%" }}>
+        <Drawer_button />
+        <View style={{ marginTop: "1%" }}>
+          <View style={{ flexDirection: "row" }}>
+            <TextInput
+              style={{
+                backgroundColor: theme[current].white,
+                width: "75%",
+                marginLeft: "4%",
+                marginTop: "1%",
+                padding: "1%",
+                borderBottomWidth: 4,
+                borderColor: theme[current].charcoal,
+                borderRadius: 999,
+              }}
+              selectionColor={theme[current].orange}
+              placeholder="Search for movies..."
+              value={searchQuery}
+              onChangeText={(text) => setSearchQuery(text)}
+              onSubmitEditing={searchMovies}
+            />
+            <Pressable
+              onPress={searchMovies}
+              style={{ marginTop: "1%", alignSelf: "center" }}
+            >
+              <FontAwesome
+                name="search"
+                size={36}
+                color={theme[current].charcoal}
+              />
+            </Pressable>
+          </View>
 
-        <TextInput
-          style={{
-            backgroundColor: "#E5E7EB",
-            width: "75%",
-            marginHorizontal: "12%",
-            marginTop: 12,
-            padding: 8,
-            borderRadius: 999,
-          }}
-          placeholder="Search for movies..."
-          value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)}
-          onSubmitEditing={searchMovies}
-        />
-        <Pressable
-          onPress={searchMovies}
-          style={{ marginTop: 12, alignSelf: "center" }}
-        >
-          <FontAwesome name="search" size={36} color="black" />
-        </Pressable>
-        <GenreFilter setGenre={setGenre} />
-        <LanguageFilter setLanguage={setLanguage} />
-        <YearFilter setYear={setYear} />
+          <GenreFilter setGenre={setGenre} />
+          <LanguageFilter setLanguage={setLanguage} />
+          <YearFilter setYear={setYear} />
 
-        {searchPerformed ? (
-          movies.length === 0 ||
-          (!filterStatus &&
-            (language.length > 0 || genre.length > 0 || year.length)) ? (
-            <Text style={{ alignSelf: "center", marginTop: 20 }}>
-              No results found
-            </Text>
-          ) : null
-        ) : null}
+          {searchPerformed ? (
+            movies.length === 0 ||
+            (!filterStatus &&
+              (language.length > 0 || genre.length > 0 || year.length)) ? (
+              <Text style={{ alignSelf: "center", marginTop: 20 }}>
+                No results found
+              </Text>
+            ) : null
+          ) : null}
 
-        {movies.length > 0 && (
-          <FlatList
-            data={movies}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.imdbID}
-            style={{ marginBottom: 36 }}
+          {movies.length > 0 && (
+            <FlatList
+              data={movies}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.imdbID}
+              style={{ flex: 1, marginBottom: 36 }}
+            />
+          )}
+
+          {loading && <Text>Loading...</Text>}
+          {error && <Text>Error: {error.message}</Text>}
+
+          <RecentSearches
+            recentSearches={recentSearches}
+            setRecentSearches={setRecentSearches}
+            setSearchQuery={setSearchQuery}
           />
-        )}
-
-        {loading && <Text>Loading...</Text>}
-        {error && <Text>Error: {error.message}</Text>}
-
-        <RecentSearches
-          recentSearches={recentSearches}
-          setRecentSearches={setRecentSearches}
-          setSearchQuery={setSearchQuery}
-        />
+        </View>
       </View>
     </>
   );
