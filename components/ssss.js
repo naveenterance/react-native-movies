@@ -43,7 +43,7 @@ export const GenreFilter = ({ setGenre }) => {
           (styles.dropdown,
           {
             backgroundColor: theme[current].white,
-            padding: 16,
+            padding: 2,
           })
         }
         placeholderStyle={styles.placeholderStyle}
@@ -118,7 +118,7 @@ export const LanguageFilter = ({ setLanguage }) => {
           (styles.dropdown,
           {
             backgroundColor: theme[current].white,
-            padding: 16,
+            padding: 2,
           })
         }
         placeholderStyle={styles.placeholderStyle}
@@ -187,13 +187,13 @@ export const YearFilter = ({ setYear }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <MultiSelect
         style={
           (styles.dropdown,
           {
             backgroundColor: theme[current].white,
-            padding: 16,
+            padding: 2,
           })
         }
         placeholderStyle={styles.placeholderStyle}
@@ -245,13 +245,13 @@ const styles = StyleSheet.create({
     borderColor: "red",
   },
   placeholderStyle: {
-    fontSize: 24,
+    fontSize: 16,
     color: "gray",
     fontWeight: 400,
     marginLeft: 12,
   },
   selectedTextStyle: {
-    fontSize: 18,
+    fontSize: 16,
     color: "black",
   },
   iconStyle: {

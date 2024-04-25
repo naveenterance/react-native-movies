@@ -17,12 +17,19 @@ import { useAuth } from "../utils/Auth";
 import Modal_custom from "../components/Drawer";
 import { useModal } from "../utils/Modal";
 import RecentSearches from "../components/RecentSearches";
-import { GenreFilter } from "../components/Filters";
-import { LanguageFilter } from "../components/Filters";
-import { YearFilter } from "../components/Filters";
+
+import { LanguageFilter } from "../components/ssss";
+import { YearFilter } from "../components/ssss";
 import Drawer_button from "../components/Drawer_button";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
+import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Modal from "react-native-modal";
+import { ScrollView } from "react-native-gesture-handler";
+import Filter from "../components/Filter";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -39,6 +46,7 @@ const Search = ({ navigation }) => {
   const [year, setYear] = useState([]);
   const [filterStatus, setFilterStatus] = useState(false);
   const { current } = useTheme();
+  const [view, setView] = useState("");
 
   const { username } = useAuth();
 
@@ -88,6 +96,8 @@ const Search = ({ navigation }) => {
               ...movie,
               Language: details.Language,
               Genre: details.Genre,
+              Poster: details.Poster,
+              Country: details.Country,
               ratingR: ratingRottenTomatoes,
               ratingM: ratingIMDB,
             };
@@ -157,122 +167,168 @@ const Search = ({ navigation }) => {
                 backgroundColor: theme[current].white,
                 padding: 8,
                 borderRadius: 8,
+                flexDirection: "row",
+                borderWidth: userRating && 4,
+                borderColor: userRating && theme[current].blue,
               }}
             >
               <View>
                 <Image
-                  style={{ height: 80, width: 80 }}
-                  source={{
-                    uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.imdbID}`,
-                  }}
+                  style={{ height: 120, width: 80 }}
+                  source={{ uri: item.Poster }}
                 />
               </View>
               <View style={{ flex: 1, marginLeft: 8 }}>
-                <Text numberOfLines={1} style={{ color: "#4B5563" }}>
+                <Text
+                  numberOfLines={2}
+                  style={{ color: "#4B5563", fontSize: 16, fontWeight: 700 }}
+                >
                   {item.Title}{" "}
-                  <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
-                    [{item.Year}] [{item.Genre}] [{item.Language}]
-                  </Text>
                 </Text>
-                {item.ratingR ? (
-                  <View>
-                    <Text
-                      style={{ fontStyle: "italic", color: "#4B5563" }}
-                    >{`Rotten Tomatoes: ${item.ratingR.Value}`}</Text>
-                    <View
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#E5E7EB",
-                        borderRadius: 999,
-                        height: 4,
-                      }}
-                    >
+                <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
+                  [{item.Year}] [{item.Genre}] [{item.Language}][{item.Country}]
+                </Text>
+
+                <View style={{ width: "50%", flexDirection: "row" }}>
+                  {item.ratingR ? (
+                    <View style={{ marginRight: "4%" }}>
+                      <Text
+                        style={{ fontStyle: "italic", color: "#4B5563" }}
+                      >{`Critics: ${item.ratingR.Value}`}</Text>
                       <View
                         style={{
-                          width: item.ratingR.Value,
-                          backgroundColor: theme[current].orange,
-                          alignItems: "center",
-                          padding: 2,
+                          width: "100%",
+                          backgroundColor: "#E5E7EB",
                           borderRadius: 999,
-                          fontSize: 10,
-                          fontWeight: "500",
-                          color: "#4299E1",
-                          textAlign: "center",
-                          lineHeight: 10,
+                          height: 4,
                         }}
                       >
-                        <Text></Text>
+                        <View
+                          style={{
+                            width: item.ratingR.Value,
+                            backgroundColor: theme[current].rotten,
+                            alignItems: "center",
+                            padding: 2,
+                            borderRadius: 999,
+                            fontSize: 10,
+                            fontWeight: "500",
+                            color: "#4299E1",
+                            textAlign: "center",
+                            lineHeight: 10,
+                          }}
+                        >
+                          <Text></Text>
+                        </View>
                       </View>
                     </View>
-                    <Text
-                      style={{ fontStyle: "italic", color: "#4B5563" }}
-                    >{`IMDB: ${item.ratingM.Value}`}</Text>
-                    <View
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#E5E7EB",
-                        borderRadius: 999,
-                        height: 4,
-                      }}
-                    >
+                  ) : null}
+                  {item.ratingM ? (
+                    <View>
+                      <Text
+                        style={{ fontStyle: "italic", color: "#4B5563" }}
+                      >{`IMDB: ${item.ratingM.Value}`}</Text>
                       <View
                         style={{
-                          width: `${
-                            parseFloat(item.ratingM.Value.split("/")[0]) * 10
-                          }%`,
-                          backgroundColor: theme[current].green,
-                          alignItems: "center",
-                          padding: 2,
+                          width: "100%",
+                          backgroundColor: "#E5E7EB",
                           borderRadius: 999,
-                          fontSize: 10,
-                          fontWeight: "500",
-                          color: "#4299E1",
-                          textAlign: "center",
-                          lineHeight: 10,
+                          height: 4,
                         }}
                       >
-                        <Text></Text>
+                        <View
+                          style={{
+                            width: `${
+                              parseFloat(item.ratingM.Value.split("/")[0]) * 10
+                            }%`,
+                            backgroundColor: theme[current].imdb,
+                            alignItems: "center",
+                            padding: 2,
+                            borderRadius: 999,
+                            fontSize: 10,
+                            fontWeight: "500",
+                            color: "#4299E1",
+                            textAlign: "center",
+                            lineHeight: 10,
+                          }}
+                        >
+                          <Text></Text>
+                        </View>
                       </View>
                     </View>
+                  ) : null}
+                </View>
+
+                {userRating &&
+                  userRating !== "[to be watched]" &&
+                  userRating !== "[watched]" && (
+                    <View style={{ width: "50%" }}>
+                      <Text
+                        style={{ fontStyle: "italic", color: "#4B5563" }}
+                      >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
+                      <View
+                        style={{
+                          width: "100%",
+                          backgroundColor: "#E5E7EB",
+                          borderRadius: 999,
+                          height: 4,
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: parseFloat(userRating) + "%",
+                            backgroundColor: theme[current].blue,
+                            alignItems: "center",
+                            padding: 2,
+                            borderRadius: 999,
+                            fontSize: 12,
+                            fontWeight: "500",
+                            color: "#4299E1",
+                            textAlign: "center",
+                            lineHeight: 12,
+                          }}
+                        >
+                          <Text></Text>
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                {userRating == "[to be watched]" && (
+                  <View style={{ flexDirection: "row", margin: "1%" }}>
+                    <Feather
+                      name="bookmark"
+                      size={36}
+                      color={theme[current].green}
+                    />
+                    <Text
+                      style={{
+                        marginTop: "2%",
+                        fontSize: 16,
+                        fontWeight: "500",
+                        color: theme[current].green,
+                      }}
+                    >
+                      Bookmarked
+                    </Text>
                   </View>
-                ) : (
-                  <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
-                    [No critics ratings]
-                  </Text>
                 )}
-                {userRating ? (
-                  <View>
+                {userRating == "[watched]" && (
+                  <View style={{ flexDirection: "row", margin: "1%" }}>
+                    <AntDesign
+                      name="eyeo"
+                      size={36}
+                      color={theme[current].blue}
+                    />
                     <Text
-                      style={{ fontStyle: "italic", color: "#4B5563" }}
-                    >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
-                    <View
                       style={{
-                        width: "100%",
-                        backgroundColor: "#E5E7EB",
-                        borderRadius: 999,
-                        height: 4,
+                        marginTop: "2%",
+                        fontSize: 16,
+                        fontWeight: "500",
+                        color: theme[current].blue,
                       }}
                     >
-                      <View
-                        style={{
-                          width: parseFloat(userRating) + "%",
-                          backgroundColor: theme[current].blue,
-                          alignItems: "center",
-                          padding: 2,
-                          borderRadius: 999,
-                          fontSize: 12,
-                          fontWeight: "500",
-                          color: "#4299E1",
-                          textAlign: "center",
-                          lineHeight: 12,
-                        }}
-                      >
-                        <Text></Text>
-                      </View>
-                    </View>
+                      Watched
+                    </Text>
                   </View>
-                ) : (
-                  <Text>Not rated yet</Text>
                 )}
               </View>
             </View>
@@ -284,20 +340,30 @@ const Search = ({ navigation }) => {
 
   return (
     <>
-      <View style={{ backgroundColor: theme[current].white, height: "1000%" }}>
+      <View
+        style={{
+          backgroundColor: theme[current].white,
+          height: "100%",
+        }}
+      >
         <Drawer_button />
         <View style={{ marginTop: "1%" }}>
-          <View style={{ flexDirection: "row" }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+          >
             <TextInput
               style={{
                 backgroundColor: theme[current].white,
-                width: "75%",
-                marginLeft: "4%",
+                width: "80%",
+
                 marginTop: "1%",
-                padding: "1%",
-                borderBottomWidth: 4,
+                paddingHorizontal: "5%",
+                paddingVertical: "2%",
+                borderWidth: 2,
                 borderColor: theme[current].charcoal,
                 borderRadius: 999,
+                fontSize: 16,
+                marginHorizontal: "2%",
               }}
               selectionColor={theme[current].orange}
               placeholder="Search for movies..."
@@ -305,10 +371,7 @@ const Search = ({ navigation }) => {
               onChangeText={(text) => setSearchQuery(text)}
               onSubmitEditing={searchMovies}
             />
-            <Pressable
-              onPress={searchMovies}
-              style={{ marginTop: "1%", alignSelf: "center" }}
-            >
+            <Pressable onPress={searchMovies} style={{ alignSelf: "center" }}>
               <FontAwesome
                 name="search"
                 size={36}
@@ -316,11 +379,71 @@ const Search = ({ navigation }) => {
               />
             </Pressable>
           </View>
+          <Button title="clear" onPress={() => setGenre([])} />
+          <Filter
+            genre={genre}
+            setGenre={setGenre}
+            language={language}
+            setLanguage={setLanguage}
+            year={year}
+            setYear={setYear}
+          />
 
-          <GenreFilter setGenre={setGenre} />
-          <LanguageFilter setLanguage={setLanguage} />
-          <YearFilter setYear={setYear} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginTop: "5%",
+              marginRight: "10%",
+            }}
+          >
+            <Pressable
+              onPress={() => setView(view == "recents" ? "" : "recents")}
+            >
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  borderBottomWidth: view == "recents" ? 4 : 0,
+                  borderBottomColor: theme[current].orange,
+                }}
+              >
+                <MaterialIcons name="history" size={28} color="black" />
+                <Text>Recent</Text>
+              </View>
+            </Pressable>
 
+            <Pressable
+              onPress={() => setView(view == "filter" ? "" : "filter")}
+            >
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  borderBottomWidth: view == "filter" ? 4 : 0,
+                  borderBottomColor: theme[current].orange,
+                }}
+              >
+                <AntDesign name="filter" size={28} color="black" />
+                <Text>Filters</Text>
+              </View>
+            </Pressable>
+
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <MaterialCommunityIcons
+                name="book-search-outline"
+                size={28}
+                color="black"
+              />
+
+              <Text>Watchlist </Text>
+            </View>
+          </View>
           {searchPerformed ? (
             movies.length === 0 ||
             (!filterStatus &&
@@ -330,24 +453,23 @@ const Search = ({ navigation }) => {
               </Text>
             ) : null
           ) : null}
-
           {movies.length > 0 && (
             <FlatList
               data={movies}
               renderItem={renderItem}
               keyExtractor={(item) => item.imdbID}
-              style={{ flex: 1, marginBottom: 36 }}
+              style={{ marginTop: 10, marginBottom: view !== "filter" && 150 }}
             />
           )}
-
           {loading && <Text>Loading...</Text>}
           {error && <Text>Error: {error.message}</Text>}
-
-          <RecentSearches
-            recentSearches={recentSearches}
-            setRecentSearches={setRecentSearches}
-            setSearchQuery={setSearchQuery}
-          />
+          {view == "recents" && (
+            <RecentSearches
+              recentSearches={recentSearches}
+              setRecentSearches={setRecentSearches}
+              setSearchQuery={setSearchQuery}
+            />
+          )}
         </View>
       </View>
     </>

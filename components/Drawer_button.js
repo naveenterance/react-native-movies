@@ -28,7 +28,14 @@ const Drawer_button = () => {
   const { modalVisible, setModalVisible } = useModal();
   return (
     <View>
-      <View style={{ marginTop: "10%", marginLeft: "2%" }}>
+      <View
+        style={{
+          marginTop: "10%",
+          marginLeft: "2%",
+
+          width: "10%",
+        }}
+      >
         <Pressable
           style={({ pressed }) => [
             {

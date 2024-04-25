@@ -63,7 +63,7 @@ const Modal_custom = () => {
             <Pressable
               style={({ pressed }) => [
                 {
-                  borderLeftWidth: pressed ? 4 : 0,
+                  borderLeftWidth: pressed || route.name == "Home" ? 4 : 0,
                   padding: "5%",
                   borderColor: theme[current].orange,
                 },
@@ -105,7 +105,7 @@ const Modal_custom = () => {
             <Pressable
               style={({ pressed }) => [
                 {
-                  borderLeftWidth: pressed ? 4 : 0,
+                  borderLeftWidth: pressed || route.name == "Search" ? 4 : 0,
                   padding: "5%",
                   borderColor: theme[current].orange,
                 },
@@ -143,7 +143,7 @@ const Modal_custom = () => {
             <Pressable
               style={({ pressed }) => [
                 {
-                  borderLeftWidth: pressed ? 4 : 0,
+                  borderLeftWidth: pressed || route.name == "Bookmarks" ? 4 : 0,
                   padding: "5%",
                   borderColor: theme[current].orange,
                 },
@@ -173,7 +173,7 @@ const Modal_custom = () => {
             <Pressable
               style={({ pressed }) => [
                 {
-                  borderLeftWidth: pressed ? 4 : 0,
+                  borderLeftWidth: pressed || route.name == "Profile" ? 4 : 0,
                   padding: "5%",
                   borderColor: theme[current].orange,
                 },

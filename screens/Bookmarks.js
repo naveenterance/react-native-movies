@@ -12,9 +12,9 @@ import { useQuery } from "@apollo/client";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
-import { GenreFilter } from "../components/Filters";
-import { LanguageFilter } from "../components/Filters";
-import { YearFilter } from "../components/Filters";
+import { GenreFilter } from "../components/ssss";
+import { LanguageFilter } from "../components/ssss";
+import { YearFilter } from "../components/ssss";
 
 const Bookmarks = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);

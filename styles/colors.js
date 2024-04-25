@@ -9,6 +9,8 @@ export const theme = {
     red: "#ff3b30",
     green: "#008000",
     charcoal: "#1B1212",
+    imdb: "#f3ce13",
+    rotten: "#a94242",
   },
   dark: {
     orange: "#E55604",
@@ -20,5 +22,7 @@ export const theme = {
     red: "#ff3b30",
     green: "#008000",
     charcoal: "#1B1212",
+    imdb: "#f3ce13",
+    rotten: "#a94242",
   },
 };
