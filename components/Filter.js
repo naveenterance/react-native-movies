@@ -20,82 +20,236 @@ import { useRoute } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-
 import { genres } from "../utils/Genres";
 import { languages } from "../utils/Languages";
 import { years } from "../utils/Years";
 
 const Filter = ({ genre, setGenre, language, setLanguage, year, setYear }) => {
+  const { current } = useTheme();
   const [view, setView] = useState("genre");
-
   const renderGenre = ({ item }) => (
     <Pressable
       onPress={() => {
-        if (!genre.includes(item)) {
-          setGenre((prev) => [...prev, item]);
-        }
+        setGenre((prev) => {
+          if (prev.includes(item)) {
+            return prev.filter((i) => i !== item);
+          } else {
+            return [...prev, item];
+          }
+        });
       }}
     >
-      <Text>{item}</Text>
+      <View
+        style={{
+          margin: 12,
+          borderLeftWidth: genre.includes(item) ? 4 : 0,
+          borderColor: theme[current].orange,
+          paddingHorizontal: 12,
+        }}
+      >
+        <Text
+          style={{
+            color: genre.includes(item) ? theme[current].orange : "black",
+            fontSize: 24,
+          }}
+        >
+          {item}
+        </Text>
+      </View>
     </Pressable>
   );
 
   const renderLanguage = ({ item }) => (
     <Pressable
       onPress={() => {
-        if (!language.includes(item)) {
-          setLanguage((prev) => [...prev, item]);
-        }
+        setLanguage((prev) => {
+          if (prev.includes(item)) {
+            return prev.filter((i) => i !== item);
+          } else {
+            return [...prev, item];
+          }
+        });
       }}
     >
-      <Text>{item}</Text>
+      <View
+        style={{
+          margin: 12,
+          borderLeftWidth: language.includes(item) ? 4 : 0,
+          borderColor: theme[current].orange,
+          paddingHorizontal: 12,
+        }}
+      >
+        <Text
+          style={{
+            color: language.includes(item) ? theme[current].orange : "black",
+            fontSize: 24,
+          }}
+        >
+          {item}
+        </Text>
+      </View>
     </Pressable>
   );
 
   const renderYear = ({ item }) => (
     <Pressable
       onPress={() => {
-        if (!year.includes(item)) {
-          setYear((prev) => [...prev, item]);
-        }
+        setYear((prev) => {
+          if (prev.includes(item)) {
+            return prev.filter((i) => i !== item);
+          } else {
+            return [...prev, item];
+          }
+        });
       }}
     >
-      <Text>{item}</Text>
+      <View
+        style={{
+          margin: 12,
+          borderLeftWidth: year.includes(item) ? 4 : 0,
+          borderColor: theme[current].orange,
+          paddingHorizontal: 12,
+        }}
+      >
+        <Text
+          style={{
+            color: year.includes(item) ? theme[current].orange : "black",
+            fontSize: 24,
+          }}
+        >
+          {item}'s
+        </Text>
+      </View>
     </Pressable>
   );
 
   return (
-    <View>
-      <Pressable onPress={() => setView("genre")}>
-        <Text>--genre---</Text>
-      </Pressable>
-      <Pressable onPress={() => setView("language")}>
-        <Text>--klang---</Text>
-      </Pressable>
-      <Pressable onPress={() => setView("year")}>
-        <Text>--year---</Text>
-      </Pressable>
-      {view === "genre" && (
-        <FlatList
-          data={genres}
-          renderItem={renderGenre}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      )}
-      {view === "language" && (
-        <FlatList
-          data={languages}
-          renderItem={renderLanguage}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      )}
-      {view === "year" && (
-        <FlatList
-          data={years}
-          renderItem={renderYear}
-          keyExtractor={(item, index) => index.toString()}
-        />
-      )}
+    <View
+      style={{
+        flexDirection: "row",
+        borderTopWidth: 4,
+        borderColor: theme[current].gray,
+      }}
+    >
+      <View style={{ width: "60%" }}>
+        {view === "genre" && (
+          <FlatList
+            data={genres}
+            renderItem={renderGenre}
+            keyExtractor={(item, index) => index.toString()}
+            style={{ marginBottom: "90%" }}
+          />
+        )}
+        {view === "language" && (
+          <FlatList
+            data={languages}
+            renderItem={renderLanguage}
+            keyExtractor={(item, index) => index.toString()}
+            style={{ marginBottom: "90%" }}
+          />
+        )}
+        {view === "year" && (
+          <FlatList
+            data={years}
+            renderItem={renderYear}
+            keyExtractor={(item, index) => index.toString()}
+            style={{ marginBottom: "90%" }}
+          />
+        )}
+      </View>
+      <View
+        style={{
+          width: "40%",
+          borderLeftWidth: 2,
+          borderColor: theme[current].gray,
+          padding: "2%",
+          alignItems: "flex-end",
+        }}
+      >
+        <Pressable
+          onPress={() => setView("genre")}
+          style={{
+            marginTop: "10%",
+            borderRightWidth: view == "genre" ? 4 : 0,
+            borderColor: theme[current].blue,
+            alignItems: "flex-end",
+            padding: "10%",
+          }}
+        >
+          <MaterialCommunityIcons
+            name="filmstrip"
+            size={48}
+            color={
+              view == "genre" ? theme[current].blue : theme[current].charcoal
+            }
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              color:
+                view == "genre" ? theme[current].blue : theme[current].charcoal,
+            }}
+          >
+            Genre[{genre.length}]
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setView("language")}
+          style={{
+            marginTop: "10%",
+            borderRightWidth: view == "language" ? 4 : 0,
+            borderColor: theme[current].blue,
+            alignItems: "flex-end",
+            padding: "10%",
+          }}
+        >
+          <FontAwesome
+            name="language"
+            size={48}
+            color={
+              view == "language" ? theme[current].blue : theme[current].charcoal
+            }
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              color:
+                view == "language"
+                  ? theme[current].blue
+                  : theme[current].charcoal,
+            }}
+          >
+            Language[{language.length}]
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setView("year")}
+          style={{
+            marginTop: "10%",
+            borderRightWidth: view == "year" ? 4 : 0,
+            borderColor: theme[current].blue,
+            alignItems: "flex-end",
+            padding: "10%",
+          }}
+        >
+          <AntDesign
+            name="calendar"
+            size={48}
+            color={
+              view == "year" ? theme[current].blue : theme[current].charcoal
+            }
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              color:
+                view == "yaer" ? theme[current].blue : theme[current].charcoal,
+            }}
+          >
+            Year[{year.length}]
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };

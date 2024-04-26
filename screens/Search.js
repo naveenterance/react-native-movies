@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -28,8 +28,10 @@ import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
-import { ScrollView } from "react-native-gesture-handler";
+// import { ScrollView } from "react-native-gesture-handler";
 import Filter from "../components/Filter";
+import { BackHandler, ScrollView } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Search = ({ navigation }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
@@ -49,6 +51,21 @@ const Search = ({ navigation }) => {
   const [view, setView] = useState("");
 
   const { username } = useAuth();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (view) {
+        const handleBeforeRemove = (event) => {
+          event.preventDefault();
+          setView("");
+          navigation.removeListener("beforeRemove", handleBeforeRemove);
+        };
+        navigation.addListener("beforeRemove", handleBeforeRemove);
+        return () =>
+          navigation.removeListener("beforeRemove", handleBeforeRemove);
+      }
+    }, [view, navigation])
+  );
 
   const handlepress = (m_id) => {
     setId(m_id);
@@ -347,130 +364,230 @@ const Search = ({ navigation }) => {
         }}
       >
         <Drawer_button />
-        <View style={{ marginTop: "1%" }}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          >
-            <TextInput
+        {view == "filter" ? (
+          <View>
+            <View
               style={{
-                backgroundColor: theme[current].white,
-                width: "80%",
-
-                marginTop: "1%",
-                paddingHorizontal: "5%",
-                paddingVertical: "2%",
-                borderWidth: 2,
-                borderColor: theme[current].charcoal,
-                borderRadius: 999,
-                fontSize: 16,
-                marginHorizontal: "2%",
+                flexDirection: "row",
+                justifyContent: "space-around",
               }}
-              selectionColor={theme[current].orange}
-              placeholder="Search for movies..."
-              value={searchQuery}
-              onChangeText={(text) => setSearchQuery(text)}
-              onSubmitEditing={searchMovies}
+            >
+              <Pressable
+                style={({ pressed }) => [
+                  {
+                    borderBottomWidth: pressed ? 6 : 0,
+                    padding: "5%",
+                    borderColor: theme[current].orange,
+                    flexDirection: "row",
+                  },
+                ]}
+                onPress={() => {
+                  setGenre([]);
+                  setLanguage([]);
+                  setYear([]);
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="filter-remove-outline"
+                  size={36}
+                  color={theme[current].red}
+                />
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "600",
+                    marginLeft: "2%",
+                    color: theme[current].red,
+                  }}
+                >
+                  Clear
+                </Text>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [
+                  {
+                    borderBottomWidth: pressed ? 6 : 0,
+                    padding: "5%",
+                    borderColor: theme[current].orange,
+                    flexDirection: "row",
+                  },
+                ]}
+                onPress={() => setView("")}
+              >
+                <MaterialCommunityIcons
+                  name="filter-check-outline"
+                  size={36}
+                  color={theme[current].green}
+                />
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "600",
+                    marginLeft: "2%",
+                    color: theme[current].green,
+                  }}
+                >
+                  Done
+                </Text>
+              </Pressable>
+            </View>
+
+            <Filter
+              genre={genre}
+              setGenre={setGenre}
+              language={language}
+              setLanguage={setLanguage}
+              year={year}
+              setYear={setYear}
             />
-            <Pressable onPress={searchMovies} style={{ alignSelf: "center" }}>
-              <FontAwesome
-                name="search"
-                size={36}
-                color={theme[current].charcoal}
-              />
-            </Pressable>
           </View>
-          <Button title="clear" onPress={() => setGenre([])} />
-          <Filter
-            genre={genre}
-            setGenre={setGenre}
-            language={language}
-            setLanguage={setLanguage}
-            year={year}
-            setYear={setYear}
-          />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              marginTop: "5%",
-              marginRight: "10%",
-            }}
-          >
-            <Pressable
-              onPress={() => setView(view == "recents" ? "" : "recents")}
+        ) : (
+          <View style={{ marginTop: "1%" }}>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
             >
-              <View
+              <TextInput
                 style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  borderBottomWidth: view == "recents" ? 4 : 0,
-                  borderBottomColor: theme[current].orange,
-                }}
-              >
-                <MaterialIcons name="history" size={28} color="black" />
-                <Text>Recent</Text>
-              </View>
-            </Pressable>
+                  backgroundColor: theme[current].white,
+                  width: "80%",
 
-            <Pressable
-              onPress={() => setView(view == "filter" ? "" : "filter")}
-            >
-              <View
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                  borderBottomWidth: view == "filter" ? 4 : 0,
-                  borderBottomColor: theme[current].orange,
+                  marginTop: "1%",
+                  paddingHorizontal: "5%",
+                  paddingVertical: "2%",
+                  borderWidth: 2,
+                  borderColor: theme[current].charcoal,
+                  borderRadius: 999,
+                  fontSize: 16,
+                  marginHorizontal: "2%",
                 }}
-              >
-                <AntDesign name="filter" size={28} color="black" />
-                <Text>Filters</Text>
-              </View>
-            </Pressable>
+                selectionColor={theme[current].orange}
+                placeholder="Search for movies..."
+                value={searchQuery}
+                onChangeText={(text) => setSearchQuery(text)}
+                onSubmitEditing={searchMovies}
+              />
+              <Pressable onPress={searchMovies} style={{ alignSelf: "center" }}>
+                <FontAwesome
+                  name="search"
+                  size={36}
+                  color={theme[current].charcoal}
+                />
+              </Pressable>
+            </View>
 
             <View
               style={{
-                flexDirection: "column",
-                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                marginTop: "5%",
+                marginRight: "10%",
               }}
             >
-              <MaterialCommunityIcons
-                name="book-search-outline"
-                size={28}
-                color="black"
-              />
+              <Pressable
+                onPress={() => setView(view == "recents" ? "" : "recents")}
+              >
+                <View
+                  style={{
+                    flexDirection: "column",
+                    alignItems: "center",
+                    borderBottomWidth: view == "recents" ? 4 : 0,
+                    borderBottomColor: theme[current].orange,
+                  }}
+                >
+                  <MaterialIcons name="history" size={28} color="black" />
+                  <Text>Recent</Text>
+                </View>
+              </Pressable>
 
-              <Text>Watchlist </Text>
+              <Pressable
+                onPress={() => setView(view == "filter" ? "" : "filter")}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    borderBottomWidth: view == "filter" ? 4 : 0,
+                    borderBottomColor: theme[current].orange,
+                  }}
+                >
+                  {genre.length > 0 ||
+                  language.length > 0 ||
+                  year.length > 0 ? (
+                    <View>
+                      <AntDesign
+                        name="filter"
+                        size={28}
+                        color={theme[current].green}
+                      />
+                      <Text style={{ color: theme[current].green }}>
+                        Filtered
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "700",
+                          color: theme[current].green,
+                        }}
+                      >
+                        [{genre.length}][{language.length}][
+                        {year.length}]
+                      </Text>
+                    </View>
+                  ) : (
+                    <View>
+                      <AntDesign name="filter" size={28} color="black" />
+                      <Text>Filters</Text>
+                    </View>
+                  )}
+                </View>
+              </Pressable>
+
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="book-search-outline"
+                  size={28}
+                  color="black"
+                />
+
+                <Text>Watchlist </Text>
+              </View>
             </View>
+            {searchPerformed ? (
+              movies.length === 0 ||
+              (!filterStatus &&
+                (language.length > 0 || genre.length > 0 || year.length)) ? (
+                <Text style={{ alignSelf: "center", marginTop: 20 }}>
+                  No results found
+                </Text>
+              ) : null
+            ) : null}
+            {movies.length > 0 && (
+              <FlatList
+                data={movies}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.imdbID}
+                style={{
+                  marginTop: 10,
+                  marginBottom: view !== "filter" && 150,
+                }}
+              />
+            )}
+            {loading && <Text>Loading...</Text>}
+            {error && <Text>Error: {error.message}</Text>}
+            {view == "recents" && (
+              <RecentSearches
+                recentSearches={recentSearches}
+                setRecentSearches={setRecentSearches}
+                setSearchQuery={setSearchQuery}
+              />
+            )}
           </View>
-          {searchPerformed ? (
-            movies.length === 0 ||
-            (!filterStatus &&
-              (language.length > 0 || genre.length > 0 || year.length)) ? (
-              <Text style={{ alignSelf: "center", marginTop: 20 }}>
-                No results found
-              </Text>
-            ) : null
-          ) : null}
-          {movies.length > 0 && (
-            <FlatList
-              data={movies}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.imdbID}
-              style={{ marginTop: 10, marginBottom: view !== "filter" && 150 }}
-            />
-          )}
-          {loading && <Text>Loading...</Text>}
-          {error && <Text>Error: {error.message}</Text>}
-          {view == "recents" && (
-            <RecentSearches
-              recentSearches={recentSearches}
-              setRecentSearches={setRecentSearches}
-              setSearchQuery={setSearchQuery}
-            />
-          )}
-        </View>
+        )}
       </View>
     </>
   );
