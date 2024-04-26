@@ -34,8 +34,12 @@ const List = ({ tab }) => {
             style={({ pressed }) => [
               {
                 borderWidth: pressed ? 4 : 0,
-
+                height: 220,
+                width: 220,
                 borderColor: theme[current].orange,
+
+                alignItems: "center",
+                justifyContent: "center",
               },
             ]}
           >
@@ -43,7 +47,6 @@ const List = ({ tab }) => {
               style={{
                 height: 200,
                 width: 200,
-                margin: 10,
               }}
               source={{
                 uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item["movieId"]}`,

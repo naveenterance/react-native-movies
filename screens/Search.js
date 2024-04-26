@@ -484,7 +484,6 @@ const Search = ({ navigation }) => {
                 flexDirection: "row",
                 justifyContent: "space-around",
                 marginTop: "5%",
-                marginRight: "10%",
               }}
             >
               <Pressable
@@ -507,7 +506,7 @@ const Search = ({ navigation }) => {
                     borderBottomColor: theme[current].orange,
                   }}
                 >
-                  <MaterialIcons name="history" size={28} color="black" />
+                  <MaterialIcons name="history" size={30} color="black" />
                   <Text>Recent</Text>
                 </View>
               </Pressable>
@@ -538,7 +537,7 @@ const Search = ({ navigation }) => {
                     <View>
                       <AntDesign
                         name="filter"
-                        size={28}
+                        size={30}
                         color={theme[current].green}
                       />
                       <Text style={{ color: theme[current].green }}>
@@ -556,13 +555,14 @@ const Search = ({ navigation }) => {
                     </View>
                   ) : (
                     <View>
-                      <AntDesign name="filter" size={28} color="black" />
+                      <AntDesign name="filter" size={30} color="black" />
                       <Text>Filters</Text>
                     </View>
                   )}
                 </View>
               </Pressable>
               <Pressable
+                onPress={() => navigation.navigate("Bookmarks")}
                 style={({ pressed }) => [
                   {
                     paddingVertical: "2%",
@@ -580,8 +580,8 @@ const Search = ({ navigation }) => {
                   }}
                 >
                   <MaterialCommunityIcons
-                    name="book-search-outline"
-                    size={28}
+                    name="bookmark-multiple-outline"
+                    size={30}
                     color="black"
                   />
 
@@ -605,7 +605,7 @@ const Search = ({ navigation }) => {
                 keyExtractor={(item) => item.imdbID}
                 style={{
                   marginTop: 10,
-                  marginBottom: view !== "filter" && 150,
+                  marginBottom: view !== "filter" && 210,
                 }}
               />
             )}
