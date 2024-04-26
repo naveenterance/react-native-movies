@@ -54,7 +54,7 @@ const Search = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (view) {
+      if (view == "filter") {
         const handleBeforeRemove = (event) => {
           event.preventDefault();
           setView("");
@@ -376,9 +376,7 @@ const Search = ({ navigation }) => {
               <Pressable
                 style={({ pressed }) => [
                   {
-                    borderBottomWidth: pressed ? 6 : 0,
                     padding: "5%",
-                    borderColor: theme[current].orange,
                     flexDirection: "row",
                     backgroundColor: pressed
                       ? theme[current].gray
@@ -411,9 +409,7 @@ const Search = ({ navigation }) => {
               <Pressable
                 style={({ pressed }) => [
                   {
-                    borderBottomWidth: pressed ? 6 : 0,
                     padding: "5%",
-                    borderColor: theme[current].orange,
                     flexDirection: "row",
                     backgroundColor: pressed
                       ? theme[current].gray

@@ -60,11 +60,14 @@ const Bookmarks = ({ navigation }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (data && data.allUsers) {
-        const bookmarkedMovies = data.allUsers.filter(
-          (user) =>
-            user.username === username && user.rating === "[to be watched]"
-        );
-
+        const bookmarkedMovies = data.allUsers.filter((user) => {
+          return (
+            user.username === username &&
+            ((view === "bookmarks" && user.rating === "[to be watched]") ||
+              (view === "watched" && user.rating === "[watched]"))
+          );
+        });
+        console.log(view);
         const moviesWithRatings = await Promise.all(
           bookmarkedMovies.map(async (user) => {
             const ratingResponse = await fetch(
@@ -97,7 +100,7 @@ const Bookmarks = ({ navigation }) => {
     };
 
     fetchData();
-  }, [data, username]);
+  }, [data, username, view]);
 
   const handlepress = (m_id) => {
     setId(m_id);
@@ -366,25 +369,7 @@ const Bookmarks = ({ navigation }) => {
       }}
     >
       <Drawer_button />
-      <TextInput
-        style={{
-          backgroundColor: theme[current].white,
-          width: "80%",
 
-          marginTop: "1%",
-          paddingHorizontal: "5%",
-          paddingVertical: "2%",
-          borderWidth: 2,
-          borderColor: theme[current].charcoal,
-          borderRadius: 999,
-          fontSize: 16,
-          marginHorizontal: "2%",
-        }}
-        selectionColor={theme[current].orange}
-        placeholder="Search for movies..."
-        value={searchQuery}
-        onChangeText={(text) => setSearchQuery(text)}
-      />
       {view == "filter" ? (
         <View>
           <View
@@ -396,9 +381,8 @@ const Bookmarks = ({ navigation }) => {
             <Pressable
               style={({ pressed }) => [
                 {
-                  borderBottomWidth: pressed ? 6 : 0,
                   padding: "5%",
-                  borderColor: theme[current].orange,
+                  marginBottom: "1%",
                   flexDirection: "row",
                   backgroundColor: pressed
                     ? theme[current].gray
@@ -431,9 +415,8 @@ const Bookmarks = ({ navigation }) => {
             <Pressable
               style={({ pressed }) => [
                 {
-                  borderBottomWidth: pressed ? 6 : 0,
                   padding: "5%",
-                  borderColor: theme[current].orange,
+                  marginBottom: "1%",
                   flexDirection: "row",
                   backgroundColor: pressed
                     ? theme[current].gray
@@ -471,53 +454,168 @@ const Bookmarks = ({ navigation }) => {
         </View>
       ) : (
         <View>
-          <Pressable
-            onPress={() => setView(view == "filter" ? "" : "filter")}
-            style={({ pressed }) => [
-              {
-                paddingVertical: "2%",
-                paddingHorizontal: "10%",
-                backgroundColor: pressed
-                  ? theme[current].gray
-                  : theme[current].white,
-              },
-            ]}
+          <TextInput
+            style={{
+              backgroundColor: theme[current].white,
+              width: "80%",
+              // marginTop: "1%",
+              marginVertical: "2%",
+              marginLeft: "10%",
+              paddingHorizontal: "5%",
+              paddingVertical: "2%",
+              borderWidth: 2,
+              borderColor: theme[current].charcoal,
+              borderRadius: 999,
+              fontSize: 16,
+              marginHorizontal: "2%",
+            }}
+            selectionColor={theme[current].orange}
+            placeholder="Search for movies in watchlist"
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginTop: "5%",
+              marginRight: "10%",
+            }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                borderBottomWidth: view == "filter" ? 4 : 0,
-                borderBottomColor: theme[current].orange,
-              }}
+            <Pressable
+              onPress={() => setView(view == "bookmarks" ? "" : "bookmarks")}
+              style={({ pressed }) => [
+                {
+                  paddingVertical: "2%",
+                  paddingHorizontal: "5%",
+                  backgroundColor: pressed
+                    ? theme[current].gray
+                    : theme[current].white,
+                },
+              ]}
             >
-              {genre.length > 0 || language.length > 0 || year.length > 0 ? (
-                <View>
-                  <AntDesign
-                    name="filter"
-                    size={28}
-                    color={theme[current].green}
-                  />
-                  <Text style={{ color: theme[current].green }}>Filtered</Text>
-                  <Text
-                    style={{
-                      fontWeight: "700",
-                      color: theme[current].green,
-                    }}
-                  >
-                    [{genre.length}][{language.length}][
-                    {year.length}]
-                  </Text>
-                </View>
-              ) : (
-                <View>
-                  <AntDesign name="filter" size={28} color="black" />
-                  <Text>Filters</Text>
-                </View>
-              )}
-            </View>
-          </Pressable>
-          <Text style={styles.title}>Bookmarked Movies</Text>
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  borderBottomWidth: view == "bookmarks" ? 4 : 0,
+                  borderBottomColor: theme[current].orange,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="bookmark-multiple-outline"
+                  size={30}
+                  color={theme[current].charcoal}
+                />
+                <Text>Bookmarks</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => setView(view == "watched" ? "" : "watched")}
+              style={({ pressed }) => [
+                {
+                  paddingVertical: "2%",
+                  paddingHorizontal: "5%",
+                  backgroundColor: pressed
+                    ? theme[current].gray
+                    : theme[current].white,
+                },
+              ]}
+            >
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  borderBottomWidth: view == "watched" ? 4 : 0,
+                  borderBottomColor: theme[current].orange,
+                }}
+              >
+                <AntDesign
+                  name="eyeo"
+                  size={30}
+                  color={theme[current].charcoal}
+                />
+                <Text>Watched</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => setView(view == "rated" ? "" : "rated")}
+              style={({ pressed }) => [
+                {
+                  paddingVertical: "2%",
+                  paddingHorizontal: "5%",
+                  backgroundColor: pressed
+                    ? theme[current].gray
+                    : theme[current].white,
+                },
+              ]}
+            >
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  borderBottomWidth: view == "rated" ? 4 : 0,
+                  borderBottomColor: theme[current].orange,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="movie-check-outline"
+                  size={30}
+                  color="black"
+                />
+                <Text>Rated</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={() => setView(view == "filter" ? "" : "filter")}
+              style={({ pressed }) => [
+                {
+                  paddingVertical: "2%",
+                  paddingHorizontal: "5%",
+                  backgroundColor: pressed
+                    ? theme[current].gray
+                    : theme[current].white,
+                },
+              ]}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  borderBottomWidth: view == "filter" ? 4 : 0,
+                  borderBottomColor: theme[current].orange,
+                }}
+              >
+                {genre.length > 0 || language.length > 0 || year.length > 0 ? (
+                  <View>
+                    <AntDesign
+                      name="filter"
+                      size={28}
+                      color={theme[current].green}
+                    />
+                    <Text style={{ color: theme[current].green }}>
+                      Filtered
+                    </Text>
+                    <Text
+                      style={{
+                        fontWeight: "700",
+                        color: theme[current].green,
+                      }}
+                    >
+                      [{genre.length}][{language.length}][
+                      {year.length}]
+                    </Text>
+                  </View>
+                ) : (
+                  <View>
+                    <AntDesign name="filter" size={28} color="black" />
+                    <Text>Filters</Text>
+                  </View>
+                )}
+              </View>
+            </Pressable>
+          </View>
+
           <FlatList
             data={filtered.length <= 0 ? movies : filtered}
             renderItem={renderItem}

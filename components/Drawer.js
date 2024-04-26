@@ -157,13 +157,20 @@ const Modal_custom = () => {
                 <MaterialCommunityIcons
                   name="bookmark-multiple-outline"
                   size={30}
-                  color={theme[current].charcoal}
+                  color={
+                    route.name == "Bookmarks"
+                      ? theme[current].orange
+                      : theme[current].charcoal
+                  }
                 />
                 <Text
                   style={{
                     fontSize: 20,
                     marginLeft: 12,
-                    color: theme[current].charcoal,
+                    color:
+                      route.name == "Bookmarks"
+                        ? theme[current].orange
+                        : theme[current].charcoal,
                   }}
                 >
                   Bookmarks
