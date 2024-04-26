@@ -48,7 +48,7 @@ const Search = ({ navigation }) => {
   const [year, setYear] = useState([]);
   const [filterStatus, setFilterStatus] = useState(false);
   const { current } = useTheme();
-  const [view, setView] = useState("");
+  const [view, setView] = useState("recents");
 
   const { username } = useAuth();
 
@@ -89,6 +89,7 @@ const Search = ({ navigation }) => {
   };
 
   const searchMovies = async () => {
+    setView("");
     try {
       const response = await fetch(
         `http://www.omdbapi.com/?apikey=${API_KEY}&s=${searchQuery}`
@@ -379,6 +380,9 @@ const Search = ({ navigation }) => {
                     padding: "5%",
                     borderColor: theme[current].orange,
                     flexDirection: "row",
+                    backgroundColor: pressed
+                      ? theme[current].gray
+                      : theme[current].white,
                   },
                 ]}
                 onPress={() => {
@@ -411,6 +415,9 @@ const Search = ({ navigation }) => {
                     padding: "5%",
                     borderColor: theme[current].orange,
                     flexDirection: "row",
+                    backgroundColor: pressed
+                      ? theme[current].gray
+                      : theme[current].white,
                   },
                 ]}
                 onPress={() => setView("")}
@@ -486,6 +493,15 @@ const Search = ({ navigation }) => {
             >
               <Pressable
                 onPress={() => setView(view == "recents" ? "" : "recents")}
+                style={({ pressed }) => [
+                  {
+                    paddingVertical: "2%",
+                    paddingHorizontal: "10%",
+                    backgroundColor: pressed
+                      ? theme[current].gray
+                      : theme[current].white,
+                  },
+                ]}
               >
                 <View
                   style={{
@@ -502,6 +518,15 @@ const Search = ({ navigation }) => {
 
               <Pressable
                 onPress={() => setView(view == "filter" ? "" : "filter")}
+                style={({ pressed }) => [
+                  {
+                    paddingVertical: "2%",
+                    paddingHorizontal: "10%",
+                    backgroundColor: pressed
+                      ? theme[current].gray
+                      : theme[current].white,
+                  },
+                ]}
               >
                 <View
                   style={{
@@ -541,21 +566,32 @@ const Search = ({ navigation }) => {
                   )}
                 </View>
               </Pressable>
-
-              <View
-                style={{
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
+              <Pressable
+                style={({ pressed }) => [
+                  {
+                    paddingVertical: "2%",
+                    paddingHorizontal: "10%",
+                    backgroundColor: pressed
+                      ? theme[current].gray
+                      : theme[current].white,
+                  },
+                ]}
               >
-                <MaterialCommunityIcons
-                  name="book-search-outline"
-                  size={28}
-                  color="black"
-                />
+                <View
+                  style={{
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="book-search-outline"
+                    size={28}
+                    color="black"
+                  />
 
-                <Text>Watchlist </Text>
-              </View>
+                  <Text>Watchlist </Text>
+                </View>
+              </Pressable>
             </View>
             {searchPerformed ? (
               movies.length === 0 ||
@@ -566,7 +602,7 @@ const Search = ({ navigation }) => {
                 </Text>
               ) : null
             ) : null}
-            {movies.length > 0 && (
+            {movies.length > 0 && !view && (
               <FlatList
                 data={movies}
                 renderItem={renderItem}
