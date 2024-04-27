@@ -30,9 +30,10 @@ import Modal from "react-native-modal";
 import Filter from "../components/Filter";
 import { BackHandler, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
 const Search = ({ navigation }) => {
-  const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
+  const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const [addUser] = useMutation(ADD_USER);
   const { id, setId } = useID();
   const { modalVisible, setModalVisible } = useModal();
@@ -47,6 +48,7 @@ const Search = ({ navigation }) => {
   const [filterStatus, setFilterStatus] = useState(false);
   const { current } = useTheme();
   const [view, setView] = useState("recents");
+  const [loading, setLoading] = useState(false);
 
   const { username } = useAuth();
 
@@ -87,6 +89,7 @@ const Search = ({ navigation }) => {
   };
 
   const searchMovies = async () => {
+    setLoading(true);
     setView("");
     try {
       const response = await fetch(
@@ -122,6 +125,7 @@ const Search = ({ navigation }) => {
         setMovies(moviesWithRatings);
         saveRecentSearches(searchQuery);
         setSearchPerformed(true);
+        setLoading(false);
       } else {
         setMovies([]);
         setSearchPerformed(true);
@@ -481,6 +485,7 @@ const Search = ({ navigation }) => {
                 onChangeText={(text) => setSearchQuery(text)}
                 onSubmitEditing={searchMovies}
               />
+
               <Pressable onPress={searchMovies} style={{ alignSelf: "center" }}>
                 <FontAwesome
                   name="search"
@@ -503,9 +508,8 @@ const Search = ({ navigation }) => {
                   {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
-                    backgroundColor: pressed
-                      ? theme[current].gray
-                      : theme[current].white,
+                    borderBottomWidth: pressed ? 4 : 0,
+                    borderColor: theme[current].orange,
                   },
                 ]}
               >
@@ -528,9 +532,8 @@ const Search = ({ navigation }) => {
                   {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
-                    backgroundColor: pressed
-                      ? theme[current].gray
-                      : theme[current].white,
+                    borderBottomWidth: pressed ? 4 : 0,
+                    borderColor: theme[current].orange,
                   },
                 ]}
               >
@@ -578,9 +581,8 @@ const Search = ({ navigation }) => {
                   {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
-                    backgroundColor: pressed
-                      ? theme[current].gray
-                      : theme[current].white,
+                    borderBottomWidth: pressed ? 4 : 0,
+                    borderColor: theme[current].orange,
                   },
                 ]}
               >
@@ -605,9 +607,8 @@ const Search = ({ navigation }) => {
                   {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
-                    backgroundColor: pressed
-                      ? theme[current].gray
-                      : theme[current].white,
+                    borderBottomWidth: pressed ? 4 : 0,
+                    borderColor: theme[current].orange,
                   },
                 ]}
               >
@@ -623,6 +624,19 @@ const Search = ({ navigation }) => {
                 </View>
               </Pressable>
             </View>
+            {loading && (
+              <LottieView
+                style={{
+                  width: 210,
+                  height: 210,
+
+                  alignSelf: "center",
+                }}
+                source={require("../assets/loader4.json")}
+                autoPlay
+                loop
+              />
+            )}
             {searchPerformed ? (
               movies.length === 0 ||
               (!filterStatus &&
@@ -643,7 +657,7 @@ const Search = ({ navigation }) => {
                 }}
               />
             )}
-            {loading && <Text>Loading...</Text>}
+            {loading && <Text>loading</Text>}
             {error && <Text>Error: {error.message}</Text>}
             {view == "recents" && (
               <RecentSearches

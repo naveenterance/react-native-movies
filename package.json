@@ -39,6 +39,7 @@
     "react-native-navigation": "^7.39.1",
     "react-native-share": "^10.2.0",
     "react-native-simple-toast": "^3.3.1",
+    "react-native-skeleton-content": "^1.0.28",
     "react-native-smart-tip": "^2.3.0"
   },
   "devDependencies": {

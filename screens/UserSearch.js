@@ -48,14 +48,6 @@ const UserSearch = ({ navigation }) => {
     )
     .slice(0, 20);
 
-  if (loading) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
   const renderItem = ({ item }) => (
     <Pressable
       onPress={() => {

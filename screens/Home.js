@@ -22,15 +22,17 @@ import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import List from "../components/Home_section";
 import Drawer_button from "../components/Drawer_button";
+import LottieView from "lottie-react-native";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
-  const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
+  const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const [bookmarks, setBookmarks] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [watched, setWatched] = useState([]);
   const { username } = useAuth();
   const { current } = useTheme();
+  const [loading, setLoading] = useState(false);
 
   const API_KEY = "e24ea998";
   useFocusEffect(
@@ -76,6 +78,7 @@ const HomeScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
+    setLoading(true);
     if (data && data.allUsers) {
       const userBookmarks = data.allUsers.filter(
         (item) =>
@@ -93,6 +96,7 @@ const HomeScreen = ({ navigation }) => {
       setBookmarks(userBookmarks);
       setReviews(userReviews);
       setWatched(userWatched);
+      setLoading(false);
     }
   }, [data, username]);
 
@@ -120,6 +124,19 @@ const HomeScreen = ({ navigation }) => {
           >
             Bookmarks[{bookmarks.length}]
           </Text>
+          {loading && (
+            <LottieView
+              style={{
+                width: 210,
+                height: 210,
+
+                alignSelf: "center",
+              }}
+              source={require("../assets/loader4.json")}
+              autoPlay
+              loop
+            />
+          )}
           <List tab={bookmarks} />
           <Text
             style={{
@@ -135,6 +152,19 @@ const HomeScreen = ({ navigation }) => {
           >
             Reviews[{reviews.length}]
           </Text>
+          {loading && (
+            <LottieView
+              style={{
+                width: 210,
+                height: 210,
+
+                alignSelf: "center",
+              }}
+              source={require("../assets/loader4.json")}
+              autoPlay
+              loop
+            />
+          )}
           <List tab={reviews} />
           <Text
             style={{
@@ -150,6 +180,19 @@ const HomeScreen = ({ navigation }) => {
           >
             Watched[{watched.length}]
           </Text>
+          {loading && (
+            <LottieView
+              style={{
+                width: 210,
+                height: 210,
+
+                alignSelf: "center",
+              }}
+              source={require("../assets/loader4.json")}
+              autoPlay
+              loop
+            />
+          )}
           <List tab={watched} />
         </View>
       </ScrollView>

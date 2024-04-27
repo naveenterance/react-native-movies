@@ -27,15 +27,18 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import Drawer_button from "../components/Drawer_button";
 import { useSearchTerm } from "../utils/SearchTerm";
+import LottieView from "lottie-react-native";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const Bookmarks = ({ navigation }) => {
   const { current } = useTheme();
-  const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
+  const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const { username } = useAuth();
   const { id, setId } = useID();
   const [movies, setMovies] = useState([]);
   const [view, setView] = useState("bookmarks");
   const { searchedUser, setSearchedUser } = useSearchTerm();
+  const [loading, setLoading] = useState(false);
 
   const API_KEY = "e24ea998";
 
@@ -52,6 +55,7 @@ const Bookmarks = ({ navigation }) => {
   );
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       if (data && data.allUsers) {
         const bookmarkedMovies = data.allUsers.filter((user) => {
@@ -92,6 +96,7 @@ const Bookmarks = ({ navigation }) => {
           })
         );
         setMovies(moviesWithRatings);
+        setLoading(false);
       }
     };
 
@@ -311,7 +316,6 @@ const Bookmarks = ({ navigation }) => {
     );
   };
 
-  if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
@@ -324,9 +328,36 @@ const Bookmarks = ({ navigation }) => {
       }}
     >
       <Drawer_button />
+      <View style={{ width: "100%", alignItems: "center" }}>
+        {searchedUser && (
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: "5%",
+            }}
+          >
+            <FontAwesome6 name="users-viewfinder" size={38} color="black" />
 
-      <Text>{searchedUser}'s movie lists</Text>
-
+            <Text
+              style={{
+                fontSize: 24,
+                borderBottomWidth: 4,
+                borderColor: theme[current].orange,
+                marginLeft: "3%",
+              }}
+            >
+              {searchedUser}
+            </Text>
+            <Text style={{ color: theme[current].orange, fontSize: 20 }}>
+              's
+            </Text>
+            <Text style={{ color: theme[current].orange, fontSize: 20 }}>
+              {" "}
+              lists
+            </Text>
+          </View>
+        )}
+      </View>
       <View>
         <View
           style={{
@@ -445,6 +476,19 @@ const Bookmarks = ({ navigation }) => {
             </View>
           </Pressable>
         </View>
+        {loading && (
+          <LottieView
+            style={{
+              width: 210,
+              height: 210,
+
+              alignSelf: "center",
+            }}
+            source={require("../assets/loader4.json")}
+            autoPlay
+            loop
+          />
+        )}
 
         <FlatList
           data={movies}
