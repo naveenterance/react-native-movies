@@ -23,6 +23,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import List from "../components/Home_section";
 import Drawer_button from "../components/Drawer_button";
 import LottieView from "lottie-react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -110,20 +111,84 @@ const HomeScreen = ({ navigation }) => {
             marginBottom: "20%",
           }}
         >
-          <Text
-            style={{
-              fontSize: 22,
-              fontWeight: "900",
-              marginRight: "10%",
-              borderLeftWidth: 6,
-              borderColor: theme[current].orange,
-              paddingLeft: "2%",
-              marginVertical: "5%",
-              opacity: 0.75,
-            }}
-          >
-            Bookmarks[{bookmarks.length}]
-          </Text>
+          {bookmarks.length <= 0 &&
+            reviews.length <= 0 &&
+            watched.length <= 0 && (
+              <View
+                style={{
+                  width: "100%",
+                  height: "90%",
+                  marginTop: "20%",
+                }}
+              >
+                <View
+                  style={{
+                    height: 500,
+                    borderLeftWidth: 36,
+                    borderColor: theme[current].orange,
+                  }}
+                >
+                  <View
+                    style={{
+                      height: 400,
+                      borderLeftWidth: 36,
+                      borderColor: theme[current].blue,
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 300,
+                        borderLeftWidth: 36,
+                        borderColor: theme[current].gray,
+                      }}
+                    >
+                      <Pressable
+                        style={({ pressed }) => [
+                          {
+                            padding: "10%",
+                            marginTop: "20%",
+                            marginLeft: pressed ? "10%" : "1%",
+                          },
+                        ]}
+                        onPress={() => navigation.navigate("Search")}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 36,
+                            fontWeight: 900,
+                            color: theme[current].gray,
+                          }}
+                        >
+                          Its empty ,let's go add something
+                        </Text>
+
+                        <AntDesign
+                          name="doubleright"
+                          size={48}
+                          color={theme[current].orange}
+                        />
+                      </Pressable>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+          <Pressable onPress={() => navigation.navigate("Bookmarks")}>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: "900",
+                marginRight: "10%",
+                borderLeftWidth: 6,
+                borderColor: theme[current].orange,
+                paddingLeft: "2%",
+                marginVertical: "5%",
+                opacity: 0.75,
+              }}
+            >
+              Bookmarks[{bookmarks.length}]
+            </Text>
+          </Pressable>
           {loading && (
             <LottieView
               style={{
@@ -138,20 +203,22 @@ const HomeScreen = ({ navigation }) => {
             />
           )}
           <List tab={bookmarks} />
-          <Text
-            style={{
-              fontSize: 22,
-              fontWeight: "900",
-              marginRight: "10%",
-              borderLeftWidth: 6,
-              borderColor: theme[current].orange,
-              paddingLeft: "2%",
-              marginVertical: "5%",
-              opacity: 0.75,
-            }}
-          >
-            Reviews[{reviews.length}]
-          </Text>
+          <Pressable onPress={() => navigation.navigate("Bookmarks")}>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: "900",
+                marginRight: "10%",
+                borderLeftWidth: 6,
+                borderColor: theme[current].orange,
+                paddingLeft: "2%",
+                marginVertical: "5%",
+                opacity: 0.75,
+              }}
+            >
+              Reviews[{reviews.length}]
+            </Text>
+          </Pressable>
           {loading && (
             <LottieView
               style={{
@@ -166,20 +233,22 @@ const HomeScreen = ({ navigation }) => {
             />
           )}
           <List tab={reviews} />
-          <Text
-            style={{
-              fontSize: 22,
-              fontWeight: "900",
-              marginRight: "10%",
-              borderLeftWidth: 6,
-              borderColor: theme[current].orange,
-              paddingLeft: "2%",
-              marginVertical: "5%",
-              opacity: 0.75,
-            }}
-          >
-            Watched[{watched.length}]
-          </Text>
+          <Pressable onPress={() => navigation.navigate("Bookmarks")}>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: "900",
+                marginRight: "10%",
+                borderLeftWidth: 6,
+                borderColor: theme[current].orange,
+                paddingLeft: "2%",
+                marginVertical: "5%",
+                opacity: 0.75,
+              }}
+            >
+              Watched[{watched.length}]
+            </Text>
+          </Pressable>
           {loading && (
             <LottieView
               style={{

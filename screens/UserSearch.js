@@ -93,12 +93,16 @@ const UserSearch = ({ navigation }) => {
         onChangeText={handleSearch}
         value={searchTerm}
       />
-      {showResults && (
+      {showResults ? (
         <FlatList
           data={filteredUsers}
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
         />
+      ) : (
+        <View style={{ alignItems: "center" }}>
+          <MaterialIcons name="person-search" size={96} color="black" />
+        </View>
       )}
     </View>
   );

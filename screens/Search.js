@@ -657,7 +657,7 @@ const Search = ({ navigation }) => {
                 }}
               />
             )}
-            {loading && <Text>loading</Text>}
+
             {error && <Text>Error: {error.message}</Text>}
             {view == "recents" && (
               <RecentSearches
