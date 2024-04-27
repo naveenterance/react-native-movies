@@ -7,6 +7,7 @@ import {
   Pressable,
   Image,
   TextInput,
+  Button,
 } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_USERS } from "../utils/graphql";
@@ -25,6 +26,7 @@ import { BackHandler, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import Drawer_button from "../components/Drawer_button";
+import { useSearchTerm } from "../utils/SearchTerm";
 
 const Bookmarks = ({ navigation }) => {
   const { current } = useTheme();
@@ -32,21 +34,29 @@ const Bookmarks = ({ navigation }) => {
   const { username } = useAuth();
   const { id, setId } = useID();
   const [movies, setMovies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [genre, setGenre] = useState([]);
-  const [language, setLanguage] = useState([]);
-  const [year, setYear] = useState([]);
-
   const [view, setView] = useState("bookmarks");
+  const { searchedUser, setSearchedUser } = useSearchTerm();
 
   const API_KEY = "e24ea998";
+
+  useFocusEffect(
+    useCallback(() => {
+      const handleBeforeRemove = () => {
+        setSearchedUser("");
+      };
+      navigation.addListener("beforeRemove", handleBeforeRemove);
+      return () => {
+        navigation.removeListener("beforeRemove", handleBeforeRemove);
+      };
+    }, [navigation])
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       if (data && data.allUsers) {
         const bookmarkedMovies = data.allUsers.filter((user) => {
           return (
-            user.username === username &&
+            user.username === (searchedUser ? searchedUser : username) &&
             ((view === "rated" && !isNaN(user.rating)) ||
               (view === "bookmarks" && user.rating === "[to be watched]") ||
               (view === "watched" && user.rating === "[watched]") ||
@@ -86,7 +96,7 @@ const Bookmarks = ({ navigation }) => {
     };
 
     fetchData();
-  }, [data, username, view]);
+  }, [data, username, view, searchedUser]);
 
   const handlepress = (m_id) => {
     setId(m_id);
@@ -99,7 +109,7 @@ const Bookmarks = ({ navigation }) => {
         ? data.allUsers.find(
             (userMovie) =>
               userMovie.movieId === item.imdbID &&
-              userMovie.username === username
+              userMovie.username === (searchedUser ? searchedUser : username)
           )?.rating
         : null;
 
@@ -113,8 +123,8 @@ const Bookmarks = ({ navigation }) => {
               padding: 8,
               borderRadius: 8,
               flexDirection: "row",
-              borderWidth: userRating && 4,
-              borderColor: userRating && theme[current].blue,
+              // borderWidth: userRating && 4,
+              // borderColor: userRating && theme[current].blue,
             }}
           >
             <View>
@@ -206,33 +216,52 @@ const Bookmarks = ({ navigation }) => {
               {userRating &&
                 userRating !== "[to be watched]" &&
                 userRating !== "[watched]" && (
-                  <View style={{ width: "50%" }}>
-                    <Text
-                      style={{ fontStyle: "italic", color: "#4B5563" }}
-                    >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
-                    <View
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#E5E7EB",
-                        borderRadius: 999,
-                        height: 4,
-                      }}
-                    >
-                      <View
+                  <View style={{ width: "90%", flexDirection: "row" }}>
+                    <MaterialCommunityIcons
+                      name="certificate-outline"
+                      size={36}
+                      color={theme[current].orange}
+                    />
+                    <View>
+                      <Text
                         style={{
-                          width: parseFloat(userRating) + "%",
-                          backgroundColor: theme[current].blue,
-                          alignItems: "center",
-                          padding: 2,
-                          borderRadius: 999,
-                          fontSize: 12,
+                          fontStyle: "italic",
+                          color: "#4B5563",
+                          fontSize: 20,
                           fontWeight: "500",
-                          color: "#4299E1",
-                          textAlign: "center",
-                          lineHeight: 12,
                         }}
                       >
-                        <Text></Text>
+                        {searchedUser
+                          ? `${searchedUser}'s rating: ${parseFloat(
+                              userRating
+                            )}%`
+                          : `Your rating: ${parseFloat(userRating)}%`}
+                      </Text>
+
+                      <View
+                        style={{
+                          width: "100%",
+                          backgroundColor: "#E5E7EB",
+                          borderRadius: 999,
+                          height: 4,
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: parseFloat(userRating) + "%",
+                            backgroundColor: theme[current].blue,
+                            alignItems: "center",
+                            padding: 2,
+                            borderRadius: 999,
+                            fontSize: 12,
+                            fontWeight: "500",
+                            color: "#4299E1",
+                            textAlign: "center",
+                            lineHeight: 12,
+                          }}
+                        >
+                          <Text></Text>
+                        </View>
                       </View>
                     </View>
                   </View>
@@ -295,7 +324,9 @@ const Bookmarks = ({ navigation }) => {
       }}
     >
       <Drawer_button />
-
+      <Pressable onPress={() => setSearchedUser("")}>
+        <Text>{searchedUser}'s movie lists</Text>
+      </Pressable>
       <View>
         <View
           style={{

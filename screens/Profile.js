@@ -9,6 +9,7 @@ import { useAuth } from "../utils/Auth";
 import { useModal } from "../utils/Modal";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Drawer_button from "../components/Drawer_button";
+import MainComponent from "../components/Search";
 
 const Profile = ({ navigation }) => {
   const { modalVisible, setModalVisible } = useModal();
@@ -29,6 +30,11 @@ const Profile = ({ navigation }) => {
   return (
     <View>
       <Drawer_button />
+      <MainComponent />
+      <Button
+        title="search"
+        onPress={() => navigation.navigate("UserSearch")}
+      />
       <View
         style={{
           flexDirection: "column",

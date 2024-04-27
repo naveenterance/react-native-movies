@@ -158,6 +158,22 @@ const Movie_info = ({ navigation }) => {
       console.error("Error adding movie:", error);
     }
   };
+  const watched = "[watched]";
+  const addToWatchedlist = async (id) => {
+    try {
+      await addUser({
+        variables: {
+          username,
+          movieId: id,
+          rating: watched,
+          review: watched,
+        },
+      });
+      refetch();
+    } catch (error) {
+      console.error("Error adding movie:", error);
+    }
+  };
 
   const userRating =
     data && data.allUsers
@@ -206,6 +222,9 @@ const Movie_info = ({ navigation }) => {
             <Text>Title: {movieData.Title}</Text>
             <Pressable onPress={() => addToWatchlist(id)}>
               <Feather name="bookmark" size={30} color="black" />
+            </Pressable>
+            <Pressable onPress={() => addToWatchedlist(id)}>
+              <Feather name="eye" size={30} color="black" />
             </Pressable>
             <Button title="delete bookmark" onPress={handleDelete} />
             <Text>Year: {movieData.Year}</Text>

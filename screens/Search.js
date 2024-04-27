@@ -18,8 +18,6 @@ import Modal_custom from "../components/Drawer";
 import { useModal } from "../utils/Modal";
 import RecentSearches from "../components/RecentSearches";
 
-import { LanguageFilter } from "../components/ssss";
-import { YearFilter } from "../components/ssss";
 import Drawer_button from "../components/Drawer_button";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
@@ -279,33 +277,46 @@ const Search = ({ navigation }) => {
                 {userRating &&
                   userRating !== "[to be watched]" &&
                   userRating !== "[watched]" && (
-                    <View style={{ width: "50%" }}>
-                      <Text
-                        style={{ fontStyle: "italic", color: "#4B5563" }}
-                      >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
-                      <View
-                        style={{
-                          width: "100%",
-                          backgroundColor: "#E5E7EB",
-                          borderRadius: 999,
-                          height: 4,
-                        }}
-                      >
+                    <View style={{ width: "50%", flexDirection: "row" }}>
+                      <MaterialCommunityIcons
+                        name="certificate-outline"
+                        size={36}
+                        color={theme[current].orange}
+                      />
+                      <View>
+                        <Text
+                          style={{
+                            fontStyle: "italic",
+                            color: "#4B5563",
+                            fontSize: 20,
+                            fontWeight: 500,
+                          }}
+                        >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
+
                         <View
                           style={{
-                            width: parseFloat(userRating) + "%",
-                            backgroundColor: theme[current].blue,
-                            alignItems: "center",
-                            padding: 2,
+                            width: "100%",
+                            backgroundColor: "#E5E7EB",
                             borderRadius: 999,
-                            fontSize: 12,
-                            fontWeight: "500",
-                            color: "#4299E1",
-                            textAlign: "center",
-                            lineHeight: 12,
+                            height: 4,
                           }}
                         >
-                          <Text></Text>
+                          <View
+                            style={{
+                              width: parseFloat(userRating) + "%",
+                              backgroundColor: theme[current].blue,
+                              alignItems: "center",
+                              padding: 2,
+                              borderRadius: 999,
+                              fontSize: 12,
+                              fontWeight: "500",
+                              color: "#4299E1",
+                              textAlign: "center",
+                              lineHeight: 12,
+                            }}
+                          >
+                            <Text></Text>
+                          </View>
                         </View>
                       </View>
                     </View>
