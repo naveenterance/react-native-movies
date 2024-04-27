@@ -599,6 +599,29 @@ const Search = ({ navigation }) => {
                   <Text>Watchlist </Text>
                 </View>
               </Pressable>
+              <Pressable
+                onPress={() => navigation.navigate("UserSearch")}
+                style={({ pressed }) => [
+                  {
+                    paddingVertical: "2%",
+                    paddingHorizontal: "10%",
+                    backgroundColor: pressed
+                      ? theme[current].gray
+                      : theme[current].white,
+                  },
+                ]}
+              >
+                <View
+                  style={{
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <MaterialIcons name="person-search" size={30} color="black" />
+
+                  <Text>User Search </Text>
+                </View>
+              </Pressable>
             </View>
             {searchPerformed ? (
               movies.length === 0 ||

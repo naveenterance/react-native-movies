@@ -97,7 +97,7 @@ const HomeScreen = ({ navigation }) => {
   }, [data, username]);
 
   return (
-    <View style={{ backgroundColor: theme[current].white }}>
+    <View style={{ backgroundColor: theme[current].white, height: "100%" }}>
       <Drawer_button />
       <ScrollView>
         <View

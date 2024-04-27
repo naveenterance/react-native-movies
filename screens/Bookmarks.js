@@ -324,9 +324,9 @@ const Bookmarks = ({ navigation }) => {
       }}
     >
       <Drawer_button />
-      <Pressable onPress={() => setSearchedUser("")}>
-        <Text>{searchedUser}'s movie lists</Text>
-      </Pressable>
+
+      <Text>{searchedUser}'s movie lists</Text>
+
       <View>
         <View
           style={{
