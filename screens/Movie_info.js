@@ -30,10 +30,15 @@ import { UPDATE_USER } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
 import Modal_custom from "../components/Drawer";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
 
 import { useModal } from "../utils/Modal";
+import Drawer_button from "../components/Drawer_button";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Movie_info = ({ navigation }) => {
+  const { current } = useTheme();
   const { modalVisible, setModalVisible } = useModal();
   const { username } = useAuth();
   const { id, setId } = useID();
@@ -123,6 +128,7 @@ const Movie_info = ({ navigation }) => {
   const handleDelete = async () => {
     try {
       await deleteUser({ variables: { username, movieId: id } });
+      refetch();
       Alert.alert("Success", "User deleted successfully!");
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -135,6 +141,7 @@ const Movie_info = ({ navigation }) => {
       await updateUser({
         variables: { username, movieId: id, rating, review },
       });
+      refetch();
       Alert.alert("Success", "User updated successfully!");
     } catch (error) {
       console.error("Error updating user:", error);
@@ -205,7 +212,7 @@ const Movie_info = ({ navigation }) => {
       : [];
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: theme[current].white }}>
       {movieData ? (
         <ScrollView>
           <View>
@@ -214,18 +221,145 @@ const Movie_info = ({ navigation }) => {
               onRequestClose={() => setModalVisible(false)}
             />
 
-            <Button title="modal " onPress={() => setModalVisible(true)} />
+            <Drawer_button />
             <Image
               source={{ uri: movieData.Poster }}
               style={{ width: "100%", height: 600 }}
             />
-            <Text>Title: {movieData.Title}</Text>
-            <Pressable onPress={() => addToWatchlist(id)}>
-              <Feather name="bookmark" size={30} color="black" />
-            </Pressable>
-            <Pressable onPress={() => addToWatchedlist(id)}>
-              <Feather name="eye" size={30} color="black" />
-            </Pressable>
+            <View style={{ marginTop: "5%" }}>
+              <Text style={{ fontSize: 30, fontWeight: 500 }}>
+                {movieData.Title}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+                width: "100%",
+
+                marginVertical: "10%",
+                marginHorizontal: "2%",
+              }}
+            >
+              {userReview !== "[to be watched]" ? (
+                <Pressable
+                  style={{
+                    flexDirection: "column",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                  onPress={() => addToWatchlist(id)}
+                >
+                  <MaterialCommunityIcons
+                    name="bookmark-plus-outline"
+                    size={54}
+                    color="black"
+                  />
+                  <Text style={{ fontSize: 16 }}>Bookmark</Text>
+                </Pressable>
+              ) : (
+                <View
+                  style={{
+                    flexDirection: "column",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="bookmark-check-outline"
+                    size={54}
+                    color={theme[current].green}
+                  />
+                  <Text style={{ color: theme[current].green, fontSize: 16 }}>
+                    Bookmarked
+                  </Text>
+                </View>
+              )}
+              <View
+                style={{
+                  width: "20%",
+                  height: "1%",
+                  backgroundColor: userReview
+                    ? theme[current].green
+                    : theme[current].gray,
+                  alignItems: "center",
+                  padding: 2,
+                  borderRadius: 999,
+                  fontSize: 16,
+                  fontWeight: "500",
+                  color: "#4299E1",
+                  textAlign: "center",
+                  lineHeight: 12,
+                  marginBottom: "3%",
+                }}
+              ></View>
+              {userReview !== "[watched]" ? (
+                <Pressable
+                  style={{
+                    flexDirection: "column",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                  onPress={() => addToWatchlist(id)}
+                >
+                  <MaterialCommunityIcons
+                    name="eye-outline"
+                    size={54}
+                    color="black"
+                  />
+                  <Text style={{ fontSize: 16 }}>Watched</Text>
+                </Pressable>
+              ) : (
+                <MaterialCommunityIcons
+                  name="eye-check-outline"
+                  size={54}
+                  color={theme[current].green}
+                />
+              )}
+              <View
+                style={{
+                  width: "20%",
+                  height: "1%",
+                  backgroundColor: userReview
+                    ? theme[current].green
+                    : theme[current].gray,
+                  alignItems: "center",
+                  padding: 2,
+                  borderRadius: 999,
+                  fontSize: 16,
+                  fontWeight: "500",
+                  color: "#4299E1",
+                  textAlign: "center",
+                  lineHeight: 12,
+                  marginBottom: "3%",
+                }}
+              ></View>
+
+              {userReview !== "[watched]" ? (
+                <Pressable
+                  style={{
+                    flexDirection: "column",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                  onPress={() => addToWatchlist(id)}
+                >
+                  <MaterialIcons
+                    name="bookmark-border"
+                    size={54}
+                    color="black"
+                  />
+                  <Text style={{ fontSize: 16 }}>Rate</Text>
+                </Pressable>
+              ) : (
+                <MaterialCommunityIcons
+                  name="bookmark-check-outline"
+                  size={54}
+                  color={theme[current].green}
+                />
+              )}
+            </View>
             <Button title="delete bookmark" onPress={handleDelete} />
             <Text>Year: {movieData.Year}</Text>
             <Text>Rated: {movieData.Rated}</Text>
@@ -271,7 +405,7 @@ const Movie_info = ({ navigation }) => {
                       alignItems: "center",
                       padding: 2,
                       borderRadius: 999,
-                      fontSize: 12,
+                      fontSize: 16,
                       fontWeight: "500",
                       color: "#4299E1",
                       textAlign: "center",

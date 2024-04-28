@@ -9,8 +9,11 @@ import { useAuth } from "../utils/Auth";
 import { useModal } from "../utils/Modal";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Drawer_button from "../components/Drawer_button";
+import { theme } from "../styles/colors";
+import { useTheme } from "../utils/Theme";
 
 const Profile = ({ navigation }) => {
+  const { current } = useTheme();
   const { modalVisible, setModalVisible } = useModal();
   const { username, updateUser, setUsername } = useAuth();
 
@@ -27,7 +30,7 @@ const Profile = ({ navigation }) => {
     }, [username, navigation])
   );
   return (
-    <View>
+    <View style={{ backgroundColor: theme[current].white, height: "100%" }}>
       <Drawer_button />
 
       <View

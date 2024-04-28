@@ -57,47 +57,61 @@ const Bookmarks = ({ navigation }) => {
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
-      if (data && data.allUsers) {
-        const bookmarkedMovies = data.allUsers.filter((user) => {
-          return (
-            user.username === (searchedUser ? searchedUser : username) &&
-            ((view === "rated" && !isNaN(user.rating)) ||
-              (view === "bookmarks" && user.rating === "[to be watched]") ||
-              (view === "watched" && user.rating === "[watched]") ||
-              (view === "" && true))
+      if (!data || !data.allUsers) return;
+      const user = searchedUser || username;
+      const bookmarkedMovies = data.allUsers.filter(
+        (u) =>
+          u.username === user &&
+          ((view === "rated" && !isNaN(u.rating)) ||
+            (view === "bookmarks" && u.rating === "[to be watched]") ||
+            (view === "watched" && u.rating === "[watched]") ||
+            view === "")
+      );
+
+      const moviesWithRatings = await Promise.all(
+        bookmarkedMovies.map(async (u) => {
+          const response = await fetch(
+            `http://www.omdbapi.com/?apikey=${API_KEY}&i=${u.movieId}&plot=full`
           );
-        });
+          const details = await response.json();
+          const [ratingR, ratingM] = [
+            "Rotten Tomatoes",
+            "Internet Movie Database",
+          ].map((source) => details.Ratings.find((r) => r.Source === source));
+          const userRating =
+            data.allUsers.find(
+              (userMovie) =>
+                userMovie.movieId === u.movieId && userMovie.username === user
+            )?.rating || "";
+          return {
+            imdbID: details.imdbID,
+            Title: details.Title,
+            Year: details.Year,
+            Language: details.Language,
+            Poster: details.Poster,
+            Genre: details.Genre,
+            Country: details.Country,
+            ratingR,
+            ratingM,
+            userRating,
+          };
+        })
+      );
 
-        const moviesWithRatings = await Promise.all(
-          bookmarkedMovies.map(async (user) => {
-            const ratingResponse = await fetch(
-              `http://www.omdbapi.com/?apikey=${API_KEY}&i=${user.movieId}&plot=full`
-            );
-            const details = await ratingResponse.json();
-
-            const ratingRottenTomatoes = details.Ratings.find(
-              (rating) => rating.Source === "Rotten Tomatoes"
-            );
-            const ratingIMDB = details.Ratings.find(
-              (rating) => rating.Source === "Internet Movie Database"
-            );
-
-            return {
-              imdbID: details.imdbID,
-              Title: details.Title,
-              Year: details.Year,
-              Language: details.Language,
-              Poster: details.Poster,
-              Genre: details.Genre,
-              Country: details.Country,
-              ratingR: ratingRottenTomatoes,
-              ratingM: ratingIMDB,
-            };
-          })
+      const sortByUserReviews = (a, b) =>
+        parseFloat(
+          data.allUsers.find(
+            (u) => u.movieId === a.imdbID && u.username === user
+          )?.rating || 0
+        ) -
+        parseFloat(
+          data.allUsers.find(
+            (u) => u.movieId === b.imdbID && u.username === user
+          )?.rating || 0
         );
-        setMovies(moviesWithRatings);
-        setLoading(false);
-      }
+
+      setMovies(moviesWithRatings.sort(sortByUserReviews));
+      setLoading(false);
     };
 
     fetchData();
@@ -109,15 +123,6 @@ const Bookmarks = ({ navigation }) => {
   };
 
   const renderItem = ({ item }) => {
-    const userRating =
-      data && data.allUsers
-        ? data.allUsers.find(
-            (userMovie) =>
-              userMovie.movieId === item.imdbID &&
-              userMovie.username === (searchedUser ? searchedUser : username)
-          )?.rating
-        : null;
-
     return (
       <View>
         <Pressable onPress={() => handlepress(item.imdbID)}>
@@ -128,8 +133,6 @@ const Bookmarks = ({ navigation }) => {
               padding: 8,
               borderRadius: 8,
               flexDirection: "row",
-              // borderWidth: userRating && 4,
-              // borderColor: userRating && theme[current].blue,
             }}
           >
             <View>
@@ -218,9 +221,9 @@ const Bookmarks = ({ navigation }) => {
                 ) : null}
               </View>
 
-              {userRating &&
-                userRating !== "[to be watched]" &&
-                userRating !== "[watched]" && (
+              {item.userRating &&
+                item.userRating !== "[to be watched]" &&
+                item.userRating !== "[watched]" && (
                   <View style={{ width: "90%", flexDirection: "row" }}>
                     <MaterialCommunityIcons
                       name="certificate-outline"
@@ -238,9 +241,9 @@ const Bookmarks = ({ navigation }) => {
                       >
                         {searchedUser
                           ? `${searchedUser}'s rating: ${parseFloat(
-                              userRating
+                              item.userRating
                             )}%`
-                          : `Your rating: ${parseFloat(userRating)}%`}
+                          : `Your rating: ${parseFloat(item.userRating)}%`}
                       </Text>
 
                       <View
@@ -253,7 +256,7 @@ const Bookmarks = ({ navigation }) => {
                       >
                         <View
                           style={{
-                            width: parseFloat(userRating) + "%",
+                            width: parseFloat(item.userRating) + "%",
                             backgroundColor: theme[current].blue,
                             alignItems: "center",
                             padding: 2,
@@ -271,7 +274,7 @@ const Bookmarks = ({ navigation }) => {
                     </View>
                   </View>
                 )}
-              {userRating == "[to be watched]" && (
+              {item.userRating == "[to be watched]" && (
                 <View style={{ flexDirection: "row", margin: "1%" }}>
                   <Feather
                     name="bookmark"
@@ -290,7 +293,7 @@ const Bookmarks = ({ navigation }) => {
                   </Text>
                 </View>
               )}
-              {userRating == "[watched]" && (
+              {item.userRating == "[watched]" && (
                 <View style={{ flexDirection: "row", margin: "1%" }}>
                   <AntDesign
                     name="eyeo"
@@ -366,7 +369,7 @@ const Bookmarks = ({ navigation }) => {
           }}
         >
           <Pressable
-            onPress={() => setView(view == "bookmarks" ? "" : "bookmarks")}
+            onPress={() => setView("bookmarks")}
             style={({ pressed }) => [
               {
                 paddingVertical: "2%",
@@ -394,7 +397,7 @@ const Bookmarks = ({ navigation }) => {
             </View>
           </Pressable>
           <Pressable
-            onPress={() => setView(view == "watched" ? "" : "watched")}
+            onPress={() => setView("watched")}
             style={({ pressed }) => [
               {
                 paddingVertical: "2%",
@@ -422,7 +425,7 @@ const Bookmarks = ({ navigation }) => {
             </View>
           </Pressable>
           <Pressable
-            onPress={() => setView(view == "rated" ? "" : "rated")}
+            onPress={() => setView("rated")}
             style={({ pressed }) => [
               {
                 paddingVertical: "2%",

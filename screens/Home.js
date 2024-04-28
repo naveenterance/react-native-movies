@@ -113,7 +113,8 @@ const HomeScreen = ({ navigation }) => {
         >
           {bookmarks.length <= 0 &&
             reviews.length <= 0 &&
-            watched.length <= 0 && (
+            watched.length <= 0 &&
+            !loading && (
               <View
                 style={{
                   width: "100%",
