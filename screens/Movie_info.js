@@ -66,6 +66,27 @@ const Movie_info = ({ navigation }) => {
     }
   };
 
+  const handleRatingChange = (text) => {
+    // Remove any non-numeric characters from the input
+    const numericValue = text.replace(/[^0-9]/g, "");
+
+    // Ensure the numeric value is within the range of 1 to 100
+    const numericRating = Math.min(Math.max(parseInt(numericValue), 0), 100);
+
+    // Update the state with the sanitized numeric rating
+    setRating(numericRating.toString());
+  };
+
+  const handleEditView = () => {
+    setEditView(true);
+    focusOnTextInput();
+  };
+  useEffect(() => {
+    if (editView) {
+      focusOnTextInput();
+    }
+  }, [editView]);
+
   useEffect(() => {
     const fetchData = async () => {
       setEditView(false);
@@ -183,12 +204,6 @@ const Movie_info = ({ navigation }) => {
       ]
     );
   };
-
-  useEffect(() => {
-    if (editView) {
-      focusOnTextInput();
-    }
-  }, [editView]);
 
   const handleUpdate = async () => {
     setLoading(true);
@@ -421,7 +436,7 @@ const Movie_info = ({ navigation }) => {
                   }}
                 ></View>
 
-                {userReview == "[watched]" || isNaN(userRating) ? (
+                {userReview == "[watched]" ? (
                   <Pressable
                     style={({ pressed }) => [
                       {
@@ -432,7 +447,7 @@ const Movie_info = ({ navigation }) => {
                         borderColor: theme[current].orange,
                       },
                     ]}
-                    onPress={() => setEditView(true)}
+                    onPress={handleEditView}
                   >
                     <MaterialCommunityIcons
                       name="movie-outline"
@@ -617,11 +632,7 @@ const Movie_info = ({ navigation }) => {
                 >
                   No reviews yet
                 </Text>
-                <Pressable
-                  onPress={() => {
-                    setEditView(true);
-                  }}
-                >
+                <Pressable onPress={handleEditView}>
                   <Text
                     style={{
                       fontSize: 20,
@@ -644,7 +655,7 @@ const Movie_info = ({ navigation }) => {
             {!editView ? (
               userRating &&
               !isNaN(userRating) && (
-                <Pressable onPress={() => setEditView(!editView)}>
+                <Pressable onPress={handleEditView}>
                   <View
                     style={{
                       marginVertical: 5,
@@ -692,7 +703,8 @@ const Movie_info = ({ navigation }) => {
                     }}
                     value={!isNaN(rating) ? rating : ""}
                     selectionColor={theme[current].orange}
-                    onChangeText={setRating}
+                    keyboardType="numeric" // Set to numeric keyboard
+                    onChangeText={handleRatingChange}
                   />
                   <Text
                     style={{ marginLeft: 20, fontSize: 24, fontWeight: "400" }}
@@ -718,7 +730,9 @@ const Movie_info = ({ navigation }) => {
                     multiline={true}
                     numberOfLines={10}
                     value={
-                      review != ("[watched]" || "[to be watched]") ? review : ""
+                      review != "[watched]" && review != "[to be watched]"
+                        ? review
+                        : ""
                     }
                     onChangeText={setReview}
                   />
