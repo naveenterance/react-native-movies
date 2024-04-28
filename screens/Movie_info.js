@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -58,8 +58,17 @@ const Movie_info = ({ navigation }) => {
   const [updateUser] = useMutation(UPDATE_USER);
   const [editView, setEditView] = useState(false);
 
+  const textInputRef = useRef(null);
+
+  const focusOnTextInput = () => {
+    if (textInputRef.current) {
+      textInputRef.current.focus();
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
+      setEditView(false);
       setLoading(true);
       try {
         const response = await fetch(
@@ -72,12 +81,13 @@ const Movie_info = ({ navigation }) => {
         console.error("Error fetching data:", error);
       }
     };
-
+    refetch();
     fetchData();
-  }, [refreshPage]);
+  }, [refreshPage, id]);
 
   useEffect(() => {
     const fetchData = async () => {
+      setEditView(false);
       setLoading(true);
       try {
         const response = await fetch(
@@ -135,7 +145,7 @@ const Movie_info = ({ navigation }) => {
         },
       });
       refetch();
-      Alert.alert("Success", "User updated successfully!");
+      Alert.alert("Success", "Added review");
       setLoading(false);
     } catch (error) {
       console.error("Error rating movie:", error);
@@ -158,7 +168,7 @@ const Movie_info = ({ navigation }) => {
             try {
               await deleteUser({ variables: { username, movieId: id } });
               refetch();
-              Alert.alert("Success", "User deleted successfully!");
+              Alert.alert("Success", "All progress deleted!");
             } catch (error) {
               console.error("Error deleting user:", error);
               Alert.alert(
@@ -174,6 +184,12 @@ const Movie_info = ({ navigation }) => {
     );
   };
 
+  useEffect(() => {
+    if (editView) {
+      focusOnTextInput();
+    }
+  }, [editView]);
+
   const handleUpdate = async () => {
     setLoading(true);
     try {
@@ -181,7 +197,7 @@ const Movie_info = ({ navigation }) => {
         variables: { username, movieId: id, rating, review },
       });
       refetch();
-      Alert.alert("Success", "User updated successfully!");
+      Alert.alert("Success", "Review and rating updated !");
       setEditView(false);
       setLoading(false);
     } catch (error) {
@@ -201,7 +217,7 @@ const Movie_info = ({ navigation }) => {
         },
       });
       refetch();
-      Alert.alert("Success", "User updated successfully!");
+      Alert.alert("Success", "Status updated to watched!");
       setLoading(false);
     } catch (error) {
       console.error("Error updating user:", error);
@@ -221,7 +237,7 @@ const Movie_info = ({ navigation }) => {
         },
       });
       refetch();
-      Alert.alert("Success", "User updated successfully!");
+      Alert.alert("Success", "Added to Bookmarks!");
       setLoading(false);
     } catch (error) {
       console.error("Error adding movie:", error);
@@ -405,9 +421,7 @@ const Movie_info = ({ navigation }) => {
                   }}
                 ></View>
 
-                {userReview == "[watched]" ||
-                userReview == "[to be watched]" ||
-                !userReview ? (
+                {userReview == "[watched]" || isNaN(userRating) ? (
                   <Pressable
                     style={({ pressed }) => [
                       {
@@ -418,7 +432,7 @@ const Movie_info = ({ navigation }) => {
                         borderColor: theme[current].orange,
                       },
                     ]}
-                    onPress={() => addToWatchlist(id)}
+                    onPress={() => setEditView(true)}
                   >
                     <MaterialCommunityIcons
                       name="movie-outline"
@@ -444,7 +458,7 @@ const Movie_info = ({ navigation }) => {
                       size={32}
                       color={theme[current].green}
                     />
-                    <Text style={{ fontSize: 16 }}>Rate</Text>
+                    <Text style={{ fontSize: 16 }}>Rated</Text>
                   </View>
                 )}
               </View>
@@ -489,6 +503,7 @@ const Movie_info = ({ navigation }) => {
                 Delete all progress
               </Text>
             </Pressable>
+
             <View style={{ paddingHorizontal: "2%" }}>
               <Text>
                 Rated:{" "}
@@ -602,7 +617,11 @@ const Movie_info = ({ navigation }) => {
                 >
                   No reviews yet
                 </Text>
-                <Pressable onPress={() => setEditView(true)}>
+                <Pressable
+                  onPress={() => {
+                    setEditView(true);
+                  }}
+                >
                   <Text
                     style={{
                       fontSize: 20,
@@ -695,12 +714,13 @@ const Movie_info = ({ navigation }) => {
 
                       borderRadius: 8,
                     }}
+                    ref={textInputRef}
                     multiline={true}
                     numberOfLines={10}
                     value={
-                      review != ("[watched]" && "[to be watched]") ? review : ""
+                      review != ("[watched]" || "[to be watched]") ? review : ""
                     }
-                    onChangeText={() => setReview}
+                    onChangeText={setReview}
                   />
                 </View>
                 <View
@@ -731,7 +751,7 @@ const Movie_info = ({ navigation }) => {
                       Discard
                     </Text>
                   </Pressable>
-                  {userReview.length <= 0 ? (
+                  {userReview && userReview.length <= 0 ? (
                     <Pressable
                       style={{ flexDirection: "row", marginTop: "5%" }}
                       onPress={() => handleSubmit(id)}
