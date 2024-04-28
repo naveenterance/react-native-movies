@@ -39,6 +39,7 @@ const Bookmarks = ({ navigation }) => {
   const [view, setView] = useState("bookmarks");
   const { searchedUser, setSearchedUser } = useSearchTerm();
   const [loading, setLoading] = useState(false);
+  const [sort, setSort] = useState(false);
 
   const API_KEY = "e24ea998";
 
@@ -98,24 +99,32 @@ const Bookmarks = ({ navigation }) => {
         })
       );
 
-      const sortByUserReviews = (a, b) =>
-        parseFloat(
+      const sortByUserReviews = (a, b) => {
+        const ratingA = parseFloat(
           data.allUsers.find(
             (u) => u.movieId === a.imdbID && u.username === user
           )?.rating || 0
-        ) -
-        parseFloat(
+        );
+        const ratingB = parseFloat(
           data.allUsers.find(
             (u) => u.movieId === b.imdbID && u.username === user
           )?.rating || 0
         );
 
+        if (sort) {
+          return ratingB - ratingA;
+        } else {
+          return ratingA - ratingB;
+        }
+      };
+
       setMovies(moviesWithRatings.sort(sortByUserReviews));
+
       setLoading(false);
     };
 
     fetchData();
-  }, [data, username, view, searchedUser]);
+  }, [data, username, view, searchedUser, sort]);
 
   const handlepress = (m_id) => {
     setId(m_id);
@@ -425,7 +434,10 @@ const Bookmarks = ({ navigation }) => {
             </View>
           </Pressable>
           <Pressable
-            onPress={() => setView("rated")}
+            onPress={() => {
+              setView("rated");
+              setSort(!sort);
+            }}
             style={({ pressed }) => [
               {
                 paddingVertical: "2%",
@@ -444,15 +456,34 @@ const Bookmarks = ({ navigation }) => {
                 borderBottomColor: theme[current].orange,
               }}
             >
-              <MaterialCommunityIcons
+              {/* <MaterialCommunityIcons
                 name="movie-check-outline"
                 size={30}
                 color="black"
-              />
-              <Text>Rated</Text>
+              /> */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <FontAwesome
+                  name="sort-desc"
+                  size={36}
+                  color={sort ? theme[current].orange : "black"}
+                />
+                <FontAwesome
+                  name="sort-asc"
+                  size={36}
+                  color={!sort ? theme[current].orange : "black"}
+                />
+              </View>
+
+              <Text style={{}}>Rated</Text>
             </View>
           </Pressable>
-          <Pressable
+          {/* <Pressable
             onPress={() => navigation.navigate("Search")}
             style={({ pressed }) => [
               {
@@ -477,7 +508,7 @@ const Bookmarks = ({ navigation }) => {
               />
               <Text>Search</Text>
             </View>
-          </Pressable>
+          </Pressable> */}
         </View>
         {loading && (
           <LottieView
