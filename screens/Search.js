@@ -67,6 +67,17 @@ const Search = ({ navigation }) => {
     }, [view, navigation])
   );
 
+  useEffect(() => {
+    if (
+      searchPerformed &&
+      (movies.length === 0 ||
+        (!filterStatus &&
+          (language.length > 0 || genre.length > 0 || year.length)))
+    ) {
+      setLoading(false);
+    }
+  }, [searchPerformed, movies, filterStatus, language, genre, year]);
+
   const handlepress = (m_id) => {
     setId(m_id);
     navigation.navigate("Movie_info");
@@ -637,15 +648,18 @@ const Search = ({ navigation }) => {
                 loop
               />
             )}
-            {searchPerformed ? (
-              movies.length === 0 ||
+            {searchPerformed &&
+            searchQuery &&
+            (movies.length === 0 ||
               (!filterStatus &&
-                (language.length > 0 || genre.length > 0 || year.length)) ? (
+                (language.length > 0 || genre.length > 0 || year.length))) ? (
+              <>
                 <Text style={{ alignSelf: "center", marginTop: 20 }}>
                   No results found
                 </Text>
-              ) : null
+              </>
             ) : null}
+
             {movies.length > 0 && !view && (
               <FlatList
                 data={movies}

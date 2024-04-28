@@ -523,13 +523,33 @@ const Bookmarks = ({ navigation }) => {
             loop
           />
         )}
-
-        <FlatList
-          data={movies}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.imdbID}
-          style={{ marginBottom: 36 }}
-        />
+        {!loading &&
+          (movies.length > 0 ? (
+            <FlatList
+              data={movies}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.imdbID}
+              style={{ marginBottom: 36 }}
+            />
+          ) : (
+            <View
+              style={{
+                alignContent: "center",
+                alignItems: "center",
+                marginTop: "20%",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 32,
+                  fontWeight: 600,
+                  color: theme[current].gray,
+                }}
+              >
+                It's empty
+              </Text>
+            </View>
+          ))}
       </View>
     </View>
   );
