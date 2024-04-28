@@ -20,12 +20,13 @@ import { useRoute } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import { useID } from "../utils/CurrentId";
 
 const Modal_custom = () => {
   const { modalVisible, setModalVisible } = useModal();
   const { current, setTheme } = useTheme();
   const route = useRoute();
-  // console.log(route.name);
+  const { id, setId } = useID();
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -71,6 +72,7 @@ const Modal_custom = () => {
               onPress={() => {
                 navigation.navigate("Home");
                 setModalVisible(false);
+                setId("");
               }}
             >
               <View
@@ -113,6 +115,7 @@ const Modal_custom = () => {
               onPress={() => {
                 navigation.navigate("Search");
                 setModalVisible(false);
+                setId("");
               }}
             >
               <View style={{ flexDirection: "row" }}>
@@ -151,6 +154,7 @@ const Modal_custom = () => {
               onPress={() => {
                 navigation.navigate("Bookmarks");
                 setModalVisible(false);
+                setId("");
               }}
             >
               <View style={{ flexDirection: "row" }}>
@@ -188,6 +192,7 @@ const Modal_custom = () => {
               onPress={() => {
                 navigation.navigate("Profile");
                 setModalVisible(false);
+                setId("");
               }}
             >
               <View style={{ flexDirection: "row" }}>

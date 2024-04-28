@@ -56,6 +56,8 @@ const Movie_info = ({ navigation }) => {
   const [refreshPage, setRefreshPage] = useState(false);
   const [deleteUser] = useMutation(DELETE_USER);
   const [updateUser] = useMutation(UPDATE_USER);
+  const [editView, setEditView] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -180,6 +182,7 @@ const Movie_info = ({ navigation }) => {
       });
       refetch();
       Alert.alert("Success", "User updated successfully!");
+      setEditView(false);
       setLoading(false);
     } catch (error) {
       console.error("Error updating user:", error);
@@ -225,20 +228,17 @@ const Movie_info = ({ navigation }) => {
     }
   };
 
-  const userRating =
-    data && data.allUsers
-      ? data.allUsers.find(
-          (userMovie) =>
-            userMovie.movieId === id && userMovie.username === username
-        )?.rating
-      : null;
-  const userReview =
-    data && data.allUsers
-      ? data.allUsers.find(
-          (userMovie) =>
-            userMovie.movieId === id && userMovie.username === username
-        )?.review
-      : null;
+  const userRating = data?.allUsers?.find(
+    (userMovie) => userMovie.movieId === id && userMovie.username === username
+  )?.rating;
+
+  const userReview = data?.allUsers?.find(
+    (userMovie) => userMovie.movieId === id && userMovie.username === username
+  )?.review;
+  useEffect(() => {
+    setRating(userRating);
+    setReview(userReview);
+  }, [userRating, userReview]);
 
   const allRatingsAndReviews =
     data && data.allUsers
@@ -589,41 +589,206 @@ const Movie_info = ({ navigation }) => {
               {renderRatings()}
             </View>
 
-            {userRating &&
-              userRating !== ("[watched]" && "[to be watched]") && (
-                <View>
+            {allRatingsAndReviews.length <= 0 &&
+            (!userRating || isNaN(userRating)) &&
+            !editView ? (
+              <View style={{ marginHorizontal: "8%", marginVertical: "5%" }}>
+                <Text
+                  style={{
+                    fontSize: 30,
+                    fontWeight: "900",
+                    color: theme[current].gray,
+                  }}
+                >
+                  No reviews yet
+                </Text>
+                <Pressable onPress={() => setEditView(true)}>
                   <Text
-                    style={{ fontStyle: "italic", color: "#4B5563" }}
-                  >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
-                  <View
                     style={{
-                      width: "100%",
-                      backgroundColor: "#E5E7EB",
-                      borderRadius: 999,
-                      height: 4,
+                      fontSize: 20,
+                      fontWeight: "900",
                     }}
                   >
-                    <View
+                    Add ?
+                  </Text>
+                </Pressable>
+              </View>
+            ) : (
+              <View style={{ marginHorizontal: "8%", marginVertical: "5%" }}>
+                <Text style={{ fontSize: 20, fontWeight: "600" }}>
+                  <MaterialIcons name="rate-review" size={28} color="black" />
+                  Reviews
+                </Text>
+              </View>
+            )}
+
+            {!editView ? (
+              userRating &&
+              !isNaN(userRating) && (
+                <Pressable onPress={() => setEditView(!editView)}>
+                  <View
+                    style={{
+                      marginVertical: 5,
+                      paddingHorizontal: "5%",
+                    }}
+                  >
+                    <Text style={{}}>
+                      <Text style={{ fontSize: 22, fontWeight: 600 }}>
+                        You
+                        <Text style={{ color: theme[current].orange }}>
+                          {" "}
+                          [ {userRating} %]
+                          <Entypo name="pencil" size={24} color="black" />
+                        </Text>{" "}
+                        :
+                      </Text>{" "}
+                      {userReview}
+                    </Text>
+                  </View>
+                </Pressable>
+              )
+            ) : !loading ? (
+              <View style={{ paddingHorizontal: "5%" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: "600" }}>
+                    Rate on a scale of 0 -100
+                  </Text>
+                  <TextInput
+                    style={{
+                      borderWidth: 4,
+                      borderColor: "#4B5563",
+                      width: "15%",
+                      padding: 8,
+                      marginLeft: "10%",
+                      fontSize: 20,
+                      fontWeight: "600",
+
+                      borderRadius: 8,
+                    }}
+                    value={!isNaN(rating) ? rating : ""}
+                    selectionColor={theme[current].orange}
+                    onChangeText={setRating}
+                  />
+                  <Text
+                    style={{ marginLeft: 20, fontSize: 24, fontWeight: "400" }}
+                  >
+                    %
+                  </Text>
+                </View>
+                <View style={{ marginTop: 20 }}>
+                  <Text style={{ fontSize: 16, fontWeight: "600" }}>
+                    Write a review
+                  </Text>
+                  <TextInput
+                    style={{
+                      borderWidth: 4,
+                      borderColor: "#4B5563",
+                      padding: 10,
+
+                      fontSize: 14,
+
+                      borderRadius: 8,
+                    }}
+                    multiline={true}
+                    numberOfLines={10}
+                    value={
+                      review != ("[watched]" && "[to be watched]") ? review : ""
+                    }
+                    onChangeText={() => setReview}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "100% ",
+                    justifyContent: "space-around",
+                    marginBottom: "10%",
+                  }}
+                >
+                  <Pressable
+                    style={{ flexDirection: "row", marginTop: "5%" }}
+                    onPress={() => setEditView(false)}
+                  >
+                    <MaterialIcons
+                      name="clear"
+                      size={30}
+                      color={theme[current].red}
+                    />
+                    <Text
                       style={{
-                        width: parseFloat(userRating) + "%",
-                        backgroundColor: "#4A5568",
-                        alignItems: "center",
-                        padding: 2,
-                        borderRadius: 999,
                         fontSize: 16,
-                        fontWeight: "500",
-                        color: "#4299E1",
-                        textAlign: "center",
-                        lineHeight: 12,
+                        color: theme[current].red,
+                        fontWeight: "600",
                       }}
                     >
-                      <Text></Text>
-                    </View>
-                  </View>
-                  <Text>{userReview}</Text>
+                      {" "}
+                      Discard
+                    </Text>
+                  </Pressable>
+                  {userReview.length <= 0 ? (
+                    <Pressable
+                      style={{ flexDirection: "row", marginTop: "5%" }}
+                      onPress={() => handleSubmit(id)}
+                    >
+                      <Feather
+                        name="check"
+                        size={30}
+                        color={theme[current].green}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: theme[current].green,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {" "}
+                        Add Review
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      style={{ flexDirection: "row", marginTop: "5%" }}
+                      onPress={handleUpdate}
+                    >
+                      <Feather
+                        name="check"
+                        size={30}
+                        color={theme[current].green}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: theme[current].green,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {" "}
+                        Update
+                      </Text>
+                    </Pressable>
+                  )}
                 </View>
-              )}
+              </View>
+            ) : (
+              <LottieView
+                style={{
+                  width: 210,
+                  height: 210,
 
+                  alignSelf: "center",
+                }}
+                source={require("../assets/loader4.json")}
+                autoPlay
+                loop
+              />
+            )}
             <View>
               {allRatingsAndReviews.map((item, index) => (
                 <View
@@ -634,76 +799,18 @@ const Movie_info = ({ navigation }) => {
                   }}
                 >
                   <Text style={{}}>
-                    <Text style={{ fontSize: 20, fontWeight: 600 }}>
+                    <Text style={{ fontSize: 18, fontWeight: 600 }}>
                       {item.username}{" "}
                       <Text style={{ color: theme[current].orange }}>
                         {" "}
-                        [ {item.rating} ]
+                        [ {item.rating} %]
                       </Text>{" "}
                       :
                     </Text>
                     {item.review}
                   </Text>
-                  {/* <View
-                    style={{
-                      width: "100%",
-                      backgroundColor: "#E5E7EB",
-                      borderRadius: 999,
-                      height: 4,
-                      width: "40%",
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: parseFloat(item.rating) + "%",
-                        backgroundColor: "#4A5568",
-                        alignItems: "center",
-                        padding: 2,
-                        borderRadius: 999,
-                        fontSize: 16,
-                        height: 2,
-
-                        fontWeight: 500,
-                        color: "#4299E1",
-                        textAlign: "center",
-                        lineHeight: 12,
-                      }}
-                    >
-                      <Text></Text>
-                    </View>
-                  </View> */}
                 </View>
               ))}
-            </View>
-
-            <View>
-              <TextInput
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#4B5563",
-                  padding: 2,
-                  marginVertical: 4,
-                  borderRadius: 8,
-                }}
-                placeholder="Enter your rating"
-                onChangeText={setRating}
-              />
-              <TextInput
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#4B5563",
-                  padding: 2,
-                  marginVertical: 4,
-                  borderRadius: 8,
-                }}
-                placeholder="Enter your review"
-                onChangeText={setReview}
-              />
-              {!userRating ? (
-                <Button onPress={() => handleSubmit(id)} title="Rate" />
-              ) : (
-                <Button title="Update" onPress={handleUpdate} />
-              )}
             </View>
           </View>
         </ScrollView>
