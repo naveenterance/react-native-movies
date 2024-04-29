@@ -37,7 +37,7 @@ const SignUpScreen = ({ navigation }) => {
     }
     try {
       const response = await fetch(
-        `https://chat-node-naveenterances-projects.vercel.app/users/${name}`,
+        `https://movie-app-node-dun.vercel.app/users/${name}`,
         {
           method: "POST",
           headers: {
@@ -60,7 +60,7 @@ const SignUpScreen = ({ navigation }) => {
 
     try {
       const response = await fetch(
-        "https://chat-node-naveenterances-projects.vercel.app/users",
+        "https://movie-app-node-dun.vercel.app/users",
         {
           method: "POST",
           headers: {
@@ -110,7 +110,7 @@ const SignUpScreen = ({ navigation }) => {
         style={[
           styles_signup.Modal,
           {
-            backgroundColor: theme[current].gray,
+            backgroundColor: theme[current].white,
           },
         ]}
       >

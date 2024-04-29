@@ -1,20 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button, Text, View, Pressable } from "react-native";
+import { Text, View, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import "core-js/stable/atob";
-import Modal_custom from "../components/Drawer";
 import { useAuth } from "../utils/Auth";
-import { useModal } from "../utils/Modal";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import Drawer_button from "../components/Drawer_button";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 
 const Profile = ({ navigation }) => {
   const { current } = useTheme();
-  const { modalVisible, setModalVisible } = useModal();
   const { username, updateUser, setUsername } = useAuth();
 
   const handleLogout = async () => {

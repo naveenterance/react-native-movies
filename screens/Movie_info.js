@@ -848,17 +848,7 @@ const Movie_info = ({ navigation }) => {
                 </View>
               </View>
             ) : (
-              <LottieView
-                style={{
-                  width: 210,
-                  height: 210,
-
-                  alignSelf: "center",
-                }}
-                source={require("../assets/loader4.json")}
-                autoPlay
-                loop
-              />
+              <Loader height={210} width={210} />
             )}
             <View>
               {allRatingsAndReviews.map(

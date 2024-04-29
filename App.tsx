@@ -2,7 +2,6 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import { Image } from "react-native";
 import LoginScreen from "./screens/Login";
 import HomeScreen from "./screens/Home";
 import SignUpScreen from "./screens/Signup";
@@ -17,7 +16,6 @@ import { IDProvider } from "./utils/CurrentId";
 import { ModalProvider } from "./utils/Modal";
 import { ThemeProvider } from "./utils/Theme";
 import { SearchTermProvider } from "./utils/SearchTerm";
-
 import * as Notifications from "expo-notifications";
 
 const Stack = createStackNavigator();

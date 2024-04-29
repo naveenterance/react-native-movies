@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        "https://chat-node-naveenterances-projects.vercel.app/users/login",
+        "https://movie-app-node-dun.vercel.app/users/login",
         {
           method: "POST",
           headers: {

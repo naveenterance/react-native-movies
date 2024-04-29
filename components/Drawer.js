@@ -1,58 +1,58 @@
 import React, { useState, useEffect } from "react";
-
 import Modal from "react-native-modal";
 import { useModal } from "../utils/Modal";
-import {
-  Text,
-  View,
-  Button,
-  StyleSheet,
-  Pressable,
-  Switch,
-} from "react-native";
+import { Text, View, Pressable, Switch } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-import { AntDesign } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { useID } from "../utils/CurrentId";
 
 const Modal_custom = () => {
   const { modalVisible, setModalVisible } = useModal();
-  const { current, setTheme } = useTheme();
+  const { current, setTheme } = useTheme("light");
   const route = useRoute();
   const { id, setId } = useID();
-  const [isEnabled, setIsEnabled] = useState(false);
-  // const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const [isEnabled, setIsEnabled] = useState(true);
 
   const navigation = useNavigation();
   const toggleTheme = () => {
     setIsEnabled((previousState) => !previousState);
-    const newTheme = current === "light" ? "dark" : "light";
-    setTheme(newTheme);
+    !isEnabled ? setTheme("light") : setTheme("dark");
   };
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.centeredView}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 22,
+        }}
+      >
         <Modal
           isVisible={modalVisible}
           animationIn="slideInLeft"
           animationOut="slideOutLeft"
           backdropColor={current == "light" ? theme[current].gray : "#4c4c4c"}
           onBackdropPress={() => setModalVisible(false)}
-          style={styles.modal}
+          style={{ margin: 0 }}
           onBackButtonPress={() => setModalVisible(false)}
         >
           <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: theme[current].white },
-            ]}
+            style={{
+              padding: 22,
+              justifyContent: "space-around",
+              height: "100%",
+              width: "60%",
+              backgroundColor: theme[current].white,
+            }}
           >
             <Pressable style={{}} onPress={() => setModalVisible(false)}>
               <AntDesign
@@ -225,8 +225,16 @@ const Modal_custom = () => {
               <Feather
                 name="moon"
                 size={24}
-                color={theme[current].charcoal}
-                style={{ marginTop: 12 }}
+                color={
+                  current == "dark"
+                    ? theme[current].orange
+                    : theme[current].charcoal
+                }
+                style={{
+                  marginTop: 12,
+                  borderBottomWidth: current == "dark" ? 4 : 0,
+                  borderColor: theme[current].orange,
+                }}
               />
               <Switch
                 trackColor={{
@@ -236,7 +244,7 @@ const Modal_custom = () => {
                 thumbColor={
                   isEnabled ? theme[current].gray : theme[current].charcoal
                 }
-                ios_backgroundColor="#3e3e3e"
+                ios_backgroundColor={theme[current].gray}
                 onValueChange={toggleTheme}
                 value={isEnabled}
                 style={{
@@ -247,8 +255,16 @@ const Modal_custom = () => {
               <Feather
                 name="sun"
                 size={24}
-                color={theme[current].charcoal}
-                style={{ marginTop: 12 }}
+                color={
+                  current == "light"
+                    ? theme[current].orange
+                    : theme[current].charcoal
+                }
+                style={{
+                  marginTop: 12,
+                  borderBottomWidth: current == "light" ? 4 : 0,
+                  borderColor: theme[current].orange,
+                }}
               />
             </View>
           </View>
@@ -258,39 +274,4 @@ const Modal_custom = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modal: {
-    margin: 0,
-  },
-  modalContent: {
-    padding: 22,
-    justifyContent: "space-around",
-    // alignItems: "end",
-    height: "100%",
-    width: "60%",
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    marginVertical: 10,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-});
 export default Modal_custom;
