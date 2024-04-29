@@ -5,18 +5,21 @@ import { useAuth } from "../utils/Auth";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import Drawer_button from "../components/Drawer_button";
-import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { styles_userSearch } from "../styles/userSearch";
+import Loader from "../components/Loader";
 
 const UserSearch = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const { searchedUser, setSearchedUser } = useSearchTerm();
   const { username } = useAuth();
   const { current } = useTheme();
 
   useEffect(() => {
+    setLoading(true);
     fetch("https://chat-node-naveenterances-projects.vercel.app/users")
       .then((response) => response.json())
       .then((data) => {
@@ -50,23 +53,33 @@ const UserSearch = ({ navigation }) => {
 
   const renderItem = ({ item }) => (
     <Pressable
+      style={({ pressed }) => [
+        {
+          backgroundColor: pressed ? theme[current].gray : theme[current].white,
+        },
+      ]}
       onPress={() => {
         setSearchedUser(item.name);
         navigation.navigate("Bookmarks");
       }}
     >
       <View
-        style={{
-          borderBottomWidth: 4,
-          borderColor: theme[current].gray,
-          width: "80%",
-          margin: "10%",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
+        style={[
+          styles_userSearch.renderItems,
+          {
+            borderColor: theme[current].gray,
+          },
+        ]}
       >
-        <MaterialIcons name="account-circle" size={48} color="black" />
-        <Text style={{ fontSize: 20 }} key={item._id}>
+        <MaterialIcons
+          name="account-circle"
+          size={48}
+          color={theme[current].charcoal}
+        />
+        <Text
+          style={{ fontSize: 20, color: theme[current].charcoal }}
+          key={item._id}
+        >
           {item.name}
         </Text>
       </View>
@@ -76,24 +89,21 @@ const UserSearch = ({ navigation }) => {
     <View style={{ backgroundColor: theme[current].white, height: "100%" }}>
       <Drawer_button />
       <TextInput
-        style={{
-          backgroundColor: theme[current].white,
-          width: "80%",
-          marginTop: "2%",
-          paddingHorizontal: "5%",
-          paddingVertical: "2%",
-          borderWidth: 2,
-          borderColor: theme[current].charcoal,
-          borderRadius: 999,
-          fontSize: 16,
-          marginHorizontal: "10%",
-        }}
+        style={[
+          styles_userSearch.textInput,
+          {
+            color: theme[current].charcoal,
+            backgroundColor: theme[current].white,
+            borderColor: theme[current].charcoal,
+          },
+        ]}
         selectionColor={theme[current].orange}
         placeholder="Search for Users"
         placeholderTextColor={theme[current].charcoal}
         onChangeText={handleSearch}
         value={searchTerm}
       />
+      {loading && <Loader height={210} width={210} />}
       {showResults ? (
         <FlatList
           data={filteredUsers}

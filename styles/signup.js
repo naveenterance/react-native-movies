@@ -29,4 +29,14 @@ export const styles_signup = StyleSheet.create({
     paddingVertical: "20%",
     fontWeight: "bold",
   },
+  PasswordBar: {
+    height: 10,
+    alignItems: "center",
+    padding: 2,
+    borderRadius: 999,
+    fontSize: 10,
+    fontWeight: "500",
+    textAlign: "center",
+    lineHeight: 10,
+  },
 });

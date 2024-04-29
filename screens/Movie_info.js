@@ -1,45 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, Image, Pressable, Alert } from "react-native";
 import {
   AntDesign,
   MaterialIcons,
   Feather,
   FontAwesome,
 } from "@expo/vector-icons";
-
 import { ScrollView } from "react-native-gesture-handler";
-import { useQuery, gql, useMutation } from "@apollo/client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { jwtDecode } from "jwt-decode";
-import "core-js/stable/atob";
-
-import { GET_ALL_USERS } from "../utils/graphql";
-import { ADD_USER } from "../utils/graphql";
-import { DELETE_USER } from "../utils/graphql";
-import { UPDATE_USER } from "../utils/graphql";
+import { useQuery, useMutation } from "@apollo/client";
+import {
+  GET_ALL_USERS,
+  ADD_USER,
+  DELETE_USER,
+  UPDATE_USER,
+} from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
-import Modal_custom from "../components/Drawer";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-
 import { useModal } from "../utils/Modal";
 import Drawer_button from "../components/Drawer_button";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  Entypo,
+  FontAwesome5,
+} from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import Loader from "../components/Loader";
 
 const Movie_info = ({ navigation }) => {
   const { current } = useTheme();
@@ -67,13 +55,8 @@ const Movie_info = ({ navigation }) => {
   };
 
   const handleRatingChange = (text) => {
-    // Remove any non-numeric characters from the input
     const numericValue = text.replace(/[^0-9]/g, "");
-
-    // Ensure the numeric value is within the range of 1 to 100
     const numericRating = Math.min(Math.max(parseInt(numericValue), 0), 100);
-
-    // Update the state with the sanitized numeric rating
     setRating(numericRating.toString());
   };
 
@@ -287,11 +270,6 @@ const Movie_info = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme[current].white }}>
-      <Modal_custom
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      />
-
       <Drawer_button />
       {movieData ? (
         <ScrollView>
@@ -307,7 +285,13 @@ const Movie_info = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Text style={{ fontSize: 30, fontWeight: 500 }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: 500,
+                  color: theme[current].charcoal,
+                }}
+              >
                 {movieData.Title} [{movieData.Year}]
               </Text>
             </View>
@@ -329,7 +313,6 @@ const Movie_info = ({ navigation }) => {
                         flexDirection: "column",
                         alignContent: "center",
                         alignItems: "center",
-
                         borderBottomWidth: pressed ? 4 : 0,
                         borderColor: theme[current].orange,
                       },
@@ -369,18 +352,17 @@ const Movie_info = ({ navigation }) => {
                   style={{
                     width: "20%",
                     height: "1%",
-                    backgroundColor: userReview
-                      ? theme[current].green
-                      : theme[current].gray,
                     alignItems: "center",
                     padding: 2,
                     borderRadius: 999,
                     fontSize: 16,
                     fontWeight: 500,
-                    color: "#4299E1",
                     textAlign: "center",
                     lineHeight: 12,
                     marginBottom: "3%",
+                    backgroundColor: userReview
+                      ? theme[current].green
+                      : theme[current].gray,
                   }}
                 ></View>
                 {userReview == "[to be watched]" || !userReview ? (
@@ -441,18 +423,17 @@ const Movie_info = ({ navigation }) => {
                   style={{
                     width: "20%",
                     height: "1%",
-                    backgroundColor: !isNaN(userRating)
-                      ? theme[current].green
-                      : theme[current].gray,
                     alignItems: "center",
                     padding: 2,
                     borderRadius: 999,
                     fontSize: 16,
                     fontWeight: 500,
-                    color: "#4299E1",
                     textAlign: "center",
                     lineHeight: 12,
                     marginBottom: "3%",
+                    backgroundColor: !isNaN(userRating)
+                      ? theme[current].green
+                      : theme[current].gray,
                   }}
                 ></View>
 
@@ -513,17 +494,7 @@ const Movie_info = ({ navigation }) => {
                 )}
               </View>
             ) : (
-              <LottieView
-                style={{
-                  width: 210,
-                  height: 210,
-
-                  alignSelf: "center",
-                }}
-                source={require("../assets/loader4.json")}
-                autoPlay
-                loop
-              />
+              <Loader width={210} height={210} />
             )}
 
             <Pressable
@@ -534,11 +505,11 @@ const Movie_info = ({ navigation }) => {
                   justifyContent: "center",
                   alignContent: "center",
                   alignContent: "center",
+                  padding: "2%",
+                  marginBottom: "10%",
                   backgroundColor: pressed
                     ? theme[current].gray
                     : theme[current].white,
-                  padding: "2%",
-                  marginBottom: "10%",
                 },
               ]}
               onPress={handleDelete}
@@ -687,17 +658,19 @@ const Movie_info = ({ navigation }) => {
                 >
                   No reviews yet
                 </Text>
-                <Pressable onPress={handleEditView}>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      fontWeight: "900",
-                      color: theme[current].charcoal,
-                    }}
-                  >
-                    Add ?
-                  </Text>
-                </Pressable>
+                {userRating == "[watched]" && (
+                  <Pressable onPress={handleEditView}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: "900",
+                        color: theme[current].charcoal,
+                      }}
+                    >
+                      Add ?
+                    </Text>
+                  </Pressable>
+                )}
               </View>
             ) : (
               <View style={{ marginHorizontal: "8%", marginVertical: "5%" }}>
@@ -948,17 +921,7 @@ const Movie_info = ({ navigation }) => {
           </View>
         </ScrollView>
       ) : (
-        <LottieView
-          style={{
-            width: 210,
-            height: 210,
-
-            alignSelf: "center",
-          }}
-          source={require("../assets/loader4.json")}
-          autoPlay
-          loop
-        />
+        <Loader width={210} height={210} />
       )}
     </View>
   );

@@ -2,31 +2,24 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   Text,
   View,
-  Button,
-  StyleSheet,
   Pressable,
   Alert,
-  Image,
+  BackHandler,
+  ScrollView,
 } from "react-native";
-import { BackHandler, ScrollView } from "react-native";
-import Modal_custom from "../components/Drawer";
-import { useModal } from "../utils/Modal";
-import CountryFlag from "react-native-country-flag";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "../utils/Auth";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Feather } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import List from "../components/Home_section";
 import Drawer_button from "../components/Drawer_button";
-import LottieView from "lottie-react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { styles_home } from "../styles/home";
+import Loader from "../components/Loader";
 
 const HomeScreen = ({ navigation }) => {
-  const { modalVisible, setModalVisible } = useModal();
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const [bookmarks, setBookmarks] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -35,7 +28,6 @@ const HomeScreen = ({ navigation }) => {
   const { current } = useTheme();
   const [loading, setLoading] = useState(false);
 
-  const API_KEY = "e24ea998";
   useFocusEffect(
     useCallback(() => {
       if (!username) {
@@ -179,96 +171,48 @@ const HomeScreen = ({ navigation }) => {
             )}
           <Pressable onPress={() => navigation.navigate("Bookmarks")}>
             <Text
-              style={{
-                fontSize: 22,
-                fontWeight: "900",
-                marginRight: "10%",
-                borderLeftWidth: 6,
-                borderColor: theme[current].orange,
-                paddingLeft: "2%",
-                marginVertical: "5%",
-                opacity: 0.75,
-                color: theme[current].charcoal,
-              }}
+              style={[
+                styles_home.Text,
+                {
+                  color: theme[current].charcoal,
+                  borderColor: theme[current].orange,
+                },
+              ]}
             >
               Bookmarks[{bookmarks.length}]
             </Text>
           </Pressable>
-          {loading && (
-            <LottieView
-              style={{
-                width: 210,
-                height: 210,
-
-                alignSelf: "center",
-              }}
-              source={require("../assets/loader4.json")}
-              autoPlay
-              loop
-            />
-          )}
+          {loading && <Loader height={210} width={210} />}
           <List tab={bookmarks} />
           <Pressable onPress={() => navigation.navigate("Bookmarks")}>
             <Text
-              style={{
-                fontSize: 22,
-                fontWeight: "900",
-                marginRight: "10%",
-                borderLeftWidth: 6,
-                borderColor: theme[current].orange,
-                paddingLeft: "2%",
-                marginVertical: "5%",
-                opacity: 0.75,
-                color: theme[current].charcoal,
-              }}
+              style={[
+                styles_home.Text,
+                {
+                  color: theme[current].charcoal,
+                  borderColor: theme[current].orange,
+                },
+              ]}
             >
               Reviews[{reviews.length}]
             </Text>
           </Pressable>
-          {loading && (
-            <LottieView
-              style={{
-                width: 210,
-                height: 210,
-
-                alignSelf: "center",
-              }}
-              source={require("../assets/loader4.json")}
-              autoPlay
-              loop
-            />
-          )}
+          {loading && <Loader height={210} width={210} />}
           <List tab={reviews} />
           <Pressable onPress={() => navigation.navigate("Bookmarks")}>
             <Text
-              style={{
-                fontSize: 22,
-                fontWeight: "900",
-                marginRight: "10%",
-                borderLeftWidth: 6,
-                borderColor: theme[current].orange,
-                paddingLeft: "2%",
-                marginVertical: "5%",
-                opacity: 0.75,
-                color: theme[current].charcoal,
-              }}
+              style={[
+                styles_home.Text,
+                {
+                  color: theme[current].charcoal,
+                  borderColor: theme[current].orange,
+                },
+              ]}
             >
               Watched[{watched.length}]
             </Text>
           </Pressable>
-          {loading && (
-            <LottieView
-              style={{
-                width: 210,
-                height: 210,
-
-                alignSelf: "center",
-              }}
-              source={require("../assets/loader4.json")}
-              autoPlay
-              loop
-            />
-          )}
+          {loading && <Loader height={210} width={210} />}
           <List tab={watched} />
         </View>
       </ScrollView>

@@ -43,7 +43,7 @@ const Modal_custom = () => {
           isVisible={modalVisible}
           animationIn="slideInLeft"
           animationOut="slideOutLeft"
-          backdropColor={theme[current].gray}
+          backdropColor={current == "light" ? theme[current].gray : "#4c4c4c"}
           onBackdropPress={() => setModalVisible(false)}
           style={styles.modal}
           onBackButtonPress={() => setModalVisible(false)}

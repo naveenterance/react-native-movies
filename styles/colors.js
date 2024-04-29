@@ -15,7 +15,7 @@ export const theme = {
   dark: {
     orange: "#E55604",
     blue: "#26577C",
-    gray: "#1B1212",
+    gray: "#4c4c4c",
     textInput: "#718096",
     text: "#33ff3c",
     white: "#000000",

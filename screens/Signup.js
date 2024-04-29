@@ -8,6 +8,7 @@ import { AntDesign } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import { styles_common } from "../styles/common";
 import { styles_signup } from "../styles/signup";
+import Loader from "../components/Loader";
 
 const SignUpScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -192,23 +193,19 @@ const SignUpScreen = ({ navigation }) => {
             </Text>
 
             <View
-              style={{
-                width: `${(password.length < 7 ? password.length : 7) * 10}%`,
-                backgroundColor: `${
-                  (password.length < 3 && theme[current].red) ||
-                  (password.length < 6 && theme[current].orange) ||
-                  (password.length >= 6 && theme[current].green)
-                }`,
-                height: 10,
-                alignItems: "center",
-                padding: 2,
-                borderRadius: 999,
-                fontSize: 10,
-                fontWeight: "500",
-                color: theme[current].gray,
-                textAlign: "center",
-                lineHeight: 10,
-              }}
+              style={[
+                styles_signup.PasswordBar,
+                {
+                  width: `${(password.length < 7 ? password.length : 7) * 10}%`,
+                  backgroundColor: `${
+                    (password.length < 3 && theme[current].red) ||
+                    (password.length < 6 && theme[current].orange) ||
+                    (password.length >= 6 && theme[current].green)
+                  }`,
+
+                  color: theme[current].gray,
+                },
+              ]}
             ></View>
           </View>
         )}
@@ -246,12 +243,7 @@ const SignUpScreen = ({ navigation }) => {
               </Text>
             ) : (
               <View style={{ marginHorizontal: 48 }}>
-                <LottieView
-                  style={{ width: 110, height: 110, padding: 16 }}
-                  source={require("../assets/loader4.json")}
-                  autoPlay
-                  loop
-                />
+                <Loader height={110} width={110} />
               </View>
             )}
           </Pressable>

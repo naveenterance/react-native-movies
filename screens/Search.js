@@ -3,39 +3,34 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   Image,
   Pressable,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery, useMutation } from "@apollo/client";
-import { GET_ALL_USERS, ADD_USER } from "../utils/graphql";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_USERS } from "../utils/graphql";
 import { useID } from "../utils/CurrentId";
 import { useAuth } from "../utils/Auth";
-import Modal_custom from "../components/Drawer";
-import { useModal } from "../utils/Modal";
 import RecentSearches from "../components/RecentSearches";
-
 import Drawer_button from "../components/Drawer_button";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-import { AntDesign } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Modal from "react-native-modal";
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  Feather,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import Filter from "../components/Filter";
-import { BackHandler, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import LottieView from "lottie-react-native";
+import { styles_search } from "../styles/search";
+import Loader from "../components/Loader";
 
 const Search = ({ navigation }) => {
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
-  const [addUser] = useMutation(ADD_USER);
   const { id, setId } = useID();
-  const { modalVisible, setModalVisible } = useModal();
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
@@ -48,7 +43,6 @@ const Search = ({ navigation }) => {
   const { current } = useTheme();
   const [view, setView] = useState("recents");
   const [loading, setLoading] = useState(false);
-
   const { username } = useAuth();
 
   useFocusEffect(
@@ -192,15 +186,14 @@ const Search = ({ navigation }) => {
         <View>
           <Pressable onPress={() => handlepress(item.imdbID)}>
             <View
-              style={{
-                margin: 8,
-                backgroundColor: theme[current].white,
-                padding: 8,
-                borderRadius: 8,
-                flexDirection: "row",
-                borderWidth: userRating && 4,
-                borderColor: userRating && theme[current].blue,
-              }}
+              style={[
+                styles_search.renderItems.container,
+                {
+                  borderWidth: userRating && 4,
+                  borderColor: userRating && theme[current].blue,
+                  backgroundColor: theme[current].white,
+                },
+              ]}
             >
               <View>
                 <Image
@@ -212,9 +205,9 @@ const Search = ({ navigation }) => {
                 <Text
                   numberOfLines={2}
                   style={{
-                    color: theme[current].charcoal,
                     fontSize: 16,
                     fontWeight: 700,
+                    color: theme[current].charcoal,
                   }}
                 >
                   {item.Title}{" "}
@@ -238,26 +231,22 @@ const Search = ({ navigation }) => {
                         }}
                       >{`Critics: ${item.ratingR.Value}`}</Text>
                       <View
-                        style={{
-                          width: "100%",
-                          backgroundColor: theme[current].gray,
-                          borderRadius: 999,
-                          height: 4,
-                        }}
+                        style={[
+                          styles_search.ratingsBar.container,
+                          {
+                            backgroundColor: theme[current].gray,
+                          },
+                        ]}
                       >
                         <View
-                          style={{
-                            width: item.ratingR.Value,
-                            backgroundColor: theme[current].rotten,
-                            alignItems: "center",
-                            padding: 2,
-                            borderRadius: 999,
-                            fontSize: 10,
-                            fontWeight: "500",
-                            color: "#4299E1",
-                            textAlign: "center",
-                            lineHeight: 10,
-                          }}
+                          style={[
+                            styles_search.ratingsBar.bar,
+                            {
+                              color: theme[current].gray,
+                              width: item.ratingR.Value,
+                              backgroundColor: theme[current].rotten,
+                            },
+                          ]}
                         >
                           <Text></Text>
                         </View>
@@ -273,28 +262,27 @@ const Search = ({ navigation }) => {
                         }}
                       >{`IMDB: ${item.ratingM.Value}`}</Text>
                       <View
-                        style={{
-                          width: "100%",
-                          backgroundColor: "#E5E7EB",
-                          borderRadius: 999,
-                          height: 4,
-                        }}
+                        style={[
+                          styles_search.ratingsBar.container,
+                          {
+                            backgroundColor: theme[current].gray,
+                          },
+                        ]}
                       >
                         <View
-                          style={{
-                            width: `${
-                              parseFloat(item.ratingM.Value.split("/")[0]) * 10
-                            }%`,
-                            backgroundColor: theme[current].imdb,
-                            alignItems: "center",
-                            padding: 2,
-                            borderRadius: 999,
-                            fontSize: 10,
-                            fontWeight: "500",
-                            color: "#4299E1",
-                            textAlign: "center",
-                            lineHeight: 10,
-                          }}
+                          style={[
+                            styles_search.ratingsBar.bar,
+                            {
+                              textAlign: "center",
+                              lineHeight: 10,
+                              width: `${
+                                parseFloat(item.ratingM.Value.split("/")[0]) *
+                                10
+                              }%`,
+                              color: theme[current].gray,
+                              backgroundColor: theme[current].imdb,
+                            },
+                          ]}
                         >
                           <Text></Text>
                         </View>
@@ -316,33 +304,29 @@ const Search = ({ navigation }) => {
                         <Text
                           style={{
                             fontStyle: "italic",
-                            color: theme[current].charcoal,
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: 500,
+                            color: theme[current].charcoal,
                           }}
                         >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
 
                         <View
-                          style={{
-                            width: "100%",
-                            backgroundColor: "#E5E7EB",
-                            borderRadius: 999,
-                            height: 4,
-                          }}
+                          style={[
+                            styles_search.ratingsBar.container,
+                            {
+                              backgroundColor: theme[current].gray,
+                            },
+                          ]}
                         >
                           <View
-                            style={{
-                              width: parseFloat(userRating) + "%",
-                              backgroundColor: theme[current].blue,
-                              alignItems: "center",
-                              padding: 2,
-                              borderRadius: 999,
-                              fontSize: 12,
-                              fontWeight: "500",
-                              color: "#4299E1",
-                              textAlign: "center",
-                              lineHeight: 12,
-                            }}
+                            style={[
+                              styles_search.ratingsBar.bar,
+                              {
+                                width: parseFloat(userRating) + "%",
+                                color: theme[current].gray,
+                                backgroundColor: theme[current].blue,
+                              },
+                            ]}
                           >
                             <Text></Text>
                           </View>
@@ -491,22 +475,17 @@ const Search = ({ navigation }) => {
               style={{ flexDirection: "row", justifyContent: "space-evenly" }}
             >
               <TextInput
-                style={{
-                  backgroundColor: theme[current].white,
-                  width: "80%",
-
-                  marginTop: "1%",
-                  paddingHorizontal: "5%",
-                  paddingVertical: "2%",
-                  borderWidth: 2,
-                  borderColor: theme[current].charcoal,
-                  borderRadius: 999,
-                  fontSize: 16,
-                  marginHorizontal: "2%",
-                  color: theme[current].charcoal,
-                }}
+                style={[
+                  styles_search.searchBar,
+                  {
+                    color: theme[current].charcoal,
+                    borderColor: theme[current].charcoal,
+                    backgroundColor: theme[current].white,
+                  },
+                ]}
                 selectionColor={theme[current].orange}
                 placeholder="Search for movies..."
+                placeholderTextColor={theme[current].charcoal}
                 value={searchQuery}
                 onChangeText={(text) => setSearchQuery(text)}
                 onSubmitEditing={searchMovies}
@@ -668,19 +647,7 @@ const Search = ({ navigation }) => {
                 </View>
               </Pressable>
             </View>
-            {loading && (
-              <LottieView
-                style={{
-                  width: 210,
-                  height: 210,
-
-                  alignSelf: "center",
-                }}
-                source={require("../assets/loader4.json")}
-                autoPlay
-                loop
-              />
-            )}
+            {loading && <Loader height={210} width={210} />}
             {searchPerformed &&
             searchQuery &&
             !loading &&

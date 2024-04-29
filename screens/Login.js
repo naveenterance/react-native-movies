@@ -7,7 +7,7 @@ import { useTheme } from "../utils/Theme";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { styles_common } from "../styles/common";
 import { styles_login } from "../styles/login";
-import LottieView from "lottie-react-native";
+import Loader from "../components/Loader";
 
 const LoginScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -134,12 +134,7 @@ const LoginScreen = ({ navigation }) => {
               </Text>
             ) : (
               <View style={{ marginHorizontal: 48 }}>
-                <LottieView
-                  style={{ width: 110, height: 110, padding: 16 }}
-                  source={require("../assets/loader4.json")}
-                  autoPlay
-                  loop
-                />
+                <Loader height={110} width={110} />
               </View>
             )}
           </Pressable>

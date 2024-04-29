@@ -1,34 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Pressable,
-  Image,
-  TextInput,
-  Button,
-} from "react-native";
+import { View, Text, FlatList, Pressable, Image } from "react-native";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_USERS } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
-import { AntDesign } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  FontAwesome,
+  Feather,
+  FontAwesome6,
+} from "@expo/vector-icons";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-import { BackHandler, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-
 import Drawer_button from "../components/Drawer_button";
 import { useSearchTerm } from "../utils/SearchTerm";
-import LottieView from "lottie-react-native";
-import { FontAwesome6 } from "@expo/vector-icons";
+import Loader from "../components/Loader";
+import { styles_bookmarks } from "../styles/bookmarks";
 
 const Bookmarks = ({ navigation }) => {
   const { current } = useTheme();
@@ -136,13 +125,12 @@ const Bookmarks = ({ navigation }) => {
       <View>
         <Pressable onPress={() => handlepress(item.imdbID)}>
           <View
-            style={{
-              margin: 8,
-              backgroundColor: theme[current].white,
-              padding: 8,
-              borderRadius: 8,
-              flexDirection: "row",
-            }}
+            style={[
+              styles_bookmarks.renderItems.container,
+              {
+                backgroundColor: theme[current].white,
+              },
+            ]}
           >
             <View>
               <Image
@@ -154,9 +142,9 @@ const Bookmarks = ({ navigation }) => {
               <Text
                 numberOfLines={2}
                 style={{
-                  color: theme[current].charcoal,
                   fontSize: 16,
                   fontWeight: 700,
+                  color: theme[current].charcoal,
                 }}
               >
                 {item.Title}{" "}
@@ -177,26 +165,22 @@ const Bookmarks = ({ navigation }) => {
                       }}
                     >{`Critics: ${item.ratingR.Value}`}</Text>
                     <View
-                      style={{
-                        width: "100%",
-                        backgroundColor: theme[current],
-                        borderRadius: 999,
-                        height: 4,
-                      }}
+                      style={[
+                        styles_bookmarks.ratingBar.container,
+                        {
+                          backgroundColor: theme[current].gray,
+                        },
+                      ]}
                     >
                       <View
-                        style={{
-                          width: item.ratingR.Value,
-                          backgroundColor: theme[current].rotten,
-                          alignItems: "center",
-                          padding: 2,
-                          borderRadius: 999,
-                          fontSize: 10,
-                          fontWeight: "500",
-                          color: "#4299E1",
-                          textAlign: "center",
-                          lineHeight: 10,
-                        }}
+                        style={[
+                          styles_bookmarks.ratingBar.bar,
+                          {
+                            color: theme[current].gray,
+                            backgroundColor: theme[current].rotten,
+                            width: item.ratingR.Value,
+                          },
+                        ]}
                       >
                         <Text></Text>
                       </View>
@@ -212,28 +196,24 @@ const Bookmarks = ({ navigation }) => {
                       }}
                     >{`IMDB: ${item.ratingM.Value}`}</Text>
                     <View
-                      style={{
-                        width: "100%",
-                        backgroundColor: theme[current],
-                        borderRadius: 999,
-                        height: 4,
-                      }}
+                      style={[
+                        styles_bookmarks.ratingBar.container,
+                        {
+                          backgroundColor: theme[current].gray,
+                        },
+                      ]}
                     >
                       <View
-                        style={{
-                          width: `${
-                            parseFloat(item.ratingM.Value.split("/")[0]) * 10
-                          }%`,
-                          backgroundColor: theme[current].imdb,
-                          alignItems: "center",
-                          padding: 2,
-                          borderRadius: 999,
-                          fontSize: 10,
-                          fontWeight: "500",
-                          color: "#4299E1",
-                          textAlign: "center",
-                          lineHeight: 10,
-                        }}
+                        style={[
+                          styles_bookmarks.ratingBar.bar,
+                          {
+                            color: theme[current].gray,
+                            backgroundColor: theme[current].imdb,
+                            width: `${
+                              parseFloat(item.ratingM.Value.split("/")[0]) * 10
+                            }%`,
+                          },
+                        ]}
                       >
                         <Text></Text>
                       </View>
@@ -255,9 +235,9 @@ const Bookmarks = ({ navigation }) => {
                       <Text
                         style={{
                           fontStyle: "italic",
-                          color: theme[current].charcoal,
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: "500",
+                          color: theme[current].charcoal,
                         }}
                       >
                         {searchedUser
@@ -268,26 +248,22 @@ const Bookmarks = ({ navigation }) => {
                       </Text>
 
                       <View
-                        style={{
-                          width: "100%",
-                          backgroundColor: theme[current],
-                          borderRadius: 999,
-                          height: 4,
-                        }}
+                        style={[
+                          styles_bookmarks.ratingBar.container,
+                          {
+                            backgroundColor: theme[current].gray,
+                          },
+                        ]}
                       >
                         <View
-                          style={{
-                            width: parseFloat(item.userRating) + "%",
-                            backgroundColor: theme[current].blue,
-                            alignItems: "center",
-                            padding: 2,
-                            borderRadius: 999,
-                            fontSize: 12,
-                            fontWeight: "500",
-                            color: "#4299E1",
-                            textAlign: "center",
-                            lineHeight: 12,
-                          }}
+                          style={[
+                            styles_bookmarks.ratingBar.bar,
+                            {
+                              color: theme[current].gray,
+                              width: parseFloat(item.userRating) + "%",
+                              backgroundColor: theme[current].blue,
+                            },
+                          ]}
                         >
                           <Text></Text>
                         </View>
@@ -347,8 +323,8 @@ const Bookmarks = ({ navigation }) => {
       style={{
         width: "100%",
         height: "100%",
-        backgroundColor: theme[current].white,
         paddingBottom: 110,
+        backgroundColor: theme[current].white,
       }}
     >
       <Drawer_button />
@@ -360,14 +336,19 @@ const Bookmarks = ({ navigation }) => {
               marginBottom: "5%",
             }}
           >
-            <FontAwesome6 name="users-viewfinder" size={38} color="black" />
+            <FontAwesome6
+              name="users-viewfinder"
+              size={38}
+              color={theme[current].charcoal}
+            />
 
             <Text
               style={{
                 fontSize: 24,
                 borderBottomWidth: 4,
-                borderColor: theme[current].orange,
                 marginLeft: "3%",
+                borderColor: theme[current].orange,
+                color: theme[current].charcoal,
               }}
             >
               {searchedUser}
@@ -493,19 +474,7 @@ const Bookmarks = ({ navigation }) => {
             </View>
           </Pressable>
         </View>
-        {loading && (
-          <LottieView
-            style={{
-              width: 210,
-              height: 210,
-
-              alignSelf: "center",
-            }}
-            source={require("../assets/loader4.json")}
-            autoPlay
-            loop
-          />
-        )}
+        {loading && <Loader width={210} height={210} />}
         {!loading &&
           (movies.length > 0 ? (
             <FlatList
