@@ -26,7 +26,6 @@ import { Feather } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
-// import { ScrollView } from "react-native-gesture-handler";
 import Filter from "../components/Filter";
 import { BackHandler, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";

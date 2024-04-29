@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import {
-  Button,
-  TextInput,
-  View,
-  Pressable,
-  Text,
-  ActivityIndicator,
-} from "react-native";
+import { Button, TextInput, View, Pressable, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../utils/Auth";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-import { AntDesign } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
+import { Feather, AntDesign } from "@expo/vector-icons";
+import { styles_common } from "../styles/common";
+import { styles_login } from "../styles/login";
 import LottieView from "lottie-react-native";
 
 const LoginScreen = ({ navigation }) => {
@@ -67,11 +61,10 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View
-      style={{
-        backgroundColor: theme[current].white,
-        height: "100%",
-        width: "100%",
-      }}
+      style={[
+        styles_common.container,
+        { backgroundColor: theme[current].white },
+      ]}
     >
       <View
         style={{
@@ -81,16 +74,13 @@ const LoginScreen = ({ navigation }) => {
         }}
       >
         <TextInput
-          style={{
-            borderBottomWidth: 4,
-            borderBottomColor: theme[current].textInput,
-            padding: 16,
-            borderRadius: 16,
-            width: "75%",
-            marginBottom: 16,
-            fontSize: 16,
-            color: theme[current].charcoal,
-          }}
+          style={[
+            styles_login.TextInput,
+            {
+              borderBottomColor: theme[current].textInput,
+              color: theme[current].charcoal,
+            },
+          ]}
           selectionColor={theme[current].orange}
           placeholder="Username"
           placeholderTextColor={theme[current].charcoal}
@@ -99,16 +89,13 @@ const LoginScreen = ({ navigation }) => {
         />
         <View style={{ flexDirection: "row" }}>
           <TextInput
-            style={{
-              borderBottomWidth: 4,
-              borderBottomColor: theme[current].textInput,
-              padding: 16,
-              borderRadius: 16,
-              width: "75%",
-              marginBottom: 16,
-              fontSize: 16,
-              color: theme[current].charcoal,
-            }}
+            style={[
+              styles_login.TextInput,
+              {
+                borderBottomColor: theme[current].textInput,
+                color: theme[current].charcoal,
+              },
+            ]}
             selectionColor={theme[current].orange}
             placeholder="Password"
             placeholderTextColor={theme[current].charcoal}
@@ -131,14 +118,12 @@ const LoginScreen = ({ navigation }) => {
           <Pressable style={{ width: "70%" }} onPress={handleLogin}>
             {!loading ? (
               <Text
-                style={{
-                  fontSize: 36,
-                  color: theme[current].orange,
-                  paddingHorizontal: "10%",
-                  paddingVertical: "20%",
-
-                  fontWeight: "bold",
-                }}
+                style={[
+                  styles_login.text,
+                  {
+                    color: theme[current].orange,
+                  },
+                ]}
               >
                 Login
                 <AntDesign
@@ -149,10 +134,6 @@ const LoginScreen = ({ navigation }) => {
               </Text>
             ) : (
               <View style={{ marginHorizontal: 48 }}>
-                {/* <ActivityIndicator
-                  size="medium"
-                  color={theme[current].orange}
-                /> */}
                 <LottieView
                   style={{ width: 110, height: 110, padding: 16 }}
                   source={require("../assets/loader4.json")}

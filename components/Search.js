@@ -8,7 +8,6 @@ const MainComponent = () => {
   const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
-    // Fetch data from the endpoint
     fetch("https://chat-node-naveenterances-projects.vercel.app/users")
       .then((response) => response.json())
       .then((data) => {
@@ -23,7 +22,7 @@ const MainComponent = () => {
 
   const handleSearch = (text) => {
     setSearchTerm(text);
-    // Show results if search term length is at least 3 characters
+
     if (text.length >= 3) {
       setShowResults(true);
     } else {
@@ -36,7 +35,7 @@ const MainComponent = () => {
       (user) =>
         user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .slice(0, 20); // Show up to 20 results
+    .slice(0, 20);
 
   if (loading) {
     return (

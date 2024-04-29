@@ -1,20 +1,13 @@
 import React, { useState } from "react";
-import {
-  TextInput,
-  View,
-  Pressable,
-  Text,
-  ActivityIndicator,
-  ImageBackground,
-} from "react-native";
+import { TextInput, View, Pressable, Text } from "react-native";
 import Modal from "react-native-modal";
-
 import * as Notifications from "expo-notifications";
 import { theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { AntDesign } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
+import { styles_common } from "../styles/common";
+import { styles_signup } from "../styles/signup";
 
 const SignUpScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -104,43 +97,36 @@ const SignUpScreen = ({ navigation }) => {
 
   return (
     <View
-      style={{
-        backgroundColor: theme[current].white,
-        height: "100%",
-        width: "100%",
-      }}
+      style={[
+        styles_common.container,
+        {
+          backgroundColor: theme[current].white,
+        },
+      ]}
     >
       <Modal
         isVisible={modalVisible}
-        style={{
-          flex: 1,
-          maxHeight: "30%",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme[current].white,
-          marginVertical: "50%",
-          borderRadius: 20,
-        }}
+        style={[
+          styles_signup.Modal,
+          {
+            backgroundColor: theme[current].gray,
+          },
+        ]}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 40,
-          }}
-        >
+        <View style={styles_signup.Modal.View}>
           <Text
-            style={{
-              fontSize: 22,
-              margin: 10,
-              color: theme[current].green,
-              fontWeight: "bold",
-            }}
+            style={[
+              styles_signup.Modal.Text,
+              {
+                color: theme[current].green,
+              },
+            ]}
           >
             !! Success !!
           </Text>
-          <Text style={{ fontSize: 16, margin: 20 }}>
+          <Text
+            style={{ fontSize: 16, margin: 20, color: theme[current].charcoal }}
+          >
             You have successfully created an account,now login to that account{" "}
           </Text>
           <Pressable onPress={() => navigation.replace("Login")}>
@@ -163,30 +149,26 @@ const SignUpScreen = ({ navigation }) => {
         }}
       >
         <TextInput
-          style={{
-            borderBottomWidth: 4,
-            borderBottomColor: theme[current].textInput,
-            padding: 16,
-            borderRadius: 16,
-            width: "75%",
-            marginBottom: 16,
-            color: theme[current].charcoal,
-          }}
+          style={[
+            styles_signup.TextInput,
+            {
+              borderBottomColor: theme[current].textInput,
+              color: theme[current].charcoal,
+            },
+          ]}
           selectionColor={theme[current].orange}
           placeholder="Username"
           placeholderTextColor={theme[current].charcoal}
           onChangeText={setName}
         />
         <TextInput
-          style={{
-            borderBottomWidth: 4,
-            borderBottomColor: theme[current].textInput,
-            padding: 16,
-            borderRadius: 16,
-            width: "75%",
-            marginBottom: 16,
-            color: theme[current].charcoal,
-          }}
+          style={[
+            styles_signup.TextInput,
+            {
+              borderBottomColor: theme[current].textInput,
+              color: theme[current].charcoal,
+            },
+          ]}
           selectionColor={theme[current].orange}
           placeholder="Password"
           placeholderTextColor={theme[current].charcoal}
@@ -195,7 +177,13 @@ const SignUpScreen = ({ navigation }) => {
         />
         {password && (
           <View>
-            <Text style={{ margin: 12, fontSize: 20 }}>
+            <Text
+              style={{
+                margin: 12,
+                fontSize: 20,
+                color: theme[current].charcoal,
+              }}
+            >
               [
               {(password.length < 3 && "Weak") ||
                 (password.length < 6 && "Moderate") ||
@@ -217,7 +205,7 @@ const SignUpScreen = ({ navigation }) => {
                 borderRadius: 999,
                 fontSize: 10,
                 fontWeight: "500",
-                color: "#4299E1",
+                color: theme[current].gray,
                 textAlign: "center",
                 lineHeight: 10,
               }}
@@ -225,15 +213,13 @@ const SignUpScreen = ({ navigation }) => {
           </View>
         )}
         <TextInput
-          style={{
-            borderBottomWidth: 4,
-            borderBottomColor: theme[current].textInput,
-            padding: 16,
-            borderRadius: 16,
-            width: "75%",
-            marginBottom: 16,
-            color: theme[current].charcoal,
-          }}
+          style={[
+            styles_signup.TextInput,
+            {
+              borderBottomColor: theme[current].textInput,
+              color: theme[current].charcoal,
+            },
+          ]}
           selectionColor={theme[current].orange}
           placeholder="Confirm Password"
           placeholderTextColor={theme[current].charcoal}
@@ -244,13 +230,12 @@ const SignUpScreen = ({ navigation }) => {
           <Pressable style={{ width: "70%" }} onPress={handleSignUp}>
             {!loading ? (
               <Text
-                style={{
-                  fontSize: 36,
-                  color: theme[current].orange,
-                  paddingHorizontal: "10%",
-                  paddingVertical: "20%",
-                  fontWeight: "bold",
-                }}
+                style={[
+                  styles_signup.Text,
+                  {
+                    color: theme[current].orange,
+                  },
+                ]}
               >
                 SignUp
                 <AntDesign
