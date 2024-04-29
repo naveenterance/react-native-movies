@@ -49,7 +49,9 @@ const Filter = ({ genre, setGenre, language, setLanguage, year, setYear }) => {
       >
         <Text
           style={{
-            color: genre.includes(item) ? theme[current].orange : "black",
+            color: genre.includes(item)
+              ? theme[current].orange
+              : theme[current].charcoal,
             fontSize: 24,
           }}
         >
@@ -81,7 +83,9 @@ const Filter = ({ genre, setGenre, language, setLanguage, year, setYear }) => {
       >
         <Text
           style={{
-            color: language.includes(item) ? theme[current].orange : "black",
+            color: language.includes(item)
+              ? theme[current].orange
+              : theme[current].charcoal,
             fontSize: 24,
           }}
         >
@@ -113,7 +117,9 @@ const Filter = ({ genre, setGenre, language, setLanguage, year, setYear }) => {
       >
         <Text
           style={{
-            color: year.includes(item) ? theme[current].orange : "black",
+            color: year.includes(item)
+              ? theme[current].orange
+              : theme[current].charcoal,
             fontSize: 24,
           }}
         >
@@ -127,8 +133,6 @@ const Filter = ({ genre, setGenre, language, setLanguage, year, setYear }) => {
     <View
       style={{
         flexDirection: "row",
-        borderTopWidth: 4,
-        borderColor: theme[current].gray,
       }}
     >
       <View style={{ width: "60%" }}>
@@ -160,8 +164,6 @@ const Filter = ({ genre, setGenre, language, setLanguage, year, setYear }) => {
       <View
         style={{
           width: "40%",
-          borderLeftWidth: 2,
-          borderColor: theme[current].gray,
           padding: "2%",
           alignItems: "flex-end",
         }}

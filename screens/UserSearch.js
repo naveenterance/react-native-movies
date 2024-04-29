@@ -90,6 +90,7 @@ const UserSearch = ({ navigation }) => {
         }}
         selectionColor={theme[current].orange}
         placeholder="Search for Users"
+        placeholderTextColor={theme[current].charcoal}
         onChangeText={handleSearch}
         value={searchTerm}
       />
@@ -101,7 +102,11 @@ const UserSearch = ({ navigation }) => {
         />
       ) : (
         <View style={{ alignItems: "center" }}>
-          <MaterialIcons name="person-search" size={96} color="black" />
+          <MaterialIcons
+            name="person-search"
+            size={96}
+            color={theme[current].charcoal}
+          />
         </View>
       )}
     </View>

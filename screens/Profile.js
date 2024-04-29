@@ -41,9 +41,15 @@ const Profile = ({ navigation }) => {
           marginTop: "10%",
         }}
       >
-        <MaterialIcons name="account-circle" size={64} color="black" />
+        <MaterialIcons
+          name="account-circle"
+          size={64}
+          color={theme[current].charcoal}
+        />
 
-        <Text style={{ fontSize: 50 }}>{username}</Text>
+        <Text style={{ color: theme[current].charcoal, fontSize: 50 }}>
+          {username}
+        </Text>
 
         <Pressable
           style={({ pressed }) => [

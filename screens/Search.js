@@ -212,11 +212,20 @@ const Search = ({ navigation }) => {
               <View style={{ flex: 1, marginLeft: 8 }}>
                 <Text
                   numberOfLines={2}
-                  style={{ color: "#4B5563", fontSize: 16, fontWeight: 700 }}
+                  style={{
+                    color: theme[current].charcoal,
+                    fontSize: 16,
+                    fontWeight: 700,
+                  }}
                 >
                   {item.Title}{" "}
                 </Text>
-                <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
+                <Text
+                  style={{
+                    fontStyle: "italic",
+                    color: theme[current].charcoal,
+                  }}
+                >
                   [{item.Year}] [{item.Genre}] [{item.Language}][{item.Country}]
                 </Text>
 
@@ -224,12 +233,15 @@ const Search = ({ navigation }) => {
                   {item.ratingR ? (
                     <View style={{ marginRight: "4%" }}>
                       <Text
-                        style={{ fontStyle: "italic", color: "#4B5563" }}
+                        style={{
+                          fontStyle: "italic",
+                          color: theme[current].charcoal,
+                        }}
                       >{`Critics: ${item.ratingR.Value}`}</Text>
                       <View
                         style={{
                           width: "100%",
-                          backgroundColor: "#E5E7EB",
+                          backgroundColor: theme[current].gray,
                           borderRadius: 999,
                           height: 4,
                         }}
@@ -256,7 +268,10 @@ const Search = ({ navigation }) => {
                   {item.ratingM ? (
                     <View>
                       <Text
-                        style={{ fontStyle: "italic", color: "#4B5563" }}
+                        style={{
+                          fontStyle: "italic",
+                          color: theme[current].charcoal,
+                        }}
                       >{`IMDB: ${item.ratingM.Value}`}</Text>
                       <View
                         style={{
@@ -302,7 +317,7 @@ const Search = ({ navigation }) => {
                         <Text
                           style={{
                             fontStyle: "italic",
-                            color: "#4B5563",
+                            color: theme[current].charcoal,
                             fontSize: 20,
                             fontWeight: 500,
                           }}
@@ -489,6 +504,7 @@ const Search = ({ navigation }) => {
                   borderRadius: 999,
                   fontSize: 16,
                   marginHorizontal: "2%",
+                  color: theme[current].charcoal,
                 }}
                 selectionColor={theme[current].orange}
                 placeholder="Search for movies..."
@@ -532,8 +548,12 @@ const Search = ({ navigation }) => {
                     borderBottomColor: theme[current].orange,
                   }}
                 >
-                  <MaterialIcons name="history" size={30} color="black" />
-                  <Text>Recent</Text>
+                  <MaterialIcons
+                    name="history"
+                    size={30}
+                    color={theme[current].charcoal}
+                  />
+                  <Text style={{ color: theme[current].charcoal }}>Recent</Text>
                 </View>
               </Pressable>
 
@@ -580,8 +600,14 @@ const Search = ({ navigation }) => {
                     </View>
                   ) : (
                     <View>
-                      <AntDesign name="filter" size={30} color="black" />
-                      <Text>Filters</Text>
+                      <AntDesign
+                        name="filter"
+                        size={30}
+                        color={theme[current].charcoal}
+                      />
+                      <Text style={{ color: theme[current].charcoal }}>
+                        Filters
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -606,10 +632,12 @@ const Search = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="bookmark-multiple-outline"
                     size={30}
-                    color="black"
+                    color={theme[current].charcoal}
                   />
 
-                  <Text>Watchlist </Text>
+                  <Text style={{ color: theme[current].charcoal }}>
+                    Watchlist{" "}
+                  </Text>
                 </View>
               </Pressable>
               <Pressable
@@ -629,9 +657,15 @@ const Search = ({ navigation }) => {
                     alignItems: "center",
                   }}
                 >
-                  <MaterialIcons name="person-search" size={30} color="black" />
+                  <MaterialIcons
+                    name="person-search"
+                    size={30}
+                    color={theme[current].charcoal}
+                  />
 
-                  <Text>User Search </Text>
+                  <Text style={{ color: theme[current].charcoal }}>
+                    User Search{" "}
+                  </Text>
                 </View>
               </Pressable>
             </View>
@@ -650,11 +684,18 @@ const Search = ({ navigation }) => {
             )}
             {searchPerformed &&
             searchQuery &&
+            !loading &&
             (movies.length === 0 ||
               (!filterStatus &&
                 (language.length > 0 || genre.length > 0 || year.length))) ? (
               <>
-                <Text style={{ alignSelf: "center", marginTop: 20 }}>
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 20,
+                    color: theme[current].charcoal,
+                  }}
+                >
                   No results found
                 </Text>
               </>
@@ -672,7 +713,11 @@ const Search = ({ navigation }) => {
               />
             )}
 
-            {error && <Text>Error: {error.message}</Text>}
+            {error && (
+              <Text style={{ color: theme[current].charcoal }}>
+                Error: {error.message}
+              </Text>
+            )}
             {view == "recents" && (
               <RecentSearches
                 recentSearches={recentSearches}

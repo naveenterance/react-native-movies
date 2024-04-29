@@ -28,10 +28,11 @@ const Modal_custom = () => {
   const route = useRoute();
   const { id, setId } = useID();
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  // const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const navigation = useNavigation();
   const toggleTheme = () => {
+    setIsEnabled((previousState) => !previousState);
     const newTheme = current === "light" ? "dark" : "light";
     setTheme(newTheme);
   };
@@ -42,7 +43,7 @@ const Modal_custom = () => {
           isVisible={modalVisible}
           animationIn="slideInLeft"
           animationOut="slideOutLeft"
-          backdropColor="black"
+          backdropColor={theme[current].gray}
           onBackdropPress={() => setModalVisible(false)}
           style={styles.modal}
           onBackButtonPress={() => setModalVisible(false)}
@@ -219,28 +220,24 @@ const Modal_custom = () => {
                 </Text>
               </View>
             </Pressable>
-            <Pressable
-              onPress={toggleTheme}
-              style={{
-                marginTop: 20,
-                padding: 10,
-                backgroundColor: theme[current].text,
-              }}
-            >
-              <Text style={{ color: "#ffffff" }}>Toggle Theme</Text>
-            </Pressable>
+
             <View style={{ flexDirection: "row" }}>
               <Feather
                 name="moon"
                 size={24}
-                color="black"
+                color={theme[current].charcoal}
                 style={{ marginTop: 12 }}
               />
               <Switch
-                trackColor={{ false: "white", true: "gray" }}
-                thumbColor={isEnabled ? "black" : "white"}
+                trackColor={{
+                  false: theme[current].gray,
+                  true: theme[current].gray,
+                }}
+                thumbColor={
+                  isEnabled ? theme[current].gray : theme[current].charcoal
+                }
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
+                onValueChange={toggleTheme}
                 value={isEnabled}
                 style={{
                   transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }],
@@ -250,7 +247,7 @@ const Modal_custom = () => {
               <Feather
                 name="sun"
                 size={24}
-                color="black"
+                color={theme[current].charcoal}
                 style={{ marginTop: 12 }}
               />
             </View>

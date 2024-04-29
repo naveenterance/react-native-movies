@@ -66,18 +66,17 @@ const RecentSearches = ({
           style={({ pressed }) => [
             {
               flexDirection: "row",
-              // paddingHorizontal: "1%",
+
               padding: "2%",
-              // borderRightWidth: pressed ? 4 : 0,
-              // borderColor: theme[current].orange,
+
               backgroundColor: pressed
                 ? theme[current].gray
                 : theme[current].white,
             },
           ]}
         >
-          <Feather name="trash-2" size={30} color="black" />
-          <Text> Clear </Text>
+          <Feather name="trash-2" size={30} color={theme[current].charcoal} />
+          <Text style={{ color: theme[current].charcoal }}> Clear </Text>
         </Pressable>
       </View>
       {recentSearches.length <= 0 && (
@@ -85,7 +84,8 @@ const RecentSearches = ({
           style={{
             fontSize: 30,
             fontWeight: "600",
-            color: theme[current].gray,
+            color:
+              current == "dark" ? theme[current].charcoal : theme[current].gray,
           }}
         >
           No recent searches
@@ -109,7 +109,9 @@ const RecentSearches = ({
               },
             ]}
           >
-            <Text style={{ fontSize: 16 }}>{item}</Text>
+            <Text style={{ fontSize: 16, color: theme[current].charcoal }}>
+              {item}
+            </Text>
           </Pressable>
         )}
         keyExtractor={(item, index) => index.toString()}

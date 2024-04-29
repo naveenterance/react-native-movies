@@ -89,9 +89,11 @@ const LoginScreen = ({ navigation }) => {
             width: "75%",
             marginBottom: 16,
             fontSize: 16,
+            color: theme[current].charcoal,
           }}
           selectionColor={theme[current].orange}
           placeholder="Username"
+          placeholderTextColor={theme[current].charcoal}
           onChangeText={setName}
           value={name}
         />
@@ -105,9 +107,11 @@ const LoginScreen = ({ navigation }) => {
               width: "75%",
               marginBottom: 16,
               fontSize: 16,
+              color: theme[current].charcoal,
             }}
             selectionColor={theme[current].orange}
             placeholder="Password"
+            placeholderTextColor={theme[current].charcoal}
             label="password"
             secureTextEntry={passwordVisibility ? false : true}
             value={password}

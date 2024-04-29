@@ -119,7 +119,7 @@ const HomeScreen = ({ navigation }) => {
                 style={{
                   width: "100%",
                   height: "90%",
-                  marginTop: "20%",
+                  marginTop: "30%",
                 }}
               >
                 <View
@@ -157,7 +157,10 @@ const HomeScreen = ({ navigation }) => {
                           style={{
                             fontSize: 36,
                             fontWeight: 900,
-                            color: theme[current].gray,
+                            color:
+                              current == "dark"
+                                ? theme[current].charcoal
+                                : theme[current].gray,
                           }}
                         >
                           Its empty ,let's go add something
@@ -185,6 +188,7 @@ const HomeScreen = ({ navigation }) => {
                 paddingLeft: "2%",
                 marginVertical: "5%",
                 opacity: 0.75,
+                color: theme[current].charcoal,
               }}
             >
               Bookmarks[{bookmarks.length}]
@@ -215,6 +219,7 @@ const HomeScreen = ({ navigation }) => {
                 paddingLeft: "2%",
                 marginVertical: "5%",
                 opacity: 0.75,
+                color: theme[current].charcoal,
               }}
             >
               Reviews[{reviews.length}]
@@ -245,6 +250,7 @@ const HomeScreen = ({ navigation }) => {
                 paddingLeft: "2%",
                 marginVertical: "5%",
                 opacity: 0.75,
+                color: theme[current].charcoal,
               }}
             >
               Watched[{watched.length}]

@@ -46,7 +46,7 @@ const Drawer_button = () => {
           ]}
           onPress={() => setModalVisible(true)}
         >
-          <Feather name="menu" size={36} color="black" />
+          <Feather name="menu" size={36} color={theme[current].charcoal} />
         </Pressable>
       </View>
       <Modal_custom

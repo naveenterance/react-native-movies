@@ -170,9 +170,11 @@ const SignUpScreen = ({ navigation }) => {
             borderRadius: 16,
             width: "75%",
             marginBottom: 16,
+            color: theme[current].charcoal,
           }}
           selectionColor={theme[current].orange}
           placeholder="Username"
+          placeholderTextColor={theme[current].charcoal}
           onChangeText={setName}
         />
         <TextInput
@@ -183,9 +185,11 @@ const SignUpScreen = ({ navigation }) => {
             borderRadius: 16,
             width: "75%",
             marginBottom: 16,
+            color: theme[current].charcoal,
           }}
           selectionColor={theme[current].orange}
           placeholder="Password"
+          placeholderTextColor={theme[current].charcoal}
           secureTextEntry={true}
           onChangeText={setPassword}
         />
@@ -228,9 +232,11 @@ const SignUpScreen = ({ navigation }) => {
             borderRadius: 16,
             width: "75%",
             marginBottom: 16,
+            color: theme[current].charcoal,
           }}
           selectionColor={theme[current].orange}
           placeholder="Confirm Password"
+          placeholderTextColor={theme[current].charcoal}
           secureTextEntry={true}
           onChangeText={setConfirmPassword}
         />

@@ -153,11 +153,17 @@ const Bookmarks = ({ navigation }) => {
             <View style={{ flex: 1, marginLeft: 8 }}>
               <Text
                 numberOfLines={2}
-                style={{ color: "#4B5563", fontSize: 16, fontWeight: 700 }}
+                style={{
+                  color: theme[current].charcoal,
+                  fontSize: 16,
+                  fontWeight: 700,
+                }}
               >
                 {item.Title}{" "}
               </Text>
-              <Text style={{ fontStyle: "italic", color: "#4B5563" }}>
+              <Text
+                style={{ fontStyle: "italic", color: theme[current].charcoal }}
+              >
                 [{item.Year}] [{item.Genre}] [{item.Language}][{item.Country}]
               </Text>
 
@@ -165,12 +171,15 @@ const Bookmarks = ({ navigation }) => {
                 {item.ratingR ? (
                   <View style={{ marginRight: "4%" }}>
                     <Text
-                      style={{ fontStyle: "italic", color: "#4B5563" }}
+                      style={{
+                        fontStyle: "italic",
+                        color: theme[current].charcoal,
+                      }}
                     >{`Critics: ${item.ratingR.Value}`}</Text>
                     <View
                       style={{
                         width: "100%",
-                        backgroundColor: "#E5E7EB",
+                        backgroundColor: theme[current],
                         borderRadius: 999,
                         height: 4,
                       }}
@@ -197,12 +206,15 @@ const Bookmarks = ({ navigation }) => {
                 {item.ratingM ? (
                   <View>
                     <Text
-                      style={{ fontStyle: "italic", color: "#4B5563" }}
+                      style={{
+                        fontStyle: "italic",
+                        color: theme[current].charcoal,
+                      }}
                     >{`IMDB: ${item.ratingM.Value}`}</Text>
                     <View
                       style={{
                         width: "100%",
-                        backgroundColor: "#E5E7EB",
+                        backgroundColor: theme[current],
                         borderRadius: 999,
                         height: 4,
                       }}
@@ -243,7 +255,7 @@ const Bookmarks = ({ navigation }) => {
                       <Text
                         style={{
                           fontStyle: "italic",
-                          color: "#4B5563",
+                          color: theme[current].charcoal,
                           fontSize: 20,
                           fontWeight: "500",
                         }}
@@ -258,7 +270,7 @@ const Bookmarks = ({ navigation }) => {
                       <View
                         style={{
                           width: "100%",
-                          backgroundColor: "#E5E7EB",
+                          backgroundColor: theme[current],
                           borderRadius: 999,
                           height: 4,
                         }}
@@ -402,7 +414,7 @@ const Bookmarks = ({ navigation }) => {
                 size={30}
                 color={theme[current].charcoal}
               />
-              <Text>Bookmarks</Text>
+              <Text style={{ color: theme[current].charcoal }}>Bookmarks</Text>
             </View>
           </Pressable>
           <Pressable
@@ -430,7 +442,7 @@ const Bookmarks = ({ navigation }) => {
                 size={30}
                 color={theme[current].charcoal}
               />
-              <Text>Watched</Text>
+              <Text style={{ color: theme[current].charcoal }}>Watched</Text>
             </View>
           </Pressable>
           <Pressable
@@ -456,11 +468,6 @@ const Bookmarks = ({ navigation }) => {
                 borderBottomColor: theme[current].orange,
               }}
             >
-              {/* <MaterialCommunityIcons
-                name="movie-check-outline"
-                size={30}
-                color="black"
-              /> */}
               <View
                 style={{
                   flexDirection: "row",
@@ -471,44 +478,20 @@ const Bookmarks = ({ navigation }) => {
                 <FontAwesome
                   name="sort-desc"
                   size={36}
-                  color={sort ? theme[current].orange : "black"}
+                  color={sort ? theme[current].orange : theme[current].charcoal}
                 />
                 <FontAwesome
                   name="sort-asc"
                   size={36}
-                  color={!sort ? theme[current].orange : "black"}
+                  color={
+                    !sort ? theme[current].orange : theme[current].charcoal
+                  }
                 />
               </View>
 
-              <Text style={{}}>Rated</Text>
+              <Text style={{ color: theme[current].charcoal }}>Rated</Text>
             </View>
           </Pressable>
-          {/* <Pressable
-            onPress={() => navigation.navigate("Search")}
-            style={({ pressed }) => [
-              {
-                paddingVertical: "2%",
-                paddingHorizontal: "5%",
-                backgroundColor: pressed
-                  ? theme[current].gray
-                  : theme[current].white,
-              },
-            ]}
-          >
-            <View
-              style={{
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <MaterialCommunityIcons
-                name="movie-search-outline"
-                size={30}
-                color="black"
-              />
-              <Text>Search</Text>
-            </View>
-          </Pressable> */}
         </View>
         {loading && (
           <LottieView
