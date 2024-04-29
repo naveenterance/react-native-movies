@@ -28,10 +28,10 @@ import {
 } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import Loader from "../components/Loader";
+import { styles_movie_info } from "../styles/movie_info";
 
 const Movie_info = ({ navigation }) => {
   const { current } = useTheme();
-  const { modalVisible, setModalVisible } = useModal();
   const { username } = useAuth();
   const { id, setId } = useID();
   const [loading, setLoading] = useState(false);
@@ -45,7 +45,6 @@ const Movie_info = ({ navigation }) => {
   const [deleteUser] = useMutation(DELETE_USER);
   const [updateUser] = useMutation(UPDATE_USER);
   const [editView, setEditView] = useState(false);
-
   const textInputRef = useRef(null);
 
   const focusOnTextInput = () => {
@@ -296,16 +295,7 @@ const Movie_info = ({ navigation }) => {
               </Text>
             </View>
             {!loading ? (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  marginVertical: "15%",
-                  marginHorizontal: "5%",
-                }}
-              >
+              <View style={styles_movie_info.progress.container}>
                 {!userReview ? (
                   <Pressable
                     style={({ pressed }) => [
@@ -349,21 +339,14 @@ const Movie_info = ({ navigation }) => {
                   </View>
                 )}
                 <View
-                  style={{
-                    width: "20%",
-                    height: "1%",
-                    alignItems: "center",
-                    padding: 2,
-                    borderRadius: 999,
-                    fontSize: 16,
-                    fontWeight: 500,
-                    textAlign: "center",
-                    lineHeight: 12,
-                    marginBottom: "3%",
-                    backgroundColor: userReview
-                      ? theme[current].green
-                      : theme[current].gray,
-                  }}
+                  style={[
+                    styles_movie_info.progress.bar,
+                    {
+                      backgroundColor: userReview
+                        ? theme[current].green
+                        : theme[current].gray,
+                    },
+                  ]}
                 ></View>
                 {userReview == "[to be watched]" || !userReview ? (
                   <Pressable
@@ -420,21 +403,14 @@ const Movie_info = ({ navigation }) => {
                 )}
 
                 <View
-                  style={{
-                    width: "20%",
-                    height: "1%",
-                    alignItems: "center",
-                    padding: 2,
-                    borderRadius: 999,
-                    fontSize: 16,
-                    fontWeight: 500,
-                    textAlign: "center",
-                    lineHeight: 12,
-                    marginBottom: "3%",
-                    backgroundColor: !isNaN(userRating)
-                      ? theme[current].green
-                      : theme[current].gray,
-                  }}
+                  style={[
+                    styles_movie_info.progress.bar,
+                    {
+                      backgroundColor: !isNaN(userRating)
+                        ? theme[current].green
+                        : theme[current].gray,
+                    },
+                  ]}
                 ></View>
 
                 {userReview == "[watched]" ||
@@ -745,17 +721,13 @@ const Movie_info = ({ navigation }) => {
                     Rate on a scale of 0 -100
                   </Text>
                   <TextInput
-                    style={{
-                      borderWidth: 4,
-                      borderColor: theme[current].gray,
-                      width: "15%",
-                      padding: 8,
-                      marginLeft: "10%",
-                      fontSize: 20,
-                      fontWeight: "600",
-                      color: theme[current].charcoal,
-                      borderRadius: 8,
-                    }}
+                    style={[
+                      styles_movie_info.textInput.rating,
+                      {
+                        color: theme[current].charcoal,
+                        borderColor: theme[current].gray,
+                      },
+                    ]}
                     value={!isNaN(rating) ? rating : ""}
                     selectionColor={theme[current].orange}
                     keyboardType="numeric"
@@ -783,16 +755,13 @@ const Movie_info = ({ navigation }) => {
                     Write a review
                   </Text>
                   <TextInput
-                    style={{
-                      borderWidth: 4,
-                      borderColor: theme[current].gray,
-                      padding: 10,
-                      color: theme[current].charcoal,
-                      fontSize: 14,
-                      textAlignVertical: "top",
-
-                      borderRadius: 8,
-                    }}
+                    style={[
+                      styles_movie_info.textInput.review,
+                      {
+                        color: theme[current].charcoal,
+                        borderColor: theme[current].gray,
+                      },
+                    ]}
                     ref={textInputRef}
                     multiline={true}
                     numberOfLines={10}
