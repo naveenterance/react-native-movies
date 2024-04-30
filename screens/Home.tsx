@@ -8,9 +8,9 @@ import {
   ScrollView,
 } from "react-native";
 import { GET_ALL_USERS } from "../utils/graphql";
-import { useQuery } from "@apollo/client";
+import { useQuery, QueryResult } from "@apollo/client";
 import { useAuth } from "../utils/Auth";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { useFocusEffect } from "@react-navigation/native";
 import List from "../components/Home_section";
@@ -18,15 +18,38 @@ import Drawer_button from "../components/Drawer_button";
 import { AntDesign } from "@expo/vector-icons";
 import { styles_home } from "../styles/home";
 import Loader from "../components/Loader";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const HomeScreen = ({ navigation }) => {
-  const { error, data, refetch } = useQuery(GET_ALL_USERS);
+type HomeScreenScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Home"
+>;
+
+interface User {
+  username: string;
+  rating: string;
+  review: string;
+}
+
+interface Data {
+  allUsers: User[];
+}
+
+interface HomeScreenProps {
+  navigation: HomeScreenScreenNavigationProp;
+  data: Data;
+}
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { error, data, refetch }: QueryResult<Data> = useQuery(GET_ALL_USERS);
   const [bookmarks, setBookmarks] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [watched, setWatched] = useState([]);
   const { username } = useAuth();
   const { current } = useTheme();
   const [loading, setLoading] = useState(false);
+  const currentTheme = theme[current as keyof Theme];
 
   useFocusEffect(
     useCallback(() => {
@@ -35,7 +58,7 @@ const HomeScreen = ({ navigation }) => {
       } else {
         const backHandler = BackHandler;
 
-        const handleBeforeRemove = (e) => {
+        const handleBeforeRemove = (e: any) => {
           e.preventDefault();
 
           Alert.alert(
@@ -94,7 +117,7 @@ const HomeScreen = ({ navigation }) => {
   }, [data, username]);
 
   return (
-    <View style={{ backgroundColor: theme[current].white, height: "100%" }}>
+    <View style={{ backgroundColor: currentTheme.white, height: "100%" }}>
       <Drawer_button />
       <ScrollView>
         <View
@@ -118,21 +141,21 @@ const HomeScreen = ({ navigation }) => {
                   style={{
                     height: 500,
                     borderLeftWidth: 36,
-                    borderColor: theme[current].orange,
+                    borderColor: currentTheme.orange,
                   }}
                 >
                   <View
                     style={{
                       height: 400,
                       borderLeftWidth: 36,
-                      borderColor: theme[current].blue,
+                      borderColor: currentTheme.blue,
                     }}
                   >
                     <View
                       style={{
                         height: 300,
                         borderLeftWidth: 36,
-                        borderColor: theme[current].gray,
+                        borderColor: currentTheme.gray,
                       }}
                     >
                       <Pressable
@@ -151,8 +174,8 @@ const HomeScreen = ({ navigation }) => {
                             fontWeight: 900,
                             color:
                               current == "dark"
-                                ? theme[current].charcoal
-                                : theme[current].gray,
+                                ? currentTheme.charcoal
+                                : currentTheme.gray,
                           }}
                         >
                           Its empty ,let's go add something
@@ -161,7 +184,7 @@ const HomeScreen = ({ navigation }) => {
                         <AntDesign
                           name="doubleright"
                           size={48}
-                          color={theme[current].orange}
+                          color={currentTheme.orange}
                         />
                       </Pressable>
                     </View>
@@ -174,8 +197,8 @@ const HomeScreen = ({ navigation }) => {
               style={[
                 styles_home.Text,
                 {
-                  color: theme[current].charcoal,
-                  borderColor: theme[current].orange,
+                  color: currentTheme.charcoal,
+                  borderColor: currentTheme.orange,
                 },
               ]}
             >
@@ -189,8 +212,8 @@ const HomeScreen = ({ navigation }) => {
               style={[
                 styles_home.Text,
                 {
-                  color: theme[current].charcoal,
-                  borderColor: theme[current].orange,
+                  color: currentTheme.charcoal,
+                  borderColor: currentTheme.orange,
                 },
               ]}
             >
@@ -204,8 +227,8 @@ const HomeScreen = ({ navigation }) => {
               style={[
                 styles_home.Text,
                 {
-                  color: theme[current].charcoal,
-                  borderColor: theme[current].orange,
+                  color: currentTheme.charcoal,
+                  borderColor: currentTheme.orange,
                 },
               ]}
             >

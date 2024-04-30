@@ -17,8 +17,9 @@ import { ModalProvider } from "./utils/Modal";
 import { ThemeProvider } from "./utils/Theme";
 import { SearchTermProvider } from "./utils/SearchTerm";
 import * as Notifications from "expo-notifications";
+import { RootStackParamList } from "./utils/RootParams";
 
-const Stack = createStackNavigator();
+const RootStack = createStackNavigator<RootStackParamList>();
 
 const client = new ApolloClient({
   uri: "https://movie-prisma.vercel.app/",
@@ -34,13 +35,6 @@ Notifications.setNotificationHandler({
 });
 
 const App = () => {
-  const screenOptions = {
-    headerTitleAlign: "center",
-    headerTitleStyle: {
-      fontWeight: "bold",
-    },
-  };
-
   return (
     <AuthProvider>
       <IDProvider>
@@ -49,18 +43,15 @@ const App = () => {
             <ModalProvider>
               <ApolloProvider client={client}>
                 <NavigationContainer>
-                  <Stack.Navigator
-                    initialRouteName="Welcome"
-                    screenOptions={screenOptions}
-                  >
-                    <Stack.Screen
+                  <RootStack.Navigator initialRouteName="Welcome">
+                    <RootStack.Screen
                       name="Welcome"
                       component={Welcome}
                       options={{
                         headerShown: false,
                       }}
                     />
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="SignUp"
                       component={SignUpScreen}
                       options={{
@@ -70,7 +61,7 @@ const App = () => {
                         },
                       }}
                     />
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="Login"
                       component={LoginScreen}
                       options={{
@@ -80,14 +71,14 @@ const App = () => {
                         },
                       }}
                     />
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="Profile"
                       component={Profile}
                       options={{
                         headerShown: false,
                       }}
                     />
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="Home"
                       component={HomeScreen}
                       options={{
@@ -95,35 +86,35 @@ const App = () => {
                       }}
                     />
 
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="Search"
                       component={Search}
                       options={{
                         headerShown: false,
                       }}
                     />
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="Movie_info"
                       component={Movie_info}
                       options={{
                         headerShown: false,
                       }}
                     />
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="Bookmarks"
                       component={Bookmarks}
                       options={{
                         headerShown: false,
                       }}
                     />
-                    <Stack.Screen
+                    <RootStack.Screen
                       name="UserSearch"
                       component={UserSearch}
                       options={{
                         headerShown: false,
                       }}
                     />
-                  </Stack.Navigator>
+                  </RootStack.Navigator>
                 </NavigationContainer>
               </ApolloProvider>
             </ModalProvider>

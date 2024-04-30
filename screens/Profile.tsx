@@ -7,12 +7,23 @@ import "core-js/stable/atob";
 import { useAuth } from "../utils/Auth";
 import { useFocusEffect } from "@react-navigation/native";
 import Drawer_button from "../components/Drawer_button";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const Profile = ({ navigation }) => {
+type ProfileScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Profile"
+>;
+interface ProfileProps {
+  navigation: ProfileScreenNavigationProp;
+}
+
+const Profile: React.FC<ProfileProps> = ({ navigation }) => {
   const { current } = useTheme();
   const { username, updateUser, setUsername } = useAuth();
+  const currentTheme = theme[current as keyof Theme];
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("jwtToken");
@@ -27,7 +38,7 @@ const Profile = ({ navigation }) => {
     }, [username, navigation])
   );
   return (
-    <View style={{ backgroundColor: theme[current].white, height: "100%" }}>
+    <View style={{ backgroundColor: currentTheme.white, height: "100%" }}>
       <Drawer_button />
 
       <View
@@ -41,10 +52,10 @@ const Profile = ({ navigation }) => {
         <MaterialIcons
           name="account-circle"
           size={64}
-          color={theme[current].charcoal}
+          color={currentTheme.charcoal}
         />
 
-        <Text style={{ color: theme[current].charcoal, fontSize: 50 }}>
+        <Text style={{ color: currentTheme.charcoal, fontSize: 50 }}>
           {username}
         </Text>
 

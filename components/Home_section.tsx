@@ -1,27 +1,26 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-  Pressable,
-  Image,
-  ScrollView,
-} from "react-native";
+import React from "react";
+import { View, Pressable, Image, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { useID } from "../utils/CurrentId";
 
-const List = ({ tab }) => {
+interface ListProps {
+  tab: { movieId: string }[];
+}
+
+const List: React.FC<ListProps> = ({ tab }) => {
   const { current } = useTheme();
+  const currentTheme = theme[current as keyof Theme];
   const navigation = useNavigation();
   const { id, setId } = useID();
   const API_KEY = "e24ea998";
 
-  const handlepress = (m_id) => {
+  const handlepress = (m_id: string) => {
     setId(m_id);
-    navigation.navigate("Movie_info");
+    (navigation as { navigate: (screen: string) => void }).navigate(
+      "Movie_info"
+    );
   };
 
   return (
@@ -30,14 +29,13 @@ const List = ({ tab }) => {
         {tab.map((item, index) => (
           <Pressable
             key={index}
-            onPress={() => handlepress(item["movieId"])}
+            onPress={() => handlepress(item.movieId)}
             style={({ pressed }) => [
               {
                 borderWidth: pressed ? 4 : 0,
                 height: 220,
                 width: 220,
-                borderColor: theme[current].orange,
-
+                borderColor: currentTheme.orange,
                 alignItems: "center",
                 justifyContent: "center",
               },
@@ -49,7 +47,7 @@ const List = ({ tab }) => {
                 width: 200,
               }}
               source={{
-                uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item["movieId"]}`,
+                uri: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${item.movieId}`,
               }}
             />
           </Pressable>

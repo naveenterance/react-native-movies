@@ -1,15 +1,24 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import { View, Text, Pressable, Image, Animated } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AntDesign } from "@expo/vector-icons";
 import { useAuth } from "../utils/Auth";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import usePressAnimation from "../hooks/animation";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const Welcome = ({ navigation }) => {
+type WelcomeScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Welcome"
+>;
+interface WelcomeProps {
+  navigation: WelcomeScreenNavigationProp;
+}
+
+const Welcome: React.FC<WelcomeProps> = ({ navigation }) => {
   const { current } = useTheme();
+  const currentTheme = theme[current as keyof Theme];
   const [onPressLoginHandler, scaleValueLogin] = usePressAnimation(() => {
     navigation.navigate("Login");
   });
@@ -38,7 +47,7 @@ const Welcome = ({ navigation }) => {
         >
           <Animated.View
             style={{
-              backgroundColor: theme[current].orange,
+              backgroundColor: currentTheme.orange,
               alignItems: "center",
               height: "100%",
               width: "100%",
@@ -50,7 +59,7 @@ const Welcome = ({ navigation }) => {
                 marginTop: "100%",
                 fontSize: 36,
                 fontWeight: "bold",
-                color: theme[current].gray,
+                color: currentTheme.gray,
               }}
             >
               Login
@@ -63,7 +72,7 @@ const Welcome = ({ navigation }) => {
         >
           <Animated.View
             style={{
-              backgroundColor: theme[current].gray,
+              backgroundColor: currentTheme.gray,
               alignItems: "center",
               height: "100%",
               width: "100%",
@@ -75,7 +84,7 @@ const Welcome = ({ navigation }) => {
                 marginTop: "100%",
                 fontSize: 36,
                 fontWeight: "bold",
-                color: theme[current].orange,
+                color: currentTheme.orange,
               }}
             >
               SignUp

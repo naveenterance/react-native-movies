@@ -2,21 +2,32 @@ import React, { useState } from "react";
 import { TextInput, View, Pressable, Text } from "react-native";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { AntDesign } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import { styles_common } from "../styles/common";
 import { styles_signup } from "../styles/signup";
 import Loader from "../components/Loader";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const SignUpScreen = ({ navigation }) => {
+type SignUpScreenScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "SignUp"
+>;
+interface SignUpScreenProps {
+  navigation: SignUpScreenScreenNavigationProp;
+}
+
+const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const { current } = useTheme();
+  const currentTheme = theme[current as keyof Theme];
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -101,7 +112,7 @@ const SignUpScreen = ({ navigation }) => {
       style={[
         styles_common.container,
         {
-          backgroundColor: theme[current].white,
+          backgroundColor: currentTheme.white,
         },
       ]}
     >
@@ -110,7 +121,7 @@ const SignUpScreen = ({ navigation }) => {
         style={[
           styles_signup.Modal,
           {
-            backgroundColor: theme[current].white,
+            backgroundColor: currentTheme.white,
           },
         ]}
       >
@@ -119,14 +130,14 @@ const SignUpScreen = ({ navigation }) => {
             style={[
               styles_signup.Modal.Text,
               {
-                color: theme[current].green,
+                color: currentTheme.green,
               },
             ]}
           >
             !! Success !!
           </Text>
           <Text
-            style={{ fontSize: 16, margin: 20, color: theme[current].charcoal }}
+            style={{ fontSize: 16, margin: 20, color: currentTheme.charcoal }}
           >
             You have successfully created an account,now login to that account{" "}
           </Text>
@@ -153,26 +164,26 @@ const SignUpScreen = ({ navigation }) => {
           style={[
             styles_signup.TextInput,
             {
-              borderBottomColor: theme[current].textInput,
-              color: theme[current].charcoal,
+              borderBottomColor: currentTheme.textInput,
+              color: currentTheme.charcoal,
             },
           ]}
-          selectionColor={theme[current].orange}
+          selectionColor={currentTheme.orange}
           placeholder="Username"
-          placeholderTextColor={theme[current].charcoal}
+          placeholderTextColor={currentTheme.charcoal}
           onChangeText={setName}
         />
         <TextInput
           style={[
             styles_signup.TextInput,
             {
-              borderBottomColor: theme[current].textInput,
-              color: theme[current].charcoal,
+              borderBottomColor: currentTheme.textInput,
+              color: currentTheme.charcoal,
             },
           ]}
-          selectionColor={theme[current].orange}
+          selectionColor={currentTheme.orange}
           placeholder="Password"
-          placeholderTextColor={theme[current].charcoal}
+          placeholderTextColor={currentTheme.charcoal}
           secureTextEntry={true}
           onChangeText={setPassword}
         />
@@ -182,7 +193,7 @@ const SignUpScreen = ({ navigation }) => {
               style={{
                 margin: 12,
                 fontSize: 20,
-                color: theme[current].charcoal,
+                color: currentTheme.charcoal,
               }}
             >
               [
@@ -198,12 +209,12 @@ const SignUpScreen = ({ navigation }) => {
                 {
                   width: `${(password.length < 7 ? password.length : 7) * 10}%`,
                   backgroundColor: `${
-                    (password.length < 3 && theme[current].red) ||
-                    (password.length < 6 && theme[current].orange) ||
-                    (password.length >= 6 && theme[current].green)
+                    (password.length < 3 && currentTheme.red) ||
+                    (password.length < 6 && currentTheme.orange) ||
+                    (password.length >= 6 && currentTheme.green)
                   }`,
 
-                  color: theme[current].gray,
+                  color: currentTheme.gray,
                 },
               ]}
             ></View>
@@ -213,13 +224,13 @@ const SignUpScreen = ({ navigation }) => {
           style={[
             styles_signup.TextInput,
             {
-              borderBottomColor: theme[current].textInput,
-              color: theme[current].charcoal,
+              borderBottomColor: currentTheme.textInput,
+              color: currentTheme.charcoal,
             },
           ]}
-          selectionColor={theme[current].orange}
+          selectionColor={currentTheme.orange}
           placeholder="Confirm Password"
-          placeholderTextColor={theme[current].charcoal}
+          placeholderTextColor={currentTheme.charcoal}
           secureTextEntry={true}
           onChangeText={setConfirmPassword}
         />
@@ -230,7 +241,7 @@ const SignUpScreen = ({ navigation }) => {
                 style={[
                   styles_signup.Text,
                   {
-                    color: theme[current].orange,
+                    color: currentTheme.orange,
                   },
                 ]}
               >
@@ -238,7 +249,7 @@ const SignUpScreen = ({ navigation }) => {
                 <AntDesign
                   name="adduser"
                   size={36}
-                  color={theme[current].orange}
+                  color={currentTheme.orange}
                 />
               </Text>
             ) : (

@@ -3,7 +3,7 @@ import Modal from "react-native-modal";
 import { useModal } from "../utils/Modal";
 import { Text, View, Pressable, Switch } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import {
   AntDesign,
@@ -14,18 +14,27 @@ import { useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { useID } from "../utils/CurrentId";
 
-const Modal_custom = () => {
+const Modal_custom: React.FC = () => {
   const { modalVisible, setModalVisible } = useModal();
-  const { current, setTheme } = useTheme("light");
+  const { current, setTheme } = useTheme();
   const route = useRoute();
   const { id, setId } = useID();
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const currentTheme = theme[current as keyof Theme];
 
   const navigation = useNavigation();
   const toggleTheme = () => {
     setIsEnabled((previousState) => !previousState);
-    !isEnabled ? setTheme("light") : setTheme("dark");
   };
+
+  useEffect(() => {
+    if (isEnabled) {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  }, [isEnabled]);
+
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -40,7 +49,7 @@ const Modal_custom = () => {
           isVisible={modalVisible}
           animationIn="slideInLeft"
           animationOut="slideOutLeft"
-          backdropColor={current == "light" ? theme[current].gray : "#4c4c4c"}
+          backdropColor={current == "light" ? currentTheme.gray : "#4c4c4c"}
           onBackdropPress={() => setModalVisible(false)}
           style={{ margin: 0 }}
           onBackButtonPress={() => setModalVisible(false)}
@@ -51,14 +60,14 @@ const Modal_custom = () => {
               justifyContent: "space-around",
               height: "100%",
               width: "60%",
-              backgroundColor: theme[current].white,
+              backgroundColor: currentTheme.white,
             }}
           >
             <Pressable style={{}} onPress={() => setModalVisible(false)}>
               <AntDesign
                 name="closecircleo"
                 size={35}
-                color={theme[current].red}
+                color={currentTheme.red}
               />
             </Pressable>
 
@@ -67,11 +76,13 @@ const Modal_custom = () => {
                 {
                   borderLeftWidth: pressed || route.name == "Home" ? 4 : 0,
                   padding: "5%",
-                  borderColor: theme[current].orange,
+                  borderColor: currentTheme.orange,
                 },
               ]}
               onPress={() => {
-                navigation.navigate("Home");
+                (navigation as { navigate: (screen: string) => void }).navigate(
+                  "Home"
+                );
                 setModalVisible(false);
                 setId("");
               }}
@@ -87,8 +98,8 @@ const Modal_custom = () => {
                   size={30}
                   color={
                     route.name == "Home"
-                      ? theme[current].orange
-                      : theme[current].charcoal
+                      ? currentTheme.orange
+                      : currentTheme.charcoal
                   }
                 />
                 <Text
@@ -97,8 +108,8 @@ const Modal_custom = () => {
                     marginLeft: 12,
                     color:
                       route.name == "Home"
-                        ? theme[current].orange
-                        : theme[current].charcoal,
+                        ? currentTheme.orange
+                        : currentTheme.charcoal,
                   }}
                 >
                   Home
@@ -110,11 +121,13 @@ const Modal_custom = () => {
                 {
                   borderLeftWidth: pressed || route.name == "Search" ? 4 : 0,
                   padding: "5%",
-                  borderColor: theme[current].orange,
+                  borderColor: currentTheme.orange,
                 },
               ]}
               onPress={() => {
-                navigation.navigate("Search");
+                (navigation as { navigate: (screen: string) => void }).navigate(
+                  "Search"
+                );
                 setModalVisible(false);
                 setId("");
               }}
@@ -125,8 +138,8 @@ const Modal_custom = () => {
                   size={30}
                   color={
                     route.name == "Search"
-                      ? theme[current].orange
-                      : theme[current].charcoal
+                      ? currentTheme.orange
+                      : currentTheme.charcoal
                   }
                 />
                 <Text
@@ -135,8 +148,8 @@ const Modal_custom = () => {
                     marginLeft: 12,
                     color:
                       route.name == "Search"
-                        ? theme[current].orange
-                        : theme[current].charcoal,
+                        ? currentTheme.orange
+                        : currentTheme.charcoal,
                   }}
                 >
                   Search
@@ -149,11 +162,13 @@ const Modal_custom = () => {
                 {
                   borderLeftWidth: pressed || route.name == "Bookmarks" ? 4 : 0,
                   padding: "5%",
-                  borderColor: theme[current].orange,
+                  borderColor: currentTheme.orange,
                 },
               ]}
               onPress={() => {
-                navigation.navigate("Bookmarks");
+                (navigation as { navigate: (screen: string) => void }).navigate(
+                  "Bookmarks"
+                );
                 setModalVisible(false);
                 setId("");
               }}
@@ -164,8 +179,8 @@ const Modal_custom = () => {
                   size={30}
                   color={
                     route.name == "Bookmarks"
-                      ? theme[current].orange
-                      : theme[current].charcoal
+                      ? currentTheme.orange
+                      : currentTheme.charcoal
                   }
                 />
                 <Text
@@ -174,8 +189,8 @@ const Modal_custom = () => {
                     marginLeft: 12,
                     color:
                       route.name == "Bookmarks"
-                        ? theme[current].orange
-                        : theme[current].charcoal,
+                        ? currentTheme.orange
+                        : currentTheme.charcoal,
                   }}
                 >
                   Bookmarks
@@ -187,11 +202,13 @@ const Modal_custom = () => {
                 {
                   borderLeftWidth: pressed || route.name == "Profile" ? 4 : 0,
                   padding: "5%",
-                  borderColor: theme[current].orange,
+                  borderColor: currentTheme.orange,
                 },
               ]}
               onPress={() => {
-                navigation.navigate("Profile");
+                (navigation as { navigate: (screen: string) => void }).navigate(
+                  "Profile"
+                );
                 setModalVisible(false);
                 setId("");
               }}
@@ -202,8 +219,8 @@ const Modal_custom = () => {
                   size={30}
                   color={
                     route.name == "Profile"
-                      ? theme[current].orange
-                      : theme[current].charcoal
+                      ? currentTheme.orange
+                      : currentTheme.charcoal
                   }
                 />
                 <Text
@@ -212,8 +229,8 @@ const Modal_custom = () => {
                     marginLeft: 12,
                     color:
                       route.name == "Profile"
-                        ? theme[current].orange
-                        : theme[current].charcoal,
+                        ? currentTheme.orange
+                        : currentTheme.charcoal,
                   }}
                 >
                   Profile
@@ -227,24 +244,24 @@ const Modal_custom = () => {
                 size={24}
                 color={
                   current == "dark"
-                    ? theme[current].orange
-                    : theme[current].charcoal
+                    ? currentTheme.orange
+                    : currentTheme.charcoal
                 }
                 style={{
                   marginTop: 12,
                   borderBottomWidth: current == "dark" ? 4 : 0,
-                  borderColor: theme[current].orange,
+                  borderColor: currentTheme.orange,
                 }}
               />
               <Switch
                 trackColor={{
-                  false: theme[current].gray,
-                  true: theme[current].gray,
+                  false: currentTheme.gray,
+                  true: currentTheme.gray,
                 }}
                 thumbColor={
-                  isEnabled ? theme[current].gray : theme[current].charcoal
+                  isEnabled ? currentTheme.gray : currentTheme.charcoal
                 }
-                ios_backgroundColor={theme[current].gray}
+                ios_backgroundColor={currentTheme.gray}
                 onValueChange={toggleTheme}
                 value={isEnabled}
                 style={{
@@ -257,13 +274,13 @@ const Modal_custom = () => {
                 size={24}
                 color={
                   current == "light"
-                    ? theme[current].orange
-                    : theme[current].charcoal
+                    ? currentTheme.orange
+                    : currentTheme.charcoal
                 }
                 style={{
                   marginTop: 12,
                   borderBottomWidth: current == "light" ? 4 : 0,
-                  borderColor: theme[current].orange,
+                  borderColor: currentTheme.orange,
                 }}
               />
             </View>

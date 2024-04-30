@@ -1,6 +1,12 @@
+import * as React from "react";
 import LottieView from "lottie-react-native";
 
-const Loader = ({ height, width }) => {
+interface LoaderProps {
+  height: number;
+  width: number;
+}
+
+const Loader: React.FC<LoaderProps> = ({ height, width }) => {
   return (
     <LottieView
       style={{

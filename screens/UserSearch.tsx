@@ -2,25 +2,41 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Pressable, FlatList } from "react-native";
 import { useSearchTerm } from "../utils/SearchTerm";
 import { useAuth } from "../utils/Auth";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import Drawer_button from "../components/Drawer_button";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles_userSearch } from "../styles/userSearch";
 import Loader from "../components/Loader";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const UserSearch = ({ navigation }) => {
-  const [users, setUsers] = useState([]);
+type UserSearchScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "UserSearch"
+>;
+interface UserSearchProps {
+  navigation: UserSearchScreenNavigationProp;
+}
+
+interface User {
+  _id: string;
+  name: string;
+}
+
+const UserSearch: React.FC<UserSearchProps> = ({ navigation }) => {
+  const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const { searchedUser, setSearchedUser } = useSearchTerm();
   const { username } = useAuth();
   const { current } = useTheme();
+  const currentTheme = theme[current as keyof Theme];
 
   useEffect(() => {
     setLoading(true);
-    fetch("https://chat-node-naveenterances-projects.vercel.app/users")
+    fetch("https://movie-app-node-dun.vercel.app/users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
@@ -32,7 +48,7 @@ const UserSearch = ({ navigation }) => {
       });
   }, []);
 
-  const handleSearch = (text) => {
+  const handleSearch = (text: string) => {
     setSearchTerm(text);
 
     if (text.length >= 3) {
@@ -51,11 +67,11 @@ const UserSearch = ({ navigation }) => {
     )
     .slice(0, 20);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: User }) => (
     <Pressable
       style={({ pressed }) => [
         {
-          backgroundColor: pressed ? theme[current].gray : theme[current].white,
+          backgroundColor: pressed ? currentTheme.gray : currentTheme.white,
         },
       ]}
       onPress={() => {
@@ -67,17 +83,17 @@ const UserSearch = ({ navigation }) => {
         style={[
           styles_userSearch.renderItems,
           {
-            borderColor: theme[current].gray,
+            borderColor: currentTheme.gray,
           },
         ]}
       >
         <MaterialIcons
           name="account-circle"
           size={48}
-          color={theme[current].charcoal}
+          color={currentTheme.charcoal}
         />
         <Text
-          style={{ fontSize: 20, color: theme[current].charcoal }}
+          style={{ fontSize: 20, color: currentTheme.charcoal }}
           key={item._id}
         >
           {item.name}
@@ -85,21 +101,22 @@ const UserSearch = ({ navigation }) => {
       </View>
     </Pressable>
   );
+
   return (
-    <View style={{ backgroundColor: theme[current].white, height: "100%" }}>
+    <View style={{ backgroundColor: currentTheme.white, height: "100%" }}>
       <Drawer_button />
       <TextInput
         style={[
           styles_userSearch.textInput,
           {
-            color: theme[current].charcoal,
-            backgroundColor: theme[current].white,
-            borderColor: theme[current].charcoal,
+            color: currentTheme.charcoal,
+            backgroundColor: currentTheme.white,
+            borderColor: currentTheme.charcoal,
           },
         ]}
-        selectionColor={theme[current].orange}
+        selectionColor={currentTheme.orange}
         placeholder="Search for Users"
-        placeholderTextColor={theme[current].charcoal}
+        placeholderTextColor={currentTheme.charcoal}
         onChangeText={handleSearch}
         value={searchTerm}
       />
@@ -115,7 +132,7 @@ const UserSearch = ({ navigation }) => {
           <MaterialIcons
             name="person-search"
             size={96}
-            color={theme[current].charcoal}
+            color={currentTheme.charcoal}
           />
         </View>
       )}

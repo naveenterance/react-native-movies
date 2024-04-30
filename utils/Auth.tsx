@@ -1,12 +1,23 @@
-// Auth.js
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 
-const AuthContext = createContext();
+interface AuthContextType {
+  username: string;
+  updateUser: () => void;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+}
 
-const AuthProvider = ({ children }) => {
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -14,7 +25,7 @@ const AuthProvider = ({ children }) => {
       try {
         const token = await AsyncStorage.getItem("jwtToken");
         if (token) {
-          const decoded = jwtDecode(token);
+          const decoded: any = jwtDecode(token); // Adjusted type as any
           setUsername(decoded.name);
         }
       } catch (error) {
@@ -29,7 +40,7 @@ const AuthProvider = ({ children }) => {
     try {
       const token = await AsyncStorage.getItem("jwtToken");
       if (token) {
-        const decoded = jwtDecode(token);
+        const decoded: any = jwtDecode(token); // Adjusted type as any
         setUsername(decoded.name);
       }
     } catch (error) {
@@ -44,6 +55,12 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-const useAuth = () => useContext(AuthContext);
+const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+  return context;
+};
 
 export { AuthProvider, useAuth };

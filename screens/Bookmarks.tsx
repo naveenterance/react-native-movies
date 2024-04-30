@@ -11,15 +11,25 @@ import {
   Feather,
   FontAwesome6,
 } from "@expo/vector-icons";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { useFocusEffect } from "@react-navigation/native";
 import Drawer_button from "../components/Drawer_button";
 import { useSearchTerm } from "../utils/SearchTerm";
 import Loader from "../components/Loader";
 import { styles_bookmarks } from "../styles/bookmarks";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const Bookmarks = ({ navigation }) => {
+type BookmarksScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Bookmarks"
+>;
+interface BookmarksProps {
+  navigation: BookmarksScreenNavigationProp;
+}
+
+const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
   const { current } = useTheme();
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const { username } = useAuth();
@@ -29,6 +39,7 @@ const Bookmarks = ({ navigation }) => {
   const { searchedUser, setSearchedUser } = useSearchTerm();
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState(false);
+  const currentTheme = theme[current as keyof Theme];
 
   const API_KEY = "e24ea998";
 
@@ -59,7 +70,7 @@ const Bookmarks = ({ navigation }) => {
       );
 
       const moviesWithRatings = await Promise.all(
-        bookmarkedMovies.map(async (u) => {
+        bookmarkedMovies.map(async (u: any) => {
           const response = await fetch(
             `http://www.omdbapi.com/?apikey=${API_KEY}&i=${u.movieId}&plot=full`
           );
@@ -70,7 +81,7 @@ const Bookmarks = ({ navigation }) => {
           ].map((source) => details.Ratings.find((r) => r.Source === source));
           const userRating =
             data.allUsers.find(
-              (userMovie) =>
+              (userMovie: any) =>
                 userMovie.movieId === u.movieId && userMovie.username === user
             )?.rating || "";
           return {
@@ -91,12 +102,12 @@ const Bookmarks = ({ navigation }) => {
       const sortByUserReviews = (a, b) => {
         const ratingA = parseFloat(
           data.allUsers.find(
-            (u) => u.movieId === a.imdbID && u.username === user
+            (item) => item.movieId === a.imdbID && item.username === user
           )?.rating || 0
         );
         const ratingB = parseFloat(
           data.allUsers.find(
-            (u) => u.movieId === b.imdbID && u.username === user
+            (item) => item.movieId === b.imdbID && item.username === user
           )?.rating || 0
         );
 
@@ -115,7 +126,7 @@ const Bookmarks = ({ navigation }) => {
     fetchData();
   }, [data, username, view, searchedUser, sort]);
 
-  const handlepress = (m_id) => {
+  const handlepress = (m_id: string) => {
     setId(m_id);
     navigation.navigate("Movie_info");
   };
@@ -128,7 +139,7 @@ const Bookmarks = ({ navigation }) => {
             style={[
               styles_bookmarks.renderItems.container,
               {
-                backgroundColor: theme[current].white,
+                backgroundColor: currentTheme.white,
               },
             ]}
           >
@@ -143,14 +154,14 @@ const Bookmarks = ({ navigation }) => {
                 numberOfLines={2}
                 style={{
                   fontSize: 16,
-                  fontWeight: 700,
-                  color: theme[current].charcoal,
+                  fontWeight: "700",
+                  color: currentTheme.charcoal,
                 }}
               >
                 {item.Title}{" "}
               </Text>
               <Text
-                style={{ fontStyle: "italic", color: theme[current].charcoal }}
+                style={{ fontStyle: "italic", color: currentTheme.charcoal }}
               >
                 [{item.Year}] [{item.Genre}] [{item.Language}][{item.Country}]
               </Text>
@@ -161,14 +172,14 @@ const Bookmarks = ({ navigation }) => {
                     <Text
                       style={{
                         fontStyle: "italic",
-                        color: theme[current].charcoal,
+                        color: currentTheme.charcoal,
                       }}
                     >{`Critics: ${item.ratingR.Value}`}</Text>
                     <View
                       style={[
                         styles_bookmarks.ratingBar.container,
                         {
-                          backgroundColor: theme[current].gray,
+                          backgroundColor: currentTheme.gray,
                         },
                       ]}
                     >
@@ -176,8 +187,8 @@ const Bookmarks = ({ navigation }) => {
                         style={[
                           styles_bookmarks.ratingBar.bar,
                           {
-                            color: theme[current].gray,
-                            backgroundColor: theme[current].rotten,
+                            color: currentTheme.gray,
+                            backgroundColor: currentTheme.rotten,
                             width: item.ratingR.Value,
                           },
                         ]}
@@ -192,14 +203,14 @@ const Bookmarks = ({ navigation }) => {
                     <Text
                       style={{
                         fontStyle: "italic",
-                        color: theme[current].charcoal,
+                        color: currentTheme.charcoal,
                       }}
                     >{`IMDB: ${item.ratingM.Value}`}</Text>
                     <View
                       style={[
                         styles_bookmarks.ratingBar.container,
                         {
-                          backgroundColor: theme[current].gray,
+                          backgroundColor: currentTheme.gray,
                         },
                       ]}
                     >
@@ -207,8 +218,8 @@ const Bookmarks = ({ navigation }) => {
                         style={[
                           styles_bookmarks.ratingBar.bar,
                           {
-                            color: theme[current].gray,
-                            backgroundColor: theme[current].imdb,
+                            color: currentTheme.gray,
+                            backgroundColor: currentTheme.imdb,
                             width: `${
                               parseFloat(item.ratingM.Value.split("/")[0]) * 10
                             }%`,
@@ -229,7 +240,7 @@ const Bookmarks = ({ navigation }) => {
                     <MaterialCommunityIcons
                       name="certificate-outline"
                       size={36}
-                      color={theme[current].orange}
+                      color={currentTheme.orange}
                     />
                     <View>
                       <Text
@@ -237,7 +248,7 @@ const Bookmarks = ({ navigation }) => {
                           fontStyle: "italic",
                           fontSize: 16,
                           fontWeight: "500",
-                          color: theme[current].charcoal,
+                          color: currentTheme.charcoal,
                         }}
                       >
                         {searchedUser
@@ -251,7 +262,7 @@ const Bookmarks = ({ navigation }) => {
                         style={[
                           styles_bookmarks.ratingBar.container,
                           {
-                            backgroundColor: theme[current].gray,
+                            backgroundColor: currentTheme.gray,
                           },
                         ]}
                       >
@@ -259,9 +270,9 @@ const Bookmarks = ({ navigation }) => {
                           style={[
                             styles_bookmarks.ratingBar.bar,
                             {
-                              color: theme[current].gray,
+                              color: currentTheme.gray,
                               width: parseFloat(item.userRating) + "%",
-                              backgroundColor: theme[current].blue,
+                              backgroundColor: currentTheme.blue,
                             },
                           ]}
                         >
@@ -276,14 +287,14 @@ const Bookmarks = ({ navigation }) => {
                   <Feather
                     name="bookmark"
                     size={36}
-                    color={theme[current].green}
+                    color={currentTheme.green}
                   />
                   <Text
                     style={{
                       marginTop: "2%",
                       fontSize: 16,
                       fontWeight: "500",
-                      color: theme[current].green,
+                      color: currentTheme.green,
                     }}
                   >
                     Bookmarked
@@ -292,17 +303,13 @@ const Bookmarks = ({ navigation }) => {
               )}
               {item.userRating == "[watched]" && (
                 <View style={{ flexDirection: "row", margin: "1%" }}>
-                  <AntDesign
-                    name="eyeo"
-                    size={36}
-                    color={theme[current].blue}
-                  />
+                  <AntDesign name="eyeo" size={36} color={currentTheme.blue} />
                   <Text
                     style={{
                       marginTop: "2%",
                       fontSize: 16,
                       fontWeight: "500",
-                      color: theme[current].blue,
+                      color: currentTheme.blue,
                     }}
                   >
                     Watched
@@ -324,7 +331,7 @@ const Bookmarks = ({ navigation }) => {
         width: "100%",
         height: "100%",
         paddingBottom: 110,
-        backgroundColor: theme[current].white,
+        backgroundColor: currentTheme.white,
       }}
     >
       <Drawer_button />
@@ -339,7 +346,7 @@ const Bookmarks = ({ navigation }) => {
             <FontAwesome6
               name="users-viewfinder"
               size={38}
-              color={theme[current].charcoal}
+              color={currentTheme.charcoal}
             />
 
             <Text
@@ -347,16 +354,14 @@ const Bookmarks = ({ navigation }) => {
                 fontSize: 24,
                 borderBottomWidth: 4,
                 marginLeft: "3%",
-                borderColor: theme[current].orange,
-                color: theme[current].charcoal,
+                borderColor: currentTheme.orange,
+                color: currentTheme.charcoal,
               }}
             >
               {searchedUser}
             </Text>
-            <Text style={{ color: theme[current].orange, fontSize: 20 }}>
-              's
-            </Text>
-            <Text style={{ color: theme[current].orange, fontSize: 20 }}>
+            <Text style={{ color: currentTheme.orange, fontSize: 20 }}>'s</Text>
+            <Text style={{ color: currentTheme.orange, fontSize: 20 }}>
               {" "}
               lists
             </Text>
@@ -377,8 +382,8 @@ const Bookmarks = ({ navigation }) => {
                 paddingVertical: "2%",
                 paddingHorizontal: "5%",
                 backgroundColor: pressed
-                  ? theme[current].gray
-                  : theme[current].white,
+                  ? currentTheme.gray
+                  : currentTheme.white,
               },
             ]}
           >
@@ -387,15 +392,15 @@ const Bookmarks = ({ navigation }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 borderBottomWidth: view == "bookmarks" ? 4 : 0,
-                borderBottomColor: theme[current].orange,
+                borderBottomColor: currentTheme.orange,
               }}
             >
               <MaterialCommunityIcons
                 name="bookmark-multiple-outline"
                 size={30}
-                color={theme[current].charcoal}
+                color={currentTheme.charcoal}
               />
-              <Text style={{ color: theme[current].charcoal }}>Bookmarks</Text>
+              <Text style={{ color: currentTheme.charcoal }}>Bookmarks</Text>
             </View>
           </Pressable>
           <Pressable
@@ -405,8 +410,8 @@ const Bookmarks = ({ navigation }) => {
                 paddingVertical: "2%",
                 paddingHorizontal: "5%",
                 backgroundColor: pressed
-                  ? theme[current].gray
-                  : theme[current].white,
+                  ? currentTheme.gray
+                  : currentTheme.white,
               },
             ]}
           >
@@ -415,15 +420,11 @@ const Bookmarks = ({ navigation }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 borderBottomWidth: view == "watched" ? 4 : 0,
-                borderBottomColor: theme[current].orange,
+                borderBottomColor: currentTheme.orange,
               }}
             >
-              <AntDesign
-                name="eyeo"
-                size={30}
-                color={theme[current].charcoal}
-              />
-              <Text style={{ color: theme[current].charcoal }}>Watched</Text>
+              <AntDesign name="eyeo" size={30} color={currentTheme.charcoal} />
+              <Text style={{ color: currentTheme.charcoal }}>Watched</Text>
             </View>
           </Pressable>
           <Pressable
@@ -436,8 +437,8 @@ const Bookmarks = ({ navigation }) => {
                 paddingVertical: "2%",
                 paddingHorizontal: "5%",
                 backgroundColor: pressed
-                  ? theme[current].gray
-                  : theme[current].white,
+                  ? currentTheme.gray
+                  : currentTheme.white,
               },
             ]}
           >
@@ -446,7 +447,7 @@ const Bookmarks = ({ navigation }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 borderBottomWidth: view == "rated" ? 4 : 0,
-                borderBottomColor: theme[current].orange,
+                borderBottomColor: currentTheme.orange,
               }}
             >
               <View
@@ -459,18 +460,16 @@ const Bookmarks = ({ navigation }) => {
                 <FontAwesome
                   name="sort-desc"
                   size={36}
-                  color={sort ? theme[current].orange : theme[current].charcoal}
+                  color={sort ? currentTheme.orange : currentTheme.charcoal}
                 />
                 <FontAwesome
                   name="sort-asc"
                   size={36}
-                  color={
-                    !sort ? theme[current].orange : theme[current].charcoal
-                  }
+                  color={!sort ? currentTheme.orange : currentTheme.charcoal}
                 />
               </View>
 
-              <Text style={{ color: theme[current].charcoal }}>Rated</Text>
+              <Text style={{ color: currentTheme.charcoal }}>Rated</Text>
             </View>
           </Pressable>
         </View>
@@ -495,7 +494,7 @@ const Bookmarks = ({ navigation }) => {
                 style={{
                   fontSize: 32,
                   fontWeight: 600,
-                  color: theme[current].gray,
+                  color: currentTheme.gray,
                 }}
               >
                 It's empty

@@ -16,9 +16,8 @@ import {
 } from "../utils/graphql";
 import { useAuth } from "../utils/Auth";
 import { useID } from "../utils/CurrentId";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
-import { useModal } from "../utils/Modal";
 import Drawer_button from "../components/Drawer_button";
 import {
   MaterialCommunityIcons,
@@ -26,11 +25,32 @@ import {
   Entypo,
   FontAwesome5,
 } from "@expo/vector-icons";
-import LottieView from "lottie-react-native";
 import Loader from "../components/Loader";
 import { styles_movie_info } from "../styles/movie_info";
 
-const Movie_info = ({ navigation }) => {
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
+
+type Movie_infoScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Movie_info"
+>;
+interface Movie_infoProps {
+  navigation: Movie_infoScreenNavigationProp;
+}
+
+interface UserMovie {
+  movieId: string;
+  username: string;
+  rating: string;
+  review: string;
+}
+interface rating {
+  Source: string;
+  Value: string;
+}
+
+const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
   const { current } = useTheme();
   const { username } = useAuth();
   const { id, setId } = useID();
@@ -39,13 +59,14 @@ const Movie_info = ({ navigation }) => {
   const [review, setReview] = useState("");
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const [addUser] = useMutation(ADD_USER);
-  const [movieData, setMovieData] = useState(null);
+  const [movieData, setMovieData] = useState<any | null>(null);
   const API_KEY = "e24ea998";
   const [refreshPage, setRefreshPage] = useState(false);
   const [deleteUser] = useMutation(DELETE_USER);
   const [updateUser] = useMutation(UPDATE_USER);
   const [editView, setEditView] = useState(false);
   const textInputRef = useRef(null);
+  const currentTheme = theme[current as keyof Theme];
 
   const focusOnTextInput = () => {
     if (textInputRef.current) {
@@ -53,7 +74,7 @@ const Movie_info = ({ navigation }) => {
     }
   };
 
-  const handleRatingChange = (text) => {
+  const handleRatingChange = (text: string) => {
     const numericValue = text.replace(/[^0-9]/g, "");
     const numericRating = Math.min(Math.max(parseInt(numericValue), 0), 100);
     setRating(numericRating.toString());
@@ -110,7 +131,7 @@ const Movie_info = ({ navigation }) => {
   const renderRatings = () => {
     if (!movieData.Ratings) return null;
 
-    return movieData.Ratings.map((rating, index) => {
+    return movieData.Ratings.map((rating: rating, index: number) => {
       const ratingText =
         rating.Source === "Internet Movie Database"
           ? `IMDb: ${rating.Value}`
@@ -127,7 +148,7 @@ const Movie_info = ({ navigation }) => {
             padding: "1%",
             fontSize: 16,
             fontWeight: "bold",
-            color: "#333",
+            color: currentTheme.charcoal,
           }}
         >
           {ratingText}
@@ -136,7 +157,7 @@ const Movie_info = ({ navigation }) => {
     });
   };
 
-  const handleSubmit = async (id) => {
+  const handleSubmit = async (id: string) => {
     setLoading(true);
     try {
       await addUser({
@@ -222,7 +243,7 @@ const Movie_info = ({ navigation }) => {
     }
   };
 
-  const addToWatchlist = async (id) => {
+  const addToWatchlist = async (id: string) => {
     setLoading(true);
     try {
       await addUser({
@@ -242,11 +263,13 @@ const Movie_info = ({ navigation }) => {
   };
 
   const userRating = data?.allUsers?.find(
-    (userMovie) => userMovie.movieId === id && userMovie.username === username
+    (userMovie: UserMovie) =>
+      userMovie.movieId === id && userMovie.username === username
   )?.rating;
 
   const userReview = data?.allUsers?.find(
-    (userMovie) => userMovie.movieId === id && userMovie.username === username
+    (userMovie: UserMovie) =>
+      userMovie.movieId === id && userMovie.username === username
   )?.review;
   useEffect(() => {
     setRating(userRating);
@@ -257,10 +280,10 @@ const Movie_info = ({ navigation }) => {
     data && data.allUsers
       ? data.allUsers
           .filter(
-            (userMovie) =>
+            (userMovie: UserMovie) =>
               userMovie.movieId === id && userMovie.username !== username
           )
-          .map((userMovie) => ({
+          .map((userMovie: UserMovie) => ({
             username: userMovie.username,
             rating: userMovie.rating,
             review: userMovie.review,
@@ -268,7 +291,7 @@ const Movie_info = ({ navigation }) => {
       : [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme[current].white }}>
+    <View style={{ flex: 1, backgroundColor: currentTheme.white }}>
       <Drawer_button />
       {movieData ? (
         <ScrollView>
@@ -288,14 +311,14 @@ const Movie_info = ({ navigation }) => {
                 style={{
                   fontSize: 30,
                   fontWeight: 500,
-                  color: theme[current].charcoal,
+                  color: currentTheme.charcoal,
                 }}
               >
                 {movieData.Title} [{movieData.Year}]
               </Text>
             </View>
             {!loading ? (
-              <View style={styles_movie_info.progress.container}>
+              <View style={styles_movie_info.progress_container}>
                 {!userReview ? (
                   <Pressable
                     style={({ pressed }) => [
@@ -304,7 +327,7 @@ const Movie_info = ({ navigation }) => {
                         alignContent: "center",
                         alignItems: "center",
                         borderBottomWidth: pressed ? 4 : 0,
-                        borderColor: theme[current].orange,
+                        borderColor: currentTheme.orange,
                       },
                     ]}
                     onPress={() => addToWatchlist(id)}
@@ -312,10 +335,10 @@ const Movie_info = ({ navigation }) => {
                     <MaterialCommunityIcons
                       name="bookmark-plus-outline"
                       size={32}
-                      color={theme[current].charcoal}
+                      color={currentTheme.charcoal}
                     />
                     <Text
-                      style={{ fontSize: 16, color: theme[current].charcoal }}
+                      style={{ fontSize: 16, color: currentTheme.charcoal }}
                     >
                       Bookmark
                     </Text>
@@ -331,20 +354,20 @@ const Movie_info = ({ navigation }) => {
                     <MaterialCommunityIcons
                       name="bookmark-check-outline"
                       size={32}
-                      color={theme[current].green}
+                      color={currentTheme.green}
                     />
-                    <Text style={{ color: theme[current].green, fontSize: 16 }}>
+                    <Text style={{ color: currentTheme.green, fontSize: 16 }}>
                       Bookmarked
                     </Text>
                   </View>
                 )}
                 <View
                   style={[
-                    styles_movie_info.progress.bar,
+                    styles_movie_info.bar,
                     {
                       backgroundColor: userReview
-                        ? theme[current].green
-                        : theme[current].gray,
+                        ? currentTheme.green
+                        : currentTheme.gray,
                     },
                   ]}
                 ></View>
@@ -356,10 +379,10 @@ const Movie_info = ({ navigation }) => {
                         alignContent: "center",
                         alignItems: "center",
                         borderBottomWidth: pressed ? 4 : 0,
-                        borderColor: theme[current].orange,
+                        borderColor: currentTheme.orange,
                       },
                     ]}
-                    onPress={() => UpdateStatus(id)}
+                    onPress={() => UpdateStatus()}
                     disabled={!userReview ? true : false}
                   >
                     <MaterialCommunityIcons
@@ -367,8 +390,8 @@ const Movie_info = ({ navigation }) => {
                       size={32}
                       color={
                         userReview == "[to be watched]"
-                          ? theme[current].charcoal
-                          : theme[current].gray
+                          ? currentTheme.charcoal
+                          : currentTheme.gray
                       }
                     />
                     <Text
@@ -376,8 +399,8 @@ const Movie_info = ({ navigation }) => {
                         fontSize: 16,
                         color:
                           userReview == "[to be watched]"
-                            ? theme[current].charcoal
-                            : theme[current].gray,
+                            ? currentTheme.charcoal
+                            : currentTheme.gray,
                       }}
                     >
                       Watched
@@ -394,9 +417,9 @@ const Movie_info = ({ navigation }) => {
                     <MaterialCommunityIcons
                       name="eye-check-outline"
                       size={32}
-                      color={theme[current].green}
+                      color={currentTheme.green}
                     />
-                    <Text style={{ fontSize: 16, color: theme[current].green }}>
+                    <Text style={{ fontSize: 16, color: currentTheme.green }}>
                       Watched
                     </Text>
                   </View>
@@ -404,11 +427,11 @@ const Movie_info = ({ navigation }) => {
 
                 <View
                   style={[
-                    styles_movie_info.progress.bar,
+                    styles_movie_info.bar,
                     {
                       backgroundColor: !isNaN(userRating)
-                        ? theme[current].green
-                        : theme[current].gray,
+                        ? currentTheme.green
+                        : currentTheme.gray,
                     },
                   ]}
                 ></View>
@@ -423,7 +446,7 @@ const Movie_info = ({ navigation }) => {
                         alignContent: "center",
                         alignItems: "center",
                         borderBottomWidth: pressed ? 4 : 0,
-                        borderColor: theme[current].orange,
+                        borderColor: currentTheme.orange,
                       },
                     ]}
                     disabled={userReview == "[watched]" ? false : true}
@@ -434,8 +457,8 @@ const Movie_info = ({ navigation }) => {
                       size={32}
                       color={
                         userReview == "[watched]"
-                          ? theme[current].charcoal
-                          : theme[current].gray
+                          ? currentTheme.charcoal
+                          : currentTheme.gray
                       }
                     />
                     <Text
@@ -443,8 +466,8 @@ const Movie_info = ({ navigation }) => {
                         fontSize: 16,
                         color:
                           userReview == "[watched]"
-                            ? theme[current].charcoal
-                            : theme[current].gray,
+                            ? currentTheme.charcoal
+                            : currentTheme.gray,
                       }}
                     >
                       Rate
@@ -461,9 +484,9 @@ const Movie_info = ({ navigation }) => {
                     <MaterialCommunityIcons
                       name="movie-open-star-outline"
                       size={32}
-                      color={theme[current].green}
+                      color={currentTheme.green}
                     />
-                    <Text style={{ fontSize: 16, color: theme[current].green }}>
+                    <Text style={{ fontSize: 16, color: currentTheme.green }}>
                       Rated
                     </Text>
                   </View>
@@ -480,12 +503,12 @@ const Movie_info = ({ navigation }) => {
                   flexDirection: "row",
                   justifyContent: "center",
                   alignContent: "center",
-                  alignContent: "center",
+
                   padding: "2%",
                   marginBottom: "10%",
                   backgroundColor: pressed
-                    ? theme[current].gray
-                    : theme[current].white,
+                    ? currentTheme.gray
+                    : currentTheme.white,
                 },
               ]}
               onPress={handleDelete}
@@ -493,18 +516,18 @@ const Movie_info = ({ navigation }) => {
               <Ionicons
                 name="trash-bin-outline"
                 size={36}
-                color={theme[current].red}
+                color={currentTheme.red}
               />
-              <Text style={{ marginTop: "2%", color: theme[current].red }}>
+              <Text style={{ marginTop: "2%", color: currentTheme.red }}>
                 {" "}
                 Delete all progress
               </Text>
             </Pressable>
 
             <View style={{ paddingHorizontal: "2%" }}>
-              <Text style={{ color: theme[current].charcoal }}>
+              <Text style={{ color: currentTheme.charcoal }}>
                 Rated:{" "}
-                <Text style={{ fontSize: 20, fontWeight: 600 }}>
+                <Text style={{ fontSize: 20, fontWeight: "600" }}>
                   {movieData.Rated}
                 </Text>
               </Text>
@@ -513,9 +536,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="calendar"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Released: {movieData.Released}
                 </Text>
               </View>
@@ -524,9 +547,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="stopwatch"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Runtime: {movieData.Runtime}
                 </Text>
               </View>
@@ -535,9 +558,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="drama-masks"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Genre: {movieData.Genre}
                 </Text>
               </View>
@@ -546,9 +569,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="videocamera"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Director: {movieData.Director}
                 </Text>
               </View>
@@ -557,9 +580,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="pen-tool"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Writer: {movieData.Writer}
                 </Text>
               </View>
@@ -568,9 +591,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="face-recognition"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Actors: {movieData.Actors}
                 </Text>
               </View>
@@ -579,9 +602,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="language"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Language: {movieData.Language}
                 </Text>
               </View>
@@ -590,9 +613,9 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="flag"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ color: theme[current].charcoal }}>
+                <Text style={{ color: currentTheme.charcoal }}>
                   Country: {movieData.Country}
                 </Text>
               </View>
@@ -607,13 +630,13 @@ const Movie_info = ({ navigation }) => {
                   style={{ marginRight: "2%" }}
                   name="award"
                   size={24}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
-                <Text style={{ width: 400, color: theme[current].charcoal }}>
+                <Text style={{ width: 400, color: currentTheme.charcoal }}>
                   {movieData.Awards}
                 </Text>
               </View>
-              <Text style={{ width: 400, color: theme[current].charcoal }}>
+              <Text style={{ width: 400, color: currentTheme.charcoal }}>
                 Plot: {movieData.Plot}
               </Text>
             </View>
@@ -629,7 +652,7 @@ const Movie_info = ({ navigation }) => {
                   style={{
                     fontSize: 30,
                     fontWeight: "900",
-                    color: theme[current].gray,
+                    color: currentTheme.gray,
                   }}
                 >
                   No reviews yet
@@ -640,7 +663,7 @@ const Movie_info = ({ navigation }) => {
                       style={{
                         fontSize: 20,
                         fontWeight: "900",
-                        color: theme[current].charcoal,
+                        color: currentTheme.charcoal,
                       }}
                     >
                       Add ?
@@ -654,13 +677,13 @@ const Movie_info = ({ navigation }) => {
                   style={{
                     fontSize: 20,
                     fontWeight: "600",
-                    color: theme[current].charcoal,
+                    color: currentTheme.charcoal,
                   }}
                 >
                   <MaterialIcons
                     name="rate-review"
                     size={28}
-                    color={theme[current].charcoal}
+                    color={currentTheme.charcoal}
                   />
                   Reviews
                 </Text>
@@ -677,22 +700,22 @@ const Movie_info = ({ navigation }) => {
                       paddingHorizontal: "5%",
                     }}
                   >
-                    <Text style={{ color: theme[current].charcoal }}>
+                    <Text style={{ color: currentTheme.charcoal }}>
                       <Text
                         style={{
                           fontSize: 22,
-                          fontWeight: 600,
-                          color: theme[current].charcoal,
+                          fontWeight: "600",
+                          color: currentTheme.charcoal,
                         }}
                       >
                         You
-                        <Text style={{ color: theme[current].orange }}>
+                        <Text style={{ color: currentTheme.orange }}>
                           {" "}
                           [ {userRating} %]
                           <Entypo
                             name="pencil"
                             size={24}
-                            color={theme[current].charcoal}
+                            color={currentTheme.charcoal}
                           />
                         </Text>{" "}
                         :
@@ -715,21 +738,21 @@ const Movie_info = ({ navigation }) => {
                     style={{
                       fontSize: 16,
                       fontWeight: "600",
-                      color: theme[current].charcoal,
+                      color: currentTheme.charcoal,
                     }}
                   >
                     Rate on a scale of 0 -100
                   </Text>
                   <TextInput
                     style={[
-                      styles_movie_info.textInput.rating,
+                      styles_movie_info.textInput_rating,
                       {
-                        color: theme[current].charcoal,
-                        borderColor: theme[current].gray,
+                        color: currentTheme.charcoal,
+                        borderColor: currentTheme.gray,
                       },
                     ]}
                     value={!isNaN(rating) ? rating : ""}
-                    selectionColor={theme[current].orange}
+                    selectionColor={currentTheme.orange}
                     keyboardType="numeric"
                     onChangeText={handleRatingChange}
                   />
@@ -738,7 +761,7 @@ const Movie_info = ({ navigation }) => {
                       marginLeft: 20,
                       fontSize: 24,
                       fontWeight: "400",
-                      color: theme[current].charcoal,
+                      color: currentTheme.charcoal,
                     }}
                   >
                     %
@@ -749,23 +772,23 @@ const Movie_info = ({ navigation }) => {
                     style={{
                       fontSize: 16,
                       fontWeight: "600",
-                      color: theme[current].charcoal,
+                      color: currentTheme.charcoal,
                     }}
                   >
                     Write a review
                   </Text>
                   <TextInput
                     style={[
-                      styles_movie_info.textInput.review,
+                      styles_movie_info.textInput_review,
                       {
-                        color: theme[current].charcoal,
-                        borderColor: theme[current].gray,
+                        color: currentTheme.charcoal,
+                        borderColor: currentTheme.gray,
                       },
                     ]}
                     ref={textInputRef}
                     multiline={true}
                     numberOfLines={10}
-                    selectionColor={theme[current].orange}
+                    selectionColor={currentTheme.orange}
                     value={
                       review != "[watched]" && review != "[to be watched]"
                         ? review
@@ -777,7 +800,7 @@ const Movie_info = ({ navigation }) => {
                 <View
                   style={{
                     flexDirection: "row",
-                    width: "100% ",
+                    width: "100%",
                     justifyContent: "space-around",
                     marginBottom: "10%",
                   }}
@@ -789,12 +812,12 @@ const Movie_info = ({ navigation }) => {
                     <MaterialIcons
                       name="clear"
                       size={30}
-                      color={theme[current].red}
+                      color={currentTheme.red}
                     />
                     <Text
                       style={{
                         fontSize: 16,
-                        color: theme[current].red,
+                        color: currentTheme.red,
                         fontWeight: "600",
                       }}
                     >
@@ -810,12 +833,12 @@ const Movie_info = ({ navigation }) => {
                       <Feather
                         name="check"
                         size={30}
-                        color={theme[current].green}
+                        color={currentTheme.green}
                       />
                       <Text
                         style={{
                           fontSize: 16,
-                          color: theme[current].green,
+                          color: currentTheme.green,
                           fontWeight: "600",
                         }}
                       >
@@ -831,12 +854,12 @@ const Movie_info = ({ navigation }) => {
                       <Feather
                         name="check"
                         size={30}
-                        color={theme[current].green}
+                        color={currentTheme.green}
                       />
                       <Text
                         style={{
                           fontSize: 16,
-                          color: theme[current].green,
+                          color: currentTheme.green,
                           fontWeight: "600",
                         }}
                       >
@@ -852,7 +875,7 @@ const Movie_info = ({ navigation }) => {
             )}
             <View>
               {allRatingsAndReviews.map(
-                (item, index) =>
+                (item: UserMovie, index: number) =>
                   item.review !== "[to be watched]" &&
                   item.review !== "[watched]" && (
                     <View
@@ -862,10 +885,10 @@ const Movie_info = ({ navigation }) => {
                         paddingHorizontal: "5%",
                       }}
                     >
-                      <Text style={{ color: theme[current].charcoal }}>
+                      <Text style={{ color: currentTheme.charcoal }}>
                         <Text style={{ fontSize: 18, fontWeight: "600" }}>
                           {item.username}{" "}
-                          <Text style={{ color: theme[current].orange }}>
+                          <Text style={{ color: currentTheme.orange }}>
                             {" "}
                             [ {item.rating} %]
                           </Text>{" "}

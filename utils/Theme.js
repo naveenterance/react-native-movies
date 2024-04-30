@@ -6,7 +6,6 @@ const ThemeProvider = ({ children }) => {
   const [current, setCurrent] = useState("light");
 
   useEffect(() => {
-    // Load theme from AsyncStorage on component mount
     loadTheme();
   }, []);
 

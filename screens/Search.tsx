@@ -15,7 +15,7 @@ import { useID } from "../utils/CurrentId";
 import { useAuth } from "../utils/Auth";
 import RecentSearches from "../components/RecentSearches";
 import Drawer_button from "../components/Drawer_button";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import {
   AntDesign,
@@ -27,29 +27,63 @@ import Filter from "../components/Filter";
 import { useFocusEffect } from "@react-navigation/native";
 import { styles_search } from "../styles/search";
 import Loader from "../components/Loader";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const Search = ({ navigation }) => {
+type SearchScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Search"
+>;
+interface SearchProps {
+  navigation: SearchScreenNavigationProp;
+}
+
+interface Item {
+  Language: string;
+  Genre: string;
+  Poster: string;
+  Country: string;
+  ratingR: {
+    Value: string;
+  };
+  ratingM: {
+    Value: string;
+  };
+  imdbID: string;
+  Year: string;
+  Title: string;
+}
+
+interface UserMovie {
+  movieId: string;
+  username: string;
+  rating: string;
+  review: string;
+}
+
+const Search: React.FC<SearchProps> = ({ navigation }) => {
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const { id, setId } = useID();
   const API_KEY = "e24ea998";
   const [searchQuery, setSearchQuery] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [recentSearches, setRecentSearches] = useState([]);
+  const [movies, setMovies] = useState<any[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
-  const [genre, setGenre] = useState([]);
-  const [language, setLanguage] = useState([]);
-  const [year, setYear] = useState([]);
+  const [genre, setGenre] = useState<string[]>([]);
+  const [language, setLanguage] = useState<string[]>([]);
+  const [year, setYear] = useState<string[]>([]);
   const [filterStatus, setFilterStatus] = useState(false);
   const { current } = useTheme();
   const [view, setView] = useState("recents");
   const [loading, setLoading] = useState(false);
   const { username } = useAuth();
+  const currentTheme = theme[current as keyof Theme];
 
   useFocusEffect(
     useCallback(() => {
       if (view == "filter") {
-        const handleBeforeRemove = (event) => {
-          event.preventDefault();
+        const handleBeforeRemove = (e: any) => {
+          e.preventDefault();
           setView("");
           navigation.removeListener("beforeRemove", handleBeforeRemove);
         };
@@ -71,12 +105,12 @@ const Search = ({ navigation }) => {
     }
   }, [searchPerformed, movies, filterStatus, language, genre, year]);
 
-  const handlepress = (m_id) => {
+  const handlepress = (m_id: string) => {
     setId(m_id);
     navigation.navigate("Movie_info");
   };
 
-  const saveRecentSearches = async (query) => {
+  const saveRecentSearches = async (query: string) => {
     try {
       const searches = recentSearches.filter(
         (search, index) => index < 5 && search !== query
@@ -102,17 +136,19 @@ const Search = ({ navigation }) => {
       const data = await response.json();
       if (data.Search) {
         const moviesWithRatings = await Promise.all(
-          data.Search.map(async (movie) => {
+          data.Search.map(async (movie: any) => {
             const ratingResponse = await fetch(
               `http://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}&plot=full`
             );
             const details = await ratingResponse.json();
 
             const ratingRottenTomatoes = details.Ratings.find(
-              (rating) => rating.Source === "Rotten Tomatoes"
+              (rating: { Source: string }) =>
+                rating.Source === "Rotten Tomatoes"
             );
             const ratingIMDB = details.Ratings.find(
-              (rating) => rating.Source === "Internet Movie Database"
+              (rating: { Source: string }) =>
+                rating.Source === "Internet Movie Database"
             );
 
             return {
@@ -143,55 +179,57 @@ const Search = ({ navigation }) => {
     setFilterStatus(false);
   }, [searchQuery, genre]);
 
-  const renderItem = ({ item }) => {
-    const userRating =
+  const renderItem = ({ item }: { item: Item }) => {
+    const userRating: string | null =
       data && data.allUsers
         ? data.allUsers.find(
-            (userMovie) =>
+            (userMovie: UserMovie) =>
               userMovie.movieId === item.imdbID &&
               userMovie.username === username
           )?.rating
         : null;
-    const itemGenres = item.Genre.split(", ").map((genre) => genre.trim());
-    const passedgenrefilter = itemGenres.some((itemGenre) =>
+    const itemGenres: string[] = item.Genre.split(", ").map((genre: string) =>
+      genre.trim()
+    );
+    const passedGenreFilter: boolean = itemGenres.some((itemGenre: string) =>
       genre.includes(itemGenre)
     );
-    const itemLanguages = item.Language.split(", ").map((language) =>
-      language.trim()
+    const itemLanguages: string[] = item.Language.split(", ").map(
+      (language: string) => language.trim()
     );
-    const passedlangfilter = itemLanguages.some((itemLanguage) =>
-      language.includes(itemLanguage)
+    const passedLangFilter: boolean = itemLanguages.some(
+      (itemLanguage: string) => language.includes(itemLanguage)
     );
 
-    const passedyearfilter = year.some((year) => {
-      const yearPrefix = year.substring(0, 3);
+    const passedYearFilter: boolean = year.some((selectedYear: string) => {
+      const yearPrefix: string = selectedYear.substring(0, 3);
 
-      const itemYearPrefix = item.Year.toString().substring(0, 3);
+      const itemYearPrefix: string = item.Year.toString().substring(0, 3);
 
       return yearPrefix === itemYearPrefix;
     });
     if (
-      (passedgenrefilter || passedlangfilter || passedyearfilter) &&
+      (passedGenreFilter || passedLangFilter || passedYearFilter) &&
       !filterStatus
     ) {
       setFilterStatus(true);
     }
 
     if (
-      (genre.length <= 0 || passedgenrefilter) &&
-      (language.length <= 0 || passedlangfilter) &&
-      (year.length <= 0 || passedyearfilter)
+      (genre.length <= 0 || passedGenreFilter) &&
+      (language.length <= 0 || passedLangFilter) &&
+      (year.length <= 0 || passedYearFilter)
     ) {
       return (
         <View>
           <Pressable onPress={() => handlepress(item.imdbID)}>
             <View
               style={[
-                styles_search.renderItems.container,
+                styles_search.renderItems_container,
                 {
-                  borderWidth: userRating && 4,
-                  borderColor: userRating && theme[current].blue,
-                  backgroundColor: theme[current].white,
+                  borderWidth: userRating ? 4 : 0,
+                  borderColor: userRating ? currentTheme.blue : "transparent",
+                  backgroundColor: currentTheme.white,
                 },
               ]}
             >
@@ -206,8 +244,8 @@ const Search = ({ navigation }) => {
                   numberOfLines={2}
                   style={{
                     fontSize: 16,
-                    fontWeight: 700,
-                    color: theme[current].charcoal,
+                    fontWeight: "700",
+                    color: currentTheme.charcoal,
                   }}
                 >
                   {item.Title}{" "}
@@ -215,7 +253,7 @@ const Search = ({ navigation }) => {
                 <Text
                   style={{
                     fontStyle: "italic",
-                    color: theme[current].charcoal,
+                    color: currentTheme.charcoal,
                   }}
                 >
                   [{item.Year}] [{item.Genre}] [{item.Language}][{item.Country}]
@@ -227,24 +265,24 @@ const Search = ({ navigation }) => {
                       <Text
                         style={{
                           fontStyle: "italic",
-                          color: theme[current].charcoal,
+                          color: currentTheme.charcoal,
                         }}
                       >{`Critics: ${item.ratingR.Value}`}</Text>
                       <View
                         style={[
-                          styles_search.ratingsBar.container,
+                          styles_search.ratingsBar_container,
                           {
-                            backgroundColor: theme[current].gray,
+                            backgroundColor: currentTheme.gray,
                           },
                         ]}
                       >
                         <View
                           style={[
-                            styles_search.ratingsBar.bar,
+                            styles_search.bar,
                             {
-                              color: theme[current].gray,
+                              color: currentTheme.gray,
                               width: item.ratingR.Value,
-                              backgroundColor: theme[current].rotten,
+                              backgroundColor: currentTheme.rotten,
                             },
                           ]}
                         >
@@ -258,20 +296,20 @@ const Search = ({ navigation }) => {
                       <Text
                         style={{
                           fontStyle: "italic",
-                          color: theme[current].charcoal,
+                          color: currentTheme.charcoal,
                         }}
                       >{`IMDB: ${item.ratingM.Value}`}</Text>
                       <View
                         style={[
-                          styles_search.ratingsBar.container,
+                          styles_search.ratingsBar_container,
                           {
-                            backgroundColor: theme[current].gray,
+                            backgroundColor: currentTheme.gray,
                           },
                         ]}
                       >
                         <View
                           style={[
-                            styles_search.ratingsBar.bar,
+                            styles_search.bar,
                             {
                               textAlign: "center",
                               lineHeight: 10,
@@ -279,8 +317,8 @@ const Search = ({ navigation }) => {
                                 parseFloat(item.ratingM.Value.split("/")[0]) *
                                 10
                               }%`,
-                              color: theme[current].gray,
-                              backgroundColor: theme[current].imdb,
+                              color: currentTheme.gray,
+                              backgroundColor: currentTheme.imdb,
                             },
                           ]}
                         >
@@ -298,33 +336,33 @@ const Search = ({ navigation }) => {
                       <MaterialCommunityIcons
                         name="certificate-outline"
                         size={36}
-                        color={theme[current].orange}
+                        color={currentTheme.orange}
                       />
                       <View>
                         <Text
                           style={{
                             fontStyle: "italic",
                             fontSize: 16,
-                            fontWeight: 500,
-                            color: theme[current].charcoal,
+                            fontWeight: "500",
+                            color: currentTheme.charcoal,
                           }}
                         >{`Your rating: ${parseFloat(userRating) + "%"}`}</Text>
 
                         <View
                           style={[
-                            styles_search.ratingsBar.container,
+                            styles_search.ratingsBar_container,
                             {
-                              backgroundColor: theme[current].gray,
+                              backgroundColor: currentTheme.gray,
                             },
                           ]}
                         >
                           <View
                             style={[
-                              styles_search.ratingsBar.bar,
+                              styles_search.bar,
                               {
-                                width: parseFloat(userRating) + "%",
-                                color: theme[current].gray,
-                                backgroundColor: theme[current].blue,
+                                width: `${parseFloat(userRating)}%`,
+                                color: currentTheme.gray,
+                                backgroundColor: currentTheme.blue,
                               },
                             ]}
                           >
@@ -339,14 +377,14 @@ const Search = ({ navigation }) => {
                     <Feather
                       name="bookmark"
                       size={36}
-                      color={theme[current].green}
+                      color={currentTheme.green}
                     />
                     <Text
                       style={{
                         marginTop: "2%",
                         fontSize: 16,
                         fontWeight: "500",
-                        color: theme[current].green,
+                        color: currentTheme.green,
                       }}
                     >
                       Bookmarked
@@ -358,14 +396,14 @@ const Search = ({ navigation }) => {
                     <AntDesign
                       name="eyeo"
                       size={36}
-                      color={theme[current].blue}
+                      color={currentTheme.blue}
                     />
                     <Text
                       style={{
                         marginTop: "2%",
                         fontSize: 16,
                         fontWeight: "500",
-                        color: theme[current].blue,
+                        color: currentTheme.blue,
                       }}
                     >
                       Watched
@@ -384,7 +422,7 @@ const Search = ({ navigation }) => {
     <>
       <View
         style={{
-          backgroundColor: theme[current].white,
+          backgroundColor: currentTheme.white,
           height: "100%",
         }}
       >
@@ -403,8 +441,8 @@ const Search = ({ navigation }) => {
                     padding: "5%",
                     flexDirection: "row",
                     backgroundColor: pressed
-                      ? theme[current].gray
-                      : theme[current].white,
+                      ? currentTheme.gray
+                      : currentTheme.white,
                   },
                 ]}
                 onPress={() => {
@@ -416,14 +454,14 @@ const Search = ({ navigation }) => {
                 <MaterialCommunityIcons
                   name="filter-remove-outline"
                   size={36}
-                  color={theme[current].red}
+                  color={currentTheme.red}
                 />
                 <Text
                   style={{
                     fontSize: 20,
                     fontWeight: "600",
                     marginLeft: "2%",
-                    color: theme[current].red,
+                    color: currentTheme.red,
                   }}
                 >
                   Clear
@@ -436,8 +474,8 @@ const Search = ({ navigation }) => {
                     padding: "5%",
                     flexDirection: "row",
                     backgroundColor: pressed
-                      ? theme[current].gray
-                      : theme[current].white,
+                      ? currentTheme.gray
+                      : currentTheme.white,
                   },
                 ]}
                 onPress={() => setView("")}
@@ -445,14 +483,14 @@ const Search = ({ navigation }) => {
                 <MaterialCommunityIcons
                   name="filter-check-outline"
                   size={36}
-                  color={theme[current].green}
+                  color={currentTheme.green}
                 />
                 <Text
                   style={{
                     fontSize: 20,
                     fontWeight: "600",
                     marginLeft: "2%",
-                    color: theme[current].green,
+                    color: currentTheme.green,
                   }}
                 >
                   Done
@@ -478,14 +516,14 @@ const Search = ({ navigation }) => {
                 style={[
                   styles_search.searchBar,
                   {
-                    color: theme[current].charcoal,
-                    borderColor: theme[current].charcoal,
-                    backgroundColor: theme[current].white,
+                    color: currentTheme.charcoal,
+                    borderColor: currentTheme.charcoal,
+                    backgroundColor: currentTheme.white,
                   },
                 ]}
-                selectionColor={theme[current].orange}
+                selectionColor={currentTheme.orange}
                 placeholder="Search for movies..."
-                placeholderTextColor={theme[current].charcoal}
+                placeholderTextColor={currentTheme.charcoal}
                 value={searchQuery}
                 onChangeText={(text) => setSearchQuery(text)}
                 onSubmitEditing={searchMovies}
@@ -495,7 +533,7 @@ const Search = ({ navigation }) => {
                 <FontAwesome
                   name="search"
                   size={36}
-                  color={theme[current].charcoal}
+                  color={currentTheme.charcoal}
                 />
               </Pressable>
             </View>
@@ -514,7 +552,7 @@ const Search = ({ navigation }) => {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
                     borderBottomWidth: pressed ? 4 : 0,
-                    borderColor: theme[current].orange,
+                    borderColor: currentTheme.orange,
                   },
                 ]}
               >
@@ -523,15 +561,15 @@ const Search = ({ navigation }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     borderBottomWidth: view == "recents" ? 4 : 0,
-                    borderBottomColor: theme[current].orange,
+                    borderBottomColor: currentTheme.orange,
                   }}
                 >
                   <MaterialIcons
                     name="history"
                     size={30}
-                    color={theme[current].charcoal}
+                    color={currentTheme.charcoal}
                   />
-                  <Text style={{ color: theme[current].charcoal }}>Recent</Text>
+                  <Text style={{ color: currentTheme.charcoal }}>Recent</Text>
                 </View>
               </Pressable>
 
@@ -542,7 +580,7 @@ const Search = ({ navigation }) => {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
                     borderBottomWidth: pressed ? 4 : 0,
-                    borderColor: theme[current].orange,
+                    borderColor: currentTheme.orange,
                   },
                 ]}
               >
@@ -551,7 +589,7 @@ const Search = ({ navigation }) => {
                     flexDirection: "row",
                     justifyContent: "space-around",
                     borderBottomWidth: view == "filter" ? 4 : 0,
-                    borderBottomColor: theme[current].orange,
+                    borderBottomColor: currentTheme.orange,
                   }}
                 >
                   {genre.length > 0 ||
@@ -561,15 +599,15 @@ const Search = ({ navigation }) => {
                       <AntDesign
                         name="filter"
                         size={30}
-                        color={theme[current].green}
+                        color={currentTheme.green}
                       />
-                      <Text style={{ color: theme[current].green }}>
+                      <Text style={{ color: currentTheme.green }}>
                         Filtered
                       </Text>
                       <Text
                         style={{
                           fontWeight: "700",
-                          color: theme[current].green,
+                          color: currentTheme.green,
                         }}
                       >
                         [{genre.length}][{language.length}][
@@ -581,9 +619,9 @@ const Search = ({ navigation }) => {
                       <AntDesign
                         name="filter"
                         size={30}
-                        color={theme[current].charcoal}
+                        color={currentTheme.charcoal}
                       />
-                      <Text style={{ color: theme[current].charcoal }}>
+                      <Text style={{ color: currentTheme.charcoal }}>
                         Filters
                       </Text>
                     </View>
@@ -597,7 +635,7 @@ const Search = ({ navigation }) => {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
                     borderBottomWidth: pressed ? 4 : 0,
-                    borderColor: theme[current].orange,
+                    borderColor: currentTheme.orange,
                   },
                 ]}
               >
@@ -610,10 +648,10 @@ const Search = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="bookmark-multiple-outline"
                     size={30}
-                    color={theme[current].charcoal}
+                    color={currentTheme.charcoal}
                   />
 
-                  <Text style={{ color: theme[current].charcoal }}>
+                  <Text style={{ color: currentTheme.charcoal }}>
                     Watchlist{" "}
                   </Text>
                 </View>
@@ -625,7 +663,7 @@ const Search = ({ navigation }) => {
                     paddingVertical: "2%",
                     paddingHorizontal: "10%",
                     borderBottomWidth: pressed ? 4 : 0,
-                    borderColor: theme[current].orange,
+                    borderColor: currentTheme.orange,
                   },
                 ]}
               >
@@ -638,10 +676,10 @@ const Search = ({ navigation }) => {
                   <MaterialIcons
                     name="person-search"
                     size={30}
-                    color={theme[current].charcoal}
+                    color={currentTheme.charcoal}
                   />
 
-                  <Text style={{ color: theme[current].charcoal }}>
+                  <Text style={{ color: currentTheme.charcoal }}>
                     User Search{" "}
                   </Text>
                 </View>
@@ -659,7 +697,7 @@ const Search = ({ navigation }) => {
                   style={{
                     alignSelf: "center",
                     marginTop: 20,
-                    color: theme[current].charcoal,
+                    color: currentTheme.charcoal,
                   }}
                 >
                   No results found
@@ -674,13 +712,13 @@ const Search = ({ navigation }) => {
                 keyExtractor={(item) => item.imdbID}
                 style={{
                   marginTop: 10,
-                  marginBottom: view !== "filter" && 210,
+                  marginBottom: view !== "filter" ? 210 : undefined,
                 }}
               />
             )}
 
             {error && (
-              <Text style={{ color: theme[current].charcoal }}>
+              <Text style={{ color: currentTheme.charcoal }}>
                 Error: {error.message}
               </Text>
             )}

@@ -2,20 +2,31 @@ import React, { useState } from "react";
 import { Button, TextInput, View, Pressable, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../utils/Auth";
-import { theme } from "../styles/colors";
+import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { styles_common } from "../styles/common";
 import { styles_login } from "../styles/login";
 import Loader from "../components/Loader";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../utils/RootParams";
 
-const LoginScreen = ({ navigation }) => {
+type LoginScreenScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Login"
+>;
+interface LoginScreenProps {
+  navigation: LoginScreenScreenNavigationProp;
+}
+
+const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { username, updateUser } = useAuth();
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const { current } = useTheme();
+  const currentTheme = theme[current as keyof Theme];
 
   const handleLogin = async () => {
     if (!name || !password) {
@@ -61,10 +72,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View
-      style={[
-        styles_common.container,
-        { backgroundColor: theme[current].white },
-      ]}
+      style={[styles_common.container, { backgroundColor: currentTheme.white }]}
     >
       <View
         style={{
@@ -77,13 +85,13 @@ const LoginScreen = ({ navigation }) => {
           style={[
             styles_login.TextInput,
             {
-              borderBottomColor: theme[current].textInput,
-              color: theme[current].charcoal,
+              borderBottomColor: currentTheme.textInput,
+              color: currentTheme.charcoal,
             },
           ]}
-          selectionColor={theme[current].orange}
+          selectionColor={currentTheme.orange}
           placeholder="Username"
-          placeholderTextColor={theme[current].charcoal}
+          placeholderTextColor={currentTheme.charcoal}
           onChangeText={setName}
           value={name}
         />
@@ -92,14 +100,13 @@ const LoginScreen = ({ navigation }) => {
             style={[
               styles_login.TextInput,
               {
-                borderBottomColor: theme[current].textInput,
-                color: theme[current].charcoal,
+                borderBottomColor: currentTheme.textInput,
+                color: currentTheme.charcoal,
               },
             ]}
-            selectionColor={theme[current].orange}
+            selectionColor={currentTheme.orange}
             placeholder="Password"
-            placeholderTextColor={theme[current].charcoal}
-            label="password"
+            placeholderTextColor={currentTheme.charcoal}
             secureTextEntry={passwordVisibility ? false : true}
             value={password}
             onChangeText={setPassword}
@@ -107,9 +114,9 @@ const LoginScreen = ({ navigation }) => {
           <Pressable onPress={() => setPasswordVisibility(!passwordVisibility)}>
             <View style={{ marginVertical: 26 }}>
               {passwordVisibility ? (
-                <Feather name="eye" size={28} color={theme[current].blue} />
+                <Feather name="eye" size={28} color={currentTheme.blue} />
               ) : (
-                <Feather name="eye-off" size={28} color={theme[current].blue} />
+                <Feather name="eye-off" size={28} color={currentTheme.blue} />
               )}
             </View>
           </Pressable>
@@ -121,16 +128,12 @@ const LoginScreen = ({ navigation }) => {
                 style={[
                   styles_login.text,
                   {
-                    color: theme[current].orange,
+                    color: currentTheme.orange,
                   },
                 ]}
               >
                 Login
-                <AntDesign
-                  name="login"
-                  size={36}
-                  color={theme[current].orange}
-                />
+                <AntDesign name="login" size={36} color={currentTheme.orange} />
               </Text>
             ) : (
               <View style={{ marginHorizontal: 48 }}>
@@ -143,11 +146,5 @@ const LoginScreen = ({ navigation }) => {
     </View>
   );
 };
-
-LoginScreen.navigationOptions = ({ navigation }) => ({
-  headerLeft: () => (
-    <Button title="Back" onPress={() => navigation.navigate("Welcome")} />
-  ),
-});
 
 export default LoginScreen;
