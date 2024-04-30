@@ -26,7 +26,7 @@ const RecentSearches: React.FC<RecentSearchesProps> = ({
   setSearchQuery,
 }) => {
   const { username } = useAuth();
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
   useEffect(() => {
     const loadRecentSearches = async () => {

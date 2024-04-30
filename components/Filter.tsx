@@ -28,7 +28,7 @@ const Filter: React.FC<FilterProps> = ({
   year,
   setYear,
 }) => {
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
   const [view, setView] = useState<"genre" | "language" | "year">("genre");
 

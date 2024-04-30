@@ -7,7 +7,7 @@ import Modal_custom from "./Drawer";
 import { useModal } from "../utils/Modal";
 
 const Drawer_button: React.FC = () => {
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
   const { modalVisible, setModalVisible } = useModal();
 

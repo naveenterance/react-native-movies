@@ -17,7 +17,7 @@ interface ListProps {
 }
 
 const List: React.FC<ListProps> = ({ tab }) => {
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
   const navigation = useNavigation();
   const { id, setId } = useID();

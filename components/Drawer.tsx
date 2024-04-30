@@ -16,7 +16,8 @@ import { useID } from "../utils/CurrentId";
 
 const Modal_custom: React.FC = () => {
   const { modalVisible, setModalVisible } = useModal();
-  const { current, setTheme } = useTheme();
+  const { setTheme } = useTheme() || { setTheme: () => {} };
+  const current = useTheme()?.current;
   const route = useRoute();
   const { id, setId } = useID();
   const [isEnabled, setIsEnabled] = useState(false);

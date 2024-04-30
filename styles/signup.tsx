@@ -3,10 +3,10 @@ import { StyleSheet, ViewStyle, TextStyle } from "react-native";
 interface Styles {
   Modal: ViewStyle;
   Modal_View: ViewStyle;
-  Modal_Text: ViewStyle;
-  TextInput: ViewStyle;
-  Text: ViewStyle;
-  PasswordBar: ViewStyle;
+  Modal_Text: TextStyle;
+  TextInput: TextStyle;
+  Text: TextStyle;
+  PasswordBar: TextStyle;
 }
 export const styles_signup = StyleSheet.create<Styles>({
   Modal: {
