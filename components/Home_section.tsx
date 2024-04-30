@@ -5,8 +5,15 @@ import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { useID } from "../utils/CurrentId";
 
+interface User {
+  movieId: string;
+  username: string;
+  rating: string;
+  review: string;
+}
+
 interface ListProps {
-  tab: { movieId: string }[];
+  tab: User[];
 }
 
 const List: React.FC<ListProps> = ({ tab }) => {

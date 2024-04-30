@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Text, View, Pressable } from "react-native";
+import { Text, View, Pressable, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
@@ -26,10 +26,27 @@ const Profile: React.FC<ProfileProps> = ({ navigation }) => {
   const currentTheme = theme[current as keyof Theme];
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("jwtToken");
-    setUsername("");
-    updateUser();
+    Alert.alert(
+      "Confirm Logout",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: async () => {
+            await AsyncStorage.removeItem("jwtToken");
+            setUsername("");
+            updateUser();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
+
   useFocusEffect(
     useCallback(() => {
       if (!username) {

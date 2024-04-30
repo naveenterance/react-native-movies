@@ -27,6 +27,7 @@ type HomeScreenScreenNavigationProp = StackNavigationProp<
 >;
 
 interface User {
+  movieId: string;
   username: string;
   rating: string;
   review: string;
@@ -43,9 +44,9 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { error, data, refetch }: QueryResult<Data> = useQuery(GET_ALL_USERS);
-  const [bookmarks, setBookmarks] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [bookmarks, setBookmarks] = useState<User[]>([]);
+  const [reviews, setReviews] = useState<User[]>([]);
+  const [watched, setWatched] = useState<User[]>([]);
   const { username } = useAuth();
   const { current } = useTheme();
   const [loading, setLoading] = useState(false);
@@ -171,7 +172,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                         <Text
                           style={{
                             fontSize: 36,
-                            fontWeight: 900,
+                            fontWeight: "900",
                             color:
                               current == "dark"
                                 ? currentTheme.charcoal

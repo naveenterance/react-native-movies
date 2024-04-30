@@ -28,6 +28,31 @@ type BookmarksScreenNavigationProp = StackNavigationProp<
 interface BookmarksProps {
   navigation: BookmarksScreenNavigationProp;
 }
+interface UserMovie {
+  movieId: string;
+  username: string;
+  rating: string;
+  review: string;
+}
+interface movie {
+  Language: string;
+  Genre: string;
+  Poster: string;
+  Country: string;
+  ratingR: {
+    Value: string;
+  };
+  ratingM: {
+    Value: string;
+  };
+  imdbID: string;
+  Year: string;
+  Title: string;
+}
+interface rating {
+  Source: string;
+  Value: string;
+}
 
 const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
   const { current } = useTheme();
@@ -61,28 +86,31 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
       if (!data || !data.allUsers) return;
       const user = searchedUser || username;
       const bookmarkedMovies = data.allUsers.filter(
-        (u) =>
-          u.username === user &&
-          ((view === "rated" && !isNaN(u.rating)) ||
-            (view === "bookmarks" && u.rating === "[to be watched]") ||
-            (view === "watched" && u.rating === "[watched]") ||
+        (item: UserMovie) =>
+          item.username === user &&
+          ((view === "rated" && !isNaN(item.rating)) ||
+            (view === "bookmarks" && item.rating === "[to be watched]") ||
+            (view === "watched" && item.rating === "[watched]") ||
             view === "")
       );
 
       const moviesWithRatings = await Promise.all(
-        bookmarkedMovies.map(async (u: any) => {
+        bookmarkedMovies.map(async (item: any) => {
           const response = await fetch(
-            `http://www.omdbapi.com/?apikey=${API_KEY}&i=${u.movieId}&plot=full`
+            `http://www.omdbapi.com/?apikey=${API_KEY}&i=${item.movieId}&plot=full`
           );
           const details = await response.json();
           const [ratingR, ratingM] = [
             "Rotten Tomatoes",
             "Internet Movie Database",
-          ].map((source) => details.Ratings.find((r) => r.Source === source));
+          ].map((source) =>
+            details.Ratings.find((r: rating) => r.Source === source)
+          );
           const userRating =
             data.allUsers.find(
               (userMovie: any) =>
-                userMovie.movieId === u.movieId && userMovie.username === user
+                userMovie.movieId === item.movieId &&
+                userMovie.username === user
             )?.rating || "";
           return {
             imdbID: details.imdbID,
@@ -99,15 +127,17 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
         })
       );
 
-      const sortByUserReviews = (a, b) => {
+      const sortByUserReviews = (a: movie, b: movie) => {
         const ratingA = parseFloat(
           data.allUsers.find(
-            (item) => item.movieId === a.imdbID && item.username === user
+            (item: UserMovie) =>
+              item.movieId === a.imdbID && item.username === user
           )?.rating || 0
         );
         const ratingB = parseFloat(
           data.allUsers.find(
-            (item) => item.movieId === b.imdbID && item.username === user
+            (item: UserMovie) =>
+              item.movieId === b.imdbID && item.username === user
           )?.rating || 0
         );
 
@@ -131,13 +161,13 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
     navigation.navigate("Movie_info");
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: any) => {
     return (
       <View>
         <Pressable onPress={() => handlepress(item.imdbID)}>
           <View
             style={[
-              styles_bookmarks.renderItems.container,
+              styles_bookmarks.renderItems_container,
               {
                 backgroundColor: currentTheme.white,
               },
@@ -177,7 +207,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
                     >{`Critics: ${item.ratingR.Value}`}</Text>
                     <View
                       style={[
-                        styles_bookmarks.ratingBar.container,
+                        styles_bookmarks.ratingBar_container,
                         {
                           backgroundColor: currentTheme.gray,
                         },
@@ -185,9 +215,8 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
                     >
                       <View
                         style={[
-                          styles_bookmarks.ratingBar.bar,
+                          styles_bookmarks.bar,
                           {
-                            color: currentTheme.gray,
                             backgroundColor: currentTheme.rotten,
                             width: item.ratingR.Value,
                           },
@@ -208,7 +237,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
                     >{`IMDB: ${item.ratingM.Value}`}</Text>
                     <View
                       style={[
-                        styles_bookmarks.ratingBar.container,
+                        styles_bookmarks.ratingBar_container,
                         {
                           backgroundColor: currentTheme.gray,
                         },
@@ -216,9 +245,8 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
                     >
                       <View
                         style={[
-                          styles_bookmarks.ratingBar.bar,
+                          styles_bookmarks.bar,
                           {
-                            color: currentTheme.gray,
                             backgroundColor: currentTheme.imdb,
                             width: `${
                               parseFloat(item.ratingM.Value.split("/")[0]) * 10
@@ -260,7 +288,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
 
                       <View
                         style={[
-                          styles_bookmarks.ratingBar.container,
+                          styles_bookmarks.ratingBar_container,
                           {
                             backgroundColor: currentTheme.gray,
                           },
@@ -268,10 +296,9 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
                       >
                         <View
                           style={[
-                            styles_bookmarks.ratingBar.bar,
+                            styles_bookmarks.bar,
                             {
-                              color: currentTheme.gray,
-                              width: parseFloat(item.userRating) + "%",
+                              width: `${parseFloat(item.userRating)}%`,
                               backgroundColor: currentTheme.blue,
                             },
                           ]}
@@ -479,7 +506,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
             <FlatList
               data={movies}
               renderItem={renderItem}
-              keyExtractor={(item) => item.imdbID}
+              keyExtractor={(item: movie) => item.imdbID}
               style={{ marginBottom: 36 }}
             />
           ) : (
@@ -493,7 +520,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 32,
-                  fontWeight: 600,
+                  fontWeight: "600",
                   color: currentTheme.gray,
                 }}
               >

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Animated } from "react-native";
 
-const usePressAnimation = (callback) => {
+const usePressAnimation = (callback: any) => {
   const scaleValue = useRef(new Animated.Value(1)).current;
 
   const animateButton = () => {
