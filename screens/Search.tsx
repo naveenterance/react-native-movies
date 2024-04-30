@@ -280,8 +280,7 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
                           style={[
                             styles_search.bar,
                             {
-                              color: currentTheme.gray,
-                              width: item.ratingR.Value,
+                              width: parseFloat(item.ratingR.Value),
                               backgroundColor: currentTheme.rotten,
                             },
                           ]}
@@ -311,7 +310,6 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
                           style={[
                             styles_search.bar,
                             {
-                              textAlign: "center",
                               lineHeight: 10,
                               width: `${
                                 parseFloat(item.ratingM.Value.split("/")[0]) *

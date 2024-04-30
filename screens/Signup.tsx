@@ -125,10 +125,10 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
           },
         ]}
       >
-        <View style={styles_signup.Modal.View}>
+        <View style={styles_signup.Modal_View}>
           <Text
             style={[
-              styles_signup.Modal.Text,
+              styles_signup.Modal_Text,
               {
                 color: currentTheme.green,
               },

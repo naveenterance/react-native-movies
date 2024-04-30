@@ -310,7 +310,7 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
               <Text
                 style={{
                   fontSize: 30,
-                  fontWeight: 500,
+                  fontWeight: "500",
                   color: currentTheme.charcoal,
                 }}
               >

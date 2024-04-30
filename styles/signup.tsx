@@ -1,5 +1,14 @@
-import { StyleSheet } from "react-native";
-export const styles_signup = StyleSheet.create({
+import { StyleSheet, ViewStyle, TextStyle } from "react-native";
+
+interface Styles {
+  Modal: ViewStyle;
+  Modal_View: ViewStyle;
+  Modal_Text: ViewStyle;
+  TextInput: ViewStyle;
+  Text: ViewStyle;
+  PasswordBar: ViewStyle;
+}
+export const styles_signup = StyleSheet.create<Styles>({
   Modal: {
     flex: 1,
     maxHeight: "30%",
@@ -7,14 +16,15 @@ export const styles_signup = StyleSheet.create({
     alignItems: "center",
     marginVertical: "50%",
     borderRadius: 20,
-    View: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 40,
-    },
-    Text: { fontSize: 22, margin: 10, fontWeight: "bold" },
   },
+  Modal_View: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 40,
+  },
+  Modal_Text: { fontSize: 22, margin: 10, fontWeight: "bold" },
+
   TextInput: {
     borderBottomWidth: 4,
     padding: 16,
