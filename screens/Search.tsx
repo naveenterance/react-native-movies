@@ -73,7 +73,7 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
   const [language, setLanguage] = useState<string[]>([]);
   const [year, setYear] = useState<string[]>([]);
   const [filterStatus, setFilterStatus] = useState(false);
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const [view, setView] = useState("recents");
   const [loading, setLoading] = useState(false);
   const { username } = useAuth();
@@ -136,7 +136,7 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
       const data = await response.json();
       if (data.Search) {
         const moviesWithRatings = await Promise.all(
-          data.Search.map(async (movie: any) => {
+          data.Search.map(async (movie: Item) => {
             const ratingResponse = await fetch(
               `http://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}&plot=full`
             );

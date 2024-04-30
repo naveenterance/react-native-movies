@@ -17,7 +17,7 @@ interface WelcomeProps {
 }
 
 const Welcome: React.FC<WelcomeProps> = ({ navigation }) => {
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
   const [onPressLoginHandler, scaleValueLogin] = usePressAnimation(() => {
     navigation.navigate("Login");

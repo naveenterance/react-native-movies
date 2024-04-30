@@ -48,7 +48,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [reviews, setReviews] = useState<User[]>([]);
   const [watched, setWatched] = useState<User[]>([]);
   const { username } = useAuth();
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const [loading, setLoading] = useState(false);
   const currentTheme = theme[current as keyof Theme];
 

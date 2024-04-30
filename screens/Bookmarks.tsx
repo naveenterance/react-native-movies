@@ -55,11 +55,11 @@ interface rating {
 }
 
 const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const { username } = useAuth();
   const { id, setId } = useID();
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState<movie[]>([]);
   const [view, setView] = useState("bookmarks");
   const { searchedUser, setSearchedUser } = useSearchTerm();
   const [loading, setLoading] = useState(false);
@@ -88,7 +88,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
       const bookmarkedMovies = data.allUsers.filter(
         (item: UserMovie) =>
           item.username === user &&
-          ((view === "rated" && !isNaN(item.rating)) ||
+          ((view === "rated" && !isNaN(parseInt(item.rating))) ||
             (view === "bookmarks" && item.rating === "[to be watched]") ||
             (view === "watched" && item.rating === "[watched]") ||
             view === "")

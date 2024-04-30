@@ -26,7 +26,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
 
   const handleSignUp = async () => {
@@ -213,8 +213,6 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
                     (password.length < 6 && currentTheme.orange) ||
                     (password.length >= 6 && currentTheme.green)
                   }`,
-
-                  color: currentTheme.gray,
                 },
               ]}
             ></View>

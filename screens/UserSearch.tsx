@@ -31,7 +31,7 @@ const UserSearch: React.FC<UserSearchProps> = ({ navigation }) => {
   const [showResults, setShowResults] = useState(false);
   const { searchedUser, setSearchedUser } = useSearchTerm();
   const { username } = useAuth();
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
 
   useEffect(() => {

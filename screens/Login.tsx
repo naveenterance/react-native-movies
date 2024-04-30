@@ -25,7 +25,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const { username, updateUser } = useAuth();
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
 
   const handleLogin = async () => {

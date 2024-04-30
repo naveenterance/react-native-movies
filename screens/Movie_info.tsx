@@ -51,7 +51,7 @@ interface rating {
 }
 
 const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const { username } = useAuth();
   const { id, setId } = useID();
   const [loading, setLoading] = useState(false);
@@ -70,7 +70,7 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
 
   const focusOnTextInput = () => {
     if (textInputRef.current) {
-      textInputRef.current.focus();
+      (textInputRef.current as TextInput).focus();
     }
   };
 
@@ -751,7 +751,7 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
                         borderColor: currentTheme.gray,
                       },
                     ]}
-                    value={!isNaN(rating) ? rating : ""}
+                    value={!isNaN(parseFloat(rating)) ? rating : ""}
                     selectionColor={currentTheme.orange}
                     keyboardType="numeric"
                     onChangeText={handleRatingChange}

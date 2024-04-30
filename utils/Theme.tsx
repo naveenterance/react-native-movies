@@ -1,6 +1,12 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const CurrentTheme = createContext();
+
+interface themeProps {
+  current: "light" | "dark";
+  setTheme: (theme: "light" | "dark") => void;
+}
+
+const CurrentTheme = createContext<themeProps | undefined>(undefined);
 
 const ThemeProvider = ({ children }: any) => {
   const [current, setCurrent] = useState("light");

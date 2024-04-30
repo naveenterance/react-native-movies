@@ -21,7 +21,7 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ navigation }) => {
-  const { current } = useTheme();
+  const current = useTheme()?.current;
   const { username, updateUser, setUsername } = useAuth();
   const currentTheme = theme[current as keyof Theme];
 
