@@ -17,7 +17,7 @@ import { ModalProvider } from "./utils/Modal";
 import { ThemeProvider } from "./utils/Theme";
 import { SearchTermProvider } from "./utils/SearchTerm";
 import * as Notifications from "expo-notifications";
-import { RootStackParamList } from "./utils/RootParams";
+import { RootStackParamList } from "./types/RootParams";
 
 const RootStack = createStackNavigator<RootStackParamList>();
 

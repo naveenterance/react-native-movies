@@ -29,7 +29,8 @@ import Loader from "../components/Loader";
 import { styles_movie_info } from "../styles/movie_info";
 
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
+import { UserMovie } from "../types/UserMovie";
 
 type Movie_infoScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -37,13 +38,6 @@ type Movie_infoScreenNavigationProp = StackNavigationProp<
 >;
 interface Movie_infoProps {
   navigation: Movie_infoScreenNavigationProp;
-}
-
-interface UserMovie {
-  movieId: string;
-  username: string;
-  rating: string;
-  review: string;
 }
 interface rating {
   Source: string;
@@ -775,8 +769,9 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
                       color: currentTheme.charcoal,
                     }}
                   >
-                    Write a review
+                    Write a review [{review.length}/500]
                   </Text>
+
                   <TextInput
                     style={[
                       styles_movie_info.textInput_review,
@@ -794,7 +789,9 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
                         ? review
                         : ""
                     }
-                    onChangeText={setReview}
+                    onChangeText={(text) =>
+                      text.length <= 500 ? setReview(text) : ""
+                    }
                   />
                 </View>
                 <View
@@ -807,7 +804,7 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
                 >
                   <Pressable
                     style={{ flexDirection: "row", marginTop: "5%" }}
-                    onPress={() => setEditView(false)}
+                    onPress={() => (setEditView(false), setReview(""))}
                   >
                     <MaterialIcons
                       name="clear"

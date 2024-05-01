@@ -9,7 +9,7 @@ import { styles_common } from "../styles/common";
 import { styles_login } from "../styles/login";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
 
 type LoginScreenScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

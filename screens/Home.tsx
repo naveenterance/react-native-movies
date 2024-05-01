@@ -19,22 +19,16 @@ import { AntDesign } from "@expo/vector-icons";
 import { styles_home } from "../styles/home";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
+import { UserMovie } from "../types/UserMovie";
 
 type HomeScreenScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Home"
 >;
 
-interface User {
-  movieId: string;
-  username: string;
-  rating: string;
-  review: string;
-}
-
 interface Data {
-  allUsers: User[];
+  allUsers: UserMovie[];
 }
 
 interface HomeScreenProps {
@@ -44,9 +38,9 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { error, data, refetch }: QueryResult<Data> = useQuery(GET_ALL_USERS);
-  const [bookmarks, setBookmarks] = useState<User[]>([]);
-  const [reviews, setReviews] = useState<User[]>([]);
-  const [watched, setWatched] = useState<User[]>([]);
+  const [bookmarks, setBookmarks] = useState<UserMovie[]>([]);
+  const [reviews, setReviews] = useState<UserMovie[]>([]);
+  const [watched, setWatched] = useState<UserMovie[]>([]);
   const { username } = useAuth();
   const current = useTheme()?.current;
   const [loading, setLoading] = useState(false);

@@ -28,7 +28,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { styles_search } from "../styles/search";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
+import { movie } from "../types/movie";
+import { UserMovie } from "../types/UserMovie";
 
 type SearchScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -36,29 +38,6 @@ type SearchScreenNavigationProp = StackNavigationProp<
 >;
 interface SearchProps {
   navigation: SearchScreenNavigationProp;
-}
-
-interface Item {
-  Language: string;
-  Genre: string;
-  Poster: string;
-  Country: string;
-  ratingR: {
-    Value: string;
-  };
-  ratingM: {
-    Value: string;
-  };
-  imdbID: string;
-  Year: string;
-  Title: string;
-}
-
-interface UserMovie {
-  movieId: string;
-  username: string;
-  rating: string;
-  review: string;
 }
 
 const Search: React.FC<SearchProps> = ({ navigation }) => {
@@ -136,7 +115,7 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
       const data = await response.json();
       if (data.Search) {
         const moviesWithRatings = await Promise.all(
-          data.Search.map(async (movie: Item) => {
+          data.Search.map(async (movie: movie) => {
             const ratingResponse = await fetch(
               `http://www.omdbapi.com/?apikey=${API_KEY}&i=${movie.imdbID}&plot=full`
             );
@@ -179,7 +158,7 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
     setFilterStatus(false);
   }, [searchQuery, genre]);
 
-  const renderItem = ({ item }: { item: Item }) => {
+  const renderItem = ({ item }: { item: movie }) => {
     const userRating: string | null =
       data && data.allUsers
         ? data.allUsers.find(

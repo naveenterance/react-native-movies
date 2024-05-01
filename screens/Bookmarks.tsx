@@ -19,7 +19,9 @@ import { useSearchTerm } from "../utils/SearchTerm";
 import Loader from "../components/Loader";
 import { styles_bookmarks } from "../styles/bookmarks";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
+import { movie } from "../types/movie";
+import { UserMovie } from "../types/UserMovie";
 
 type BookmarksScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -28,27 +30,7 @@ type BookmarksScreenNavigationProp = StackNavigationProp<
 interface BookmarksProps {
   navigation: BookmarksScreenNavigationProp;
 }
-interface UserMovie {
-  movieId: string;
-  username: string;
-  rating: string;
-  review: string;
-}
-interface movie {
-  Language: string;
-  Genre: string;
-  Poster: string;
-  Country: string;
-  ratingR: {
-    Value: string;
-  };
-  ratingM: {
-    Value: string;
-  };
-  imdbID: string;
-  Year: string;
-  Title: string;
-}
+
 interface rating {
   Source: string;
   Value: string;

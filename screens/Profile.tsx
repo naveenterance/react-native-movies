@@ -10,7 +10,7 @@ import Drawer_button from "../components/Drawer_button";
 import { theme, Theme } from "../styles/colors";
 import { useTheme } from "../utils/Theme";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

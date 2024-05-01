@@ -107,7 +107,7 @@ const Filter: React.FC<FilterProps> = ({
             view === "genre" ? genres : view === "language" ? languages : years
           }
           renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(index) => index.toString()}
           style={{ marginBottom: "90%" }}
         />
       </View>

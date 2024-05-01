@@ -9,7 +9,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { styles_userSearch } from "../styles/userSearch";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
 
 type UserSearchScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

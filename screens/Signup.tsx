@@ -10,7 +10,7 @@ import { styles_common } from "../styles/common";
 import { styles_signup } from "../styles/signup";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
 
 type SignUpScreenScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

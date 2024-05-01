@@ -6,7 +6,7 @@ import { useTheme } from "../utils/Theme";
 import usePressAnimation from "../hooks/animation";
 import { useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../utils/RootParams";
+import { RootStackParamList } from "../types/RootParams";
 
 type WelcomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

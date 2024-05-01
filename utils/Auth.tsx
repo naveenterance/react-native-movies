@@ -25,7 +25,7 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       try {
         const token = await AsyncStorage.getItem("jwtToken");
         if (token) {
-          const decoded: any = jwtDecode(token); // Adjusted type as any
+          const decoded: any = jwtDecode(token);
           setUsername(decoded.name);
         }
       } catch (error) {
@@ -40,7 +40,7 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     try {
       const token = await AsyncStorage.getItem("jwtToken");
       if (token) {
-        const decoded: any = jwtDecode(token); // Adjusted type as any
+        const decoded: any = jwtDecode(token);
         setUsername(decoded.name);
       }
     } catch (error) {
