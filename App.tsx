@@ -20,9 +20,8 @@ import * as Notifications from "expo-notifications";
 import { RootStackParamList } from "./types/RootParams";
 
 const RootStack = createStackNavigator<RootStackParamList>();
-
 const client = new ApolloClient({
-  uri: "https://movie-prisma.vercel.app/",
+  uri: process.env.EXPO_PUBLIC_APOLLO_URL,
   cache: new InMemoryCache(),
 });
 

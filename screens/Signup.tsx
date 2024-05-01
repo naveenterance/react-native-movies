@@ -28,6 +28,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
+  const node_url = process.env.EXPO_PUBLIC_NODE_URL;
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -47,15 +48,12 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
       return;
     }
     try {
-      const response = await fetch(
-        `https://movie-app-node-dun.vercel.app/users/${name}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${node_url}/${name}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -70,16 +68,13 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
     }
 
     try {
-      const response = await fetch(
-        "https://movie-app-node-dun.vercel.app/users",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, password }),
-        }
-      );
+      const response = await fetch(`${node_url}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, password }),
+      });
 
       if (!response.ok) {
         throw new Error("Sign up failed");

@@ -21,7 +21,7 @@ const List: React.FC<ListProps> = ({ tab }) => {
   const currentTheme = theme[current as keyof Theme];
   const navigation = useNavigation();
   const { id, setId } = useID();
-  const API_KEY = "e24ea998";
+  const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 
   const handlepress = (m_id: string) => {
     setId(m_id);

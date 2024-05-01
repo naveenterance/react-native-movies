@@ -47,8 +47,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState(false);
   const currentTheme = theme[current as keyof Theme];
-
-  const API_KEY = "e24ea998";
+  const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 
   useFocusEffect(
     useCallback(() => {

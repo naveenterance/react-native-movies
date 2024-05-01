@@ -27,6 +27,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
+  const node_url = process.env.EXPO_PUBLIC_NODE_URL;
 
   const handleLogin = async () => {
     if (!name || !password) {
@@ -36,16 +37,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(
-        "https://movie-app-node-dun.vercel.app/users/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, password }),
-        }
-      );
+      const response = await fetch(`${node_url}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, password }),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");

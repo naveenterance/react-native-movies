@@ -43,7 +43,7 @@ interface SearchProps {
 const Search: React.FC<SearchProps> = ({ navigation }) => {
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const { id, setId } = useID();
-  const API_KEY = "e24ea998";
+  const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState<any[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);

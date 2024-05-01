@@ -54,7 +54,7 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
   const { error, data, refetch } = useQuery(GET_ALL_USERS);
   const [addUser] = useMutation(ADD_USER);
   const [movieData, setMovieData] = useState<any | null>(null);
-  const API_KEY = "e24ea998";
+  const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
   const [refreshPage, setRefreshPage] = useState(false);
   const [deleteUser] = useMutation(DELETE_USER);
   const [updateUser] = useMutation(UPDATE_USER);
@@ -626,11 +626,11 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
                   size={24}
                   color={currentTheme.charcoal}
                 />
-                <Text style={{ width: 400, color: currentTheme.charcoal }}>
+                <Text style={{ width: 300, color: currentTheme.charcoal }}>
                   {movieData.Awards}
                 </Text>
               </View>
-              <Text style={{ width: 400, color: currentTheme.charcoal }}>
+              <Text style={{ width: "95%", color: currentTheme.charcoal }}>
                 Plot: {movieData.Plot}
               </Text>
             </View>
