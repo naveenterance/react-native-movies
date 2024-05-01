@@ -14,28 +14,21 @@ import { useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { useID } from "../utils/CurrentId";
 
-const Modal_custom: React.FC = () => {
+const Modal_custom = () => {
   const { modalVisible, setModalVisible } = useModal();
-  const { setTheme } = useTheme() || { setTheme: () => {} };
+
   const current = useTheme()?.current;
+  const { setTheme } = useTheme() || { setTheme: () => {} };
+  const currentTheme = theme[current as keyof Theme];
   const route = useRoute();
   const { id, setId } = useID();
-  const [isEnabled, setIsEnabled] = useState(false);
-  const currentTheme = theme[current as keyof Theme];
+  const [isEnabled, setIsEnabled] = useState(true);
 
   const navigation = useNavigation();
   const toggleTheme = () => {
     setIsEnabled((previousState) => !previousState);
+    !isEnabled ? setTheme("light") : setTheme("dark");
   };
-
-  useEffect(() => {
-    if (isEnabled) {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
-  }, [isEnabled]);
-
   return (
     <View style={{ flex: 1 }}>
       <View
