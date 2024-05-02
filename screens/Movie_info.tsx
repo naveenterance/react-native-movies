@@ -13,11 +13,12 @@ import {
   ADD_USER,
   DELETE_USER,
   UPDATE_USER,
-} from "../utils/graphql";
-import { useAuth } from "../utils/Auth";
-import { useID } from "../utils/CurrentId";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+} from "../utils/db/graphql";
+import { useAuth } from "../utils/context/Auth";
+import { useID } from "../utils/context/CurrentId";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import Drawer_button from "../components/Drawer_button";
 import {
   MaterialCommunityIcons,
@@ -580,7 +581,13 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
                   Writer: {movieData.Writer}
                 </Text>
               </View>
-              <View style={{ flexDirection: "row", marginVertical: "2%" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "95%",
+                  marginVertical: "2%",
+                }}
+              >
                 <MaterialCommunityIcons
                   style={{ marginRight: "2%" }}
                   name="face-recognition"

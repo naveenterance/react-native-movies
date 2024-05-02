@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Text, View, Pressable, FlatList, ListRenderItem } from "react-native";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import {
   AntDesign,
   FontAwesome,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { genres } from "../utils/Genres";
-import { languages } from "../utils/Languages";
-import { years } from "../utils/Years";
+import { genres } from "../utils/constants/Genres";
+import { languages } from "../utils/constants/Languages";
+import { years } from "../utils/constants/Years";
 
 interface FilterProps {
   genre: string[];

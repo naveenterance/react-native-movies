@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Pressable, FlatList } from "react-native";
-import { useSearchTerm } from "../utils/SearchTerm";
-import { useAuth } from "../utils/Auth";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { useSearchTerm } from "../utils/context/SearchTerm";
+import { useAuth } from "../utils/context/Auth";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import Drawer_button from "../components/Drawer_button";
 import { MaterialIcons } from "@expo/vector-icons";
 import { styles_userSearch } from "../styles/userSearch";

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Button, TextInput, View, Pressable, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAuth } from "../utils/Auth";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { useAuth } from "../utils/context/Auth";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { styles_common } from "../styles/common";
 import { styles_login } from "../styles/login";

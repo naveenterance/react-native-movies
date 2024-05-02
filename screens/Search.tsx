@@ -10,13 +10,14 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_USERS } from "../utils/graphql";
-import { useID } from "../utils/CurrentId";
-import { useAuth } from "../utils/Auth";
+import { GET_ALL_USERS } from "../utils/db/graphql";
+import { useID } from "../utils/context/CurrentId";
+import { useAuth } from "../utils/context/Auth";
 import RecentSearches from "../components/RecentSearches";
 import Drawer_button from "../components/Drawer_button";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import {
   AntDesign,
   MaterialCommunityIcons,
@@ -45,7 +46,7 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
   const { id, setId } = useID();
   const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
   const [searchQuery, setSearchQuery] = useState("");
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<movie[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [genre, setGenre] = useState<string[]>([]);

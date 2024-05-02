@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, FlatList, Pressable, Image } from "react-native";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_USERS } from "../utils/graphql";
-import { useAuth } from "../utils/Auth";
-import { useID } from "../utils/CurrentId";
+import { GET_ALL_USERS } from "../utils/db/graphql";
+import { useAuth } from "../utils/context/Auth";
+import { useID } from "../utils/context/CurrentId";
 import {
   AntDesign,
   MaterialCommunityIcons,
@@ -11,11 +11,12 @@ import {
   Feather,
   FontAwesome6,
 } from "@expo/vector-icons";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import { useFocusEffect } from "@react-navigation/native";
 import Drawer_button from "../components/Drawer_button";
-import { useSearchTerm } from "../utils/SearchTerm";
+import { useSearchTerm } from "../utils/context/SearchTerm";
 import Loader from "../components/Loader";
 import { styles_bookmarks } from "../styles/bookmarks";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -89,7 +90,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
           );
           const userRating =
             data.allUsers.find(
-              (userMovie: any) =>
+              (userMovie: UserMovie) =>
                 userMovie.movieId === item.movieId &&
                 userMovie.username === user
             )?.rating || "";

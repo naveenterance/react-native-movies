@@ -1,19 +1,14 @@
 import React from "react";
 import { View, Pressable, Image, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
-import { useID } from "../utils/CurrentId";
-
-interface User {
-  movieId: string;
-  username: string;
-  rating: string;
-  review: string;
-}
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
+import { useID } from "../utils/context/CurrentId";
+import { UserMovie } from "../types/UserMovie";
 
 interface ListProps {
-  tab: User[];
+  tab: UserMovie[];
 }
 
 const List: React.FC<ListProps> = ({ tab }) => {

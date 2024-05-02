@@ -7,11 +7,12 @@ import {
   BackHandler,
   ScrollView,
 } from "react-native";
-import { GET_ALL_USERS } from "../utils/graphql";
+import { GET_ALL_USERS } from "../utils/db/graphql";
 import { useQuery, QueryResult } from "@apollo/client";
-import { useAuth } from "../utils/Auth";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { useAuth } from "../utils/context/Auth";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import { useFocusEffect } from "@react-navigation/native";
 import List from "../components/Home_section";
 import Drawer_button from "../components/Drawer_button";

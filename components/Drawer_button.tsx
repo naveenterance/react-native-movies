@@ -1,10 +1,11 @@
 import React from "react";
 import { View, Pressable } from "react-native";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { useTheme } from "../utils/context/Theme";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
 import { Feather } from "@expo/vector-icons";
 import Modal_custom from "./Drawer";
-import { useModal } from "../utils/Modal";
+import { useModal } from "../utils/context/Modal";
 
 const Drawer_button: React.FC = () => {
   const current = useTheme()?.current;

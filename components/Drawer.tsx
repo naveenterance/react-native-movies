@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-native-modal";
-import { useModal } from "../utils/Modal";
+import { useModal } from "../utils/context/Modal";
 import { Text, View, Pressable, Switch } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import {
   AntDesign,
   FontAwesome,
@@ -12,17 +13,20 @@ import {
 } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
-import { useID } from "../utils/CurrentId";
+import { useID } from "../utils/context/CurrentId";
 
 const Modal_custom = () => {
   const { modalVisible, setModalVisible } = useModal();
-
   const current = useTheme()?.current;
   const { setTheme } = useTheme() || { setTheme: () => {} };
   const currentTheme = theme[current as keyof Theme];
   const route = useRoute();
   const { id, setId } = useID();
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  useEffect(() => {
+    setIsEnabled(current !== "dark");
+  }, [current]);
 
   const navigation = useNavigation();
   const toggleTheme = () => {

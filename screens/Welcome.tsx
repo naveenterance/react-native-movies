@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
 import { View, Text, Pressable, Image, Animated } from "react-native";
-import { useAuth } from "../utils/Auth";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { useAuth } from "../utils/context/Auth";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 import usePressAnimation from "../hooks/animation";
 import { useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";

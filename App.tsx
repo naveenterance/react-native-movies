@@ -11,11 +11,11 @@ import Search from "./screens/Search";
 import Bookmarks from "./screens/Bookmarks";
 import Movie_info from "./screens/Movie_info";
 import UserSearch from "./screens/UserSearch";
-import { AuthProvider } from "./utils/Auth";
-import { IDProvider } from "./utils/CurrentId";
-import { ModalProvider } from "./utils/Modal";
-import { ThemeProvider } from "./utils/Theme";
-import { SearchTermProvider } from "./utils/SearchTerm";
+import { AuthProvider } from "./utils/context/Auth";
+import { IDProvider } from "./utils/context/CurrentId";
+import { ModalProvider } from "./utils/context/Modal";
+import { ThemeProvider } from "./utils/context/Theme";
+import { SearchTermProvider } from "./utils/context/SearchTerm";
 import * as Notifications from "expo-notifications";
 import { RootStackParamList } from "./types/RootParams";
 

@@ -9,10 +9,11 @@ import {
   Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAuth } from "../utils/Auth";
+import { useAuth } from "../utils/context/Auth";
 import { Feather } from "@expo/vector-icons";
-import { theme, Theme } from "../styles/colors";
-import { useTheme } from "../utils/Theme";
+import { theme } from "../styles/colors";
+import { Theme } from "../types/theme";
+import { useTheme } from "../utils/context/Theme";
 
 interface RecentSearchesProps {
   recentSearches: string[];
