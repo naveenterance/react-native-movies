@@ -23,6 +23,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
 import { movie } from "../types/movie";
 import { UserMovie } from "../types/UserMovie";
+import { StatusBar } from "expo-status-bar";
 
 type BookmarksScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -343,6 +344,7 @@ const Bookmarks: React.FC<BookmarksProps> = ({ navigation }) => {
         backgroundColor: currentTheme.white,
       }}
     >
+      <StatusBar translucent={true} />
       <Drawer_button />
       <View style={{ width: "100%", alignItems: "center" }}>
         {searchedUser && (

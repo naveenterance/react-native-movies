@@ -12,6 +12,7 @@ import { Theme } from "../types/theme";
 import { useTheme } from "../utils/context/Theme";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
+import { StatusBar } from "expo-status-bar";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -57,6 +58,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation }) => {
   );
   return (
     <View style={{ backgroundColor: currentTheme.white, height: "100%" }}>
+      <StatusBar translucent={true} />
       <Drawer_button />
 
       <View

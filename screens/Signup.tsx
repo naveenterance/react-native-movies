@@ -12,6 +12,7 @@ import { styles_signup } from "../styles/signup";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
+import { StatusBar } from "expo-status-bar";
 
 type SignUpScreenScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -112,6 +113,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
         },
       ]}
     >
+      <StatusBar translucent={true} />
       <Modal
         isVisible={modalVisible}
         style={[

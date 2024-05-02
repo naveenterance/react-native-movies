@@ -22,6 +22,7 @@ import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
 import { UserMovie } from "../types/UserMovie";
+import { StatusBar } from "expo-status-bar";
 
 type HomeScreenScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -114,6 +115,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <View style={{ backgroundColor: currentTheme.white, height: "100%" }}>
+      <StatusBar translucent={true} />
       <Drawer_button />
       <ScrollView>
         <View

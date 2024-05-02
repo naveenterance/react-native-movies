@@ -32,6 +32,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
 import { movie } from "../types/movie";
 import { UserMovie } from "../types/UserMovie";
+import { StatusBar } from "expo-status-bar";
 
 type SearchScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -404,6 +405,7 @@ const Search: React.FC<SearchProps> = ({ navigation }) => {
           height: "100%",
         }}
       >
+        <StatusBar translucent={true} />
         <Drawer_button />
         {view == "filter" ? (
           <View>

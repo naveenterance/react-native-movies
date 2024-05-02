@@ -32,6 +32,7 @@ import { styles_movie_info } from "../styles/movie_info";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
 import { UserMovie } from "../types/UserMovie";
+import { StatusBar } from "expo-status-bar";
 
 type Movie_infoScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -287,6 +288,7 @@ const Movie_info: React.FC<Movie_infoProps> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: currentTheme.white }}>
+      <StatusBar translucent={true} />
       <Drawer_button />
       {movieData ? (
         <ScrollView>

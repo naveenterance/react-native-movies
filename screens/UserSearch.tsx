@@ -11,6 +11,7 @@ import { styles_userSearch } from "../styles/userSearch";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
+import { StatusBar } from "expo-status-bar";
 
 type UserSearchScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -34,10 +35,11 @@ const UserSearch: React.FC<UserSearchProps> = ({ navigation }) => {
   const { username } = useAuth();
   const current = useTheme()?.current;
   const currentTheme = theme[current as keyof Theme];
+  const node_url = process.env.EXPO_PUBLIC_NODE_URL;
 
   useEffect(() => {
     setLoading(true);
-    fetch("https://movie-app-node-dun.vercel.app/users")
+    fetch(`${node_url}`)
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);
@@ -105,6 +107,7 @@ const UserSearch: React.FC<UserSearchProps> = ({ navigation }) => {
 
   return (
     <View style={{ backgroundColor: currentTheme.white, height: "100%" }}>
+      <StatusBar translucent={true} />
       <Drawer_button />
       <TextInput
         style={[

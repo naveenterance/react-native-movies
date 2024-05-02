@@ -8,6 +8,7 @@ import usePressAnimation from "../hooks/animation";
 import { useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
+import { StatusBar } from "expo-status-bar";
 
 type WelcomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -37,6 +38,7 @@ const Welcome: React.FC<WelcomeProps> = ({ navigation }) => {
   );
   return (
     <View>
+      <StatusBar translucent={true} />
       <Image
         source={require("../assets/logo.jpeg")}
         style={{ width: "100%", height: "33.333%" }}

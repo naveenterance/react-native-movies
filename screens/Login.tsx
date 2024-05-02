@@ -11,6 +11,7 @@ import { styles_login } from "../styles/login";
 import Loader from "../components/Loader";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/RootParams";
+import { StatusBar } from "expo-status-bar";
 
 type LoginScreenScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -73,6 +74,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     <View
       style={[styles_common.container, { backgroundColor: currentTheme.white }]}
     >
+      <StatusBar translucent={true} />
       <View
         style={{
           marginHorizontal: 48,
